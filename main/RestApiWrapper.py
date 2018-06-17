@@ -1,4 +1,4 @@
-from PipeLine.main.Utils import Utils
+from b2b.main.Utils import Utils
 import requests
 import json
 import numpy as np

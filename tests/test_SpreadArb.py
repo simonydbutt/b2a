@@ -1,4 +1,4 @@
-from PipeLine.main.SpreadArb import SpreadArb
+from b2b.main.SpreadArb import SpreadArb
 
 """
     TODO
