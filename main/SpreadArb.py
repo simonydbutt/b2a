@@ -1,4 +1,4 @@
-from PipeLine.main.RestApiWrapper import RestApiWrapper
+from b2b.main.RestApiWrapper import RestApiWrapper
 import json
 import pandas as pd
 

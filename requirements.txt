@@ -1,7 +1,5 @@
 pandas
 numpy
-json
-time
 datetime
 requests
 pytest
