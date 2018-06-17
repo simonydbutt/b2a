@@ -1,0 +1,8 @@
+{
+  "capital": 1000,
+  "spreadEnter": 0.03,
+  "spreadExitP": 0.005,
+  "spreadExitL": 0.02,
+  "takerFee": 0.00075,
+  "leverage": 10
+}
