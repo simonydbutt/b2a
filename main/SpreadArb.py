@@ -6,13 +6,14 @@ import pandas as pd
 class SpreadArb:
 
     def __init__(self, verbose=False, assets=('PM', 'PU', 'UM'), libPath='./lib/'):
+        self.libPath = libPath
         self.assets = assets
         self.verbose = verbose
-        with open(libPath + 'hyperParam.json') as hPFile:
+        with open(self.libPath + 'hyperParam.json') as hPFile:
             self.hyperParam = json.load(hPFile)
-        with open(libPath + 'tmpVals.json') as tmpFile:
+        with open(self.libPath + 'tmpVals.json') as tmpFile:
             self.tmpVals = json.load(tmpFile)
-        with open(libPath + 'capital.json') as cFile:
+        with open(self.libPath + 'capital.json') as cFile:
             self.capital = json.load(cFile)
         self.latest = RestApiWrapper().allXBTQuotes()
         self.tradeLog = []
@@ -34,10 +35,8 @@ class SpreadArb:
 
     def run(self):
         if not self.tmpVals['inPosition']:
-            if self.verbose: print('')
             self.isEnter()
         else:
-            if self.verbose: print()
             self.isExit()
         self.closeUp()
 
@@ -67,7 +66,7 @@ class SpreadArb:
                 self.placeTrade()
                 break
             elif self.verbose:
-                print('Spread not large enough for pair: %s\nSpread required: %s, Actual Spread: %s' %
+                print('Spread not large enough for pair: %s\nRequired: %s, Actual: %s' %
                       (pair, round(self.hyperParam['spreadEnter']*self.latest[pair[0]].iloc[0]),
                        self.latest['spread%s' % pair].iloc[0]))
 
@@ -115,19 +114,17 @@ class SpreadArb:
             return pL
 
     def closeUp(self):
-        with open('./lib/tmpVals.json', 'w') as outfile:
+        with open(self.libPath + 'tmpVals.json', 'w') as outfile:
             json.dump(self.tmpVals, outfile)
-        with open('./lib/capital.json', 'w') as cFile:
+        with open(self.libPath + 'capital.json', 'w') as cFile:
             json.dump(self.capital, cFile)
         if len(self.tradeLog) != 0:
             closeDF = pd.DataFrame([self.tradeLog], columns=['P&L', 'MaxDrawdown', 'Periods'])
             if self.verbose: print(closeDF)
             try:
-                df = pd.read_feather('./lib/positionLog')
+                df = pd.read_feather(self.libPath + 'positionLog')
                 df = df.append(closeDF)
             except IOError:
                 df = closeDF
-            df.reset_index(drop=True).to_feather('./lib/positionLog')
-        else:
-            if self.verbose: print(self.tmpVals)
+            df.reset_index(drop=True).to_feather(self.libPath + 'positionLog')
         if self.verbose: print('Run complete')
