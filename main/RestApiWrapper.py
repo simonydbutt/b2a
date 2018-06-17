@@ -1,4 +1,3 @@
-from b2b.main.Utils import Utils
 import requests
 import json
 import numpy as np
@@ -9,7 +8,6 @@ class RestApiWrapper:
 
     def __init__(self, assets=('XBTUSD','XBTM18', 'XBTU18')):
         self._baseUrl = 'https://www.bitmex.com/api/v1'
-        self.U = Utils()
         self.assets = assets
 
     def _getData(self, url, params=None):
