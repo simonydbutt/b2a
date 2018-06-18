@@ -20,7 +20,7 @@ class SpreadArb:
         if self.verbose:
             print('Run start')
 
-    def _initTmp(self):
+    def _resetTmp(self):
         return {
             "inPosition": False,
             "pairing": -1,
@@ -46,7 +46,8 @@ class SpreadArb:
             pair = self.assets[i]
             i += 1
             # If spread becomes greater than 3% bitcoin price -> Enter
-            if self.latest['spread%s' % pair].iloc[0] > self.hyperParam['spreadEnter']*self.latest[pair[0]].iloc[0]:
+            if self.latest['spread%s' % pair].iloc[0] > self.hyperParam['spreadEnter']*self.latest[pair[0]].iloc[0] and\
+                self.latest['spread%s' % pair].iloc[0] < (self.hyperParam['spreadExitL'] - 0.005)*self.latest[pair[0]].iloc[0]:
                 self.tmpVals['inPosition'] = True
                 self.tmpVals['pairing'] = pair
                 self.tmpVals['tmpSpread'] = self.latest['spread%s' % pair].iloc[0]
@@ -77,7 +78,7 @@ class SpreadArb:
                 or self.latest['spread%s' % self.tmpVals['pairing']].iloc[0] > self.hyperParam['spreadExitL']*self.latest[self.tmpVals['pairing'][0]].iloc[0]:
             pL = self.updateBook(isClose=True)
             self.tradeLog = [pL, self.tmpVals['maxDrawDown'], self.tmpVals['numPeriods']]
-            self.tmpVals = self._initTmp()
+            self.tmpVals = self._resetTmp()
         else:
             self.tmpVals['numPeriods'] += 1
             tmpPL = self.latest['spread%s' % self.tmpVals['pairing']].iloc[0] - self.tmpVals['tmpSpread']
