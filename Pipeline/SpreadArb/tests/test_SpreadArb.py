@@ -1,10 +1,10 @@
-from b2b.Pipeline.SpreadArb.main import SpreadArbRun
+from Pipeline.SpreadArb.main import SpreadArbRun
 
 """
     TODO
 """
 
-SA = SpreadArbRun(libPath='./main/lib/')
+SA = SpreadArbRun(libPath='./Pipeline/SpreadArb/main/lib/')
 
 def test_isEnter():
     pass

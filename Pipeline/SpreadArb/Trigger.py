@@ -1,4 +1,4 @@
-from b2b.Pipeline.SpreadArb.main.SpreadArbRun import SpreadArbRun
+from Pipeline.SpreadArb.main.SpreadArbRun import SpreadArbRun
 
 print('\n |   ___ \  |')
 print(' __ \   ) | __ \ ')

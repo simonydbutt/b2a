@@ -3,4 +3,5 @@
 __pycache__/
 pip-log.txt
 .pytest_cache/
-
+tmp/*
+.idea/

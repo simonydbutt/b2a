@@ -1,4 +1,4 @@
-from b2b.Pipeline.SpreadArb.main.RestApiWrapper import RestApiWrapper
+from Pipeline.SpreadArb.main.RestApiWrapper import RestApiWrapper
 import json
 import pandas as pd
 
