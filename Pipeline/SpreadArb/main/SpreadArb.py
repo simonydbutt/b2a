@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 
-class SpreadArbRun:
+class SpreadArb:
 
     def __init__(self, verbose=False, assets=('PM', 'PU', 'UM'), libPath='./lib/'):
         self.libPath = libPath
