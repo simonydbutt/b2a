@@ -1,4 +1,4 @@
-from b2b.main.RestApiWrapper import RestApiWrapper
+from Pipeline.SpreadArb.main.RestApiWrapper import RestApiWrapper
 
 RAW = RestApiWrapper()
 

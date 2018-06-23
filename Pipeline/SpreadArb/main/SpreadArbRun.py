@@ -1,9 +1,9 @@
-from b2b.main.RestApiWrapper import RestApiWrapper
+from Pipeline.SpreadArb.main.RestApiWrapper import RestApiWrapper
 import json
 import pandas as pd
 
 
-class SpreadArb:
+class SpreadArbRun:
 
     def __init__(self, verbose=False, assets=('PM', 'PU', 'UM'), libPath='./lib/'):
         self.libPath = libPath
