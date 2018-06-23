@@ -5,3 +5,4 @@ pip-log.txt
 .pytest_cache/
 tmp/*
 .idea/
+dist/
