@@ -6,4 +6,5 @@ pip-log.txt
 tmp/*
 .idea/
 dist/
+build/
 Backtest/Data/db/*
