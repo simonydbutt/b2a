@@ -3,3 +3,4 @@ numpy
 datetime
 requests
 pytest
+pymongo
