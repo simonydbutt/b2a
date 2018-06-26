@@ -12,8 +12,8 @@ def test_pullData():
     assert str(requests.get('https://www.bitmex.com/api/v1/instrument/active')) == '<Response [200]>'
 
 
-def test_getCandles():
-    data = BDS.getCandles(asset='XBTUSD', binSize='1h', startTime='2018-05-01T00:00:00.000Z',
+def test_pullCandles():
+    data = BDS.pullCandles(asset='XBTUSD', binSize='1h', startTime='2018-05-01T00:00:00.000Z',
                           endTime='2018-05-03T00:00:00.000Z', isDemo=True)
     print(data)
     assert len(data) == 49
