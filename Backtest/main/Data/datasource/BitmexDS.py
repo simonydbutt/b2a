@@ -85,5 +85,3 @@ class BitmexDS:
                         print('Already up to date for bin size: %s' % bin)
                 except IndexError:
                     print('Not enough date for inst: %s and bin: %s' % (inst, bin))
-
-BitmexDS().updateDB()
