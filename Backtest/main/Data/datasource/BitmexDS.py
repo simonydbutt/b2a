@@ -22,7 +22,6 @@ class BitmexDS:
             '5m': 60 * 5,
             '1m': 60
         }
-        self.data = []
 
     def pullData(self, endPoint, params=None):
         data = requests.get(self.baseUrl + endPoint, params=params).content.decode('utf-8')
@@ -33,7 +32,7 @@ class BitmexDS:
 
     def pullCandles(self, asset, binSize, startTime, endTime=None, isDemo=False):
         data = []
-        tmpTime = startTime
+        tmpTime = startTime if type(startTime) == str else self.TU.getDatetime(startTime)
         endTS = self.TU.getTS(endTime) if endTime else time.time() - self.bin2Time['1d']
         while self.TU.getTS(tmpTime) + 500 * self.bin2Time[binSize] < endTS:
             try:
@@ -70,15 +69,19 @@ class BitmexDS:
             print('For instrument: %s' % inst)
             for bin in self.bin2Time.keys():
                 col = '%s_%s' % (inst, bin)
-                startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else \
-                    self.pullData('trade/bucketed?binSize=%s&symbol=%s&count=1' % (bin, inst))[0]['timestamp']
-                if int(time.time() - self.bin2Time['1d']) - self.TU.getTS(startTime) > 1000:
-                    print('Starting bin size: %s' % bin)
-                    self.pullCandles(
-                        asset=inst, binSize=bin,
-                        startTime=startTime
-                    )
-                    print('%s updated' % col)
-                else:
-                    print('Already up to date for bin size: %s' % bin)
-
+                try:
+                    print(self.MU.count(col))
+                    startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else \
+                    self.TU.getTS(self.pullData('trade/bucketed?binSize=%s&symbol=%s&count=1' % (bin, inst))[0]['timestamp'])
+                    if int(time.time() - self.bin2Time['1d']) - startTime > 1000:
+                        print('Starting bin size: %s' % bin)
+                        print('Start time: %s, End time: %s' % (self.TU.getDatetime(startTime), self.TU.getDatetime(time.time()-self.bin2Time['1d'])))
+                        #self.pullCandles(
+                        #    asset=inst, binSize=bin,
+                        #    startTime=startTime
+                        #)
+                        print('%s updated' % col)
+                    else:
+                        print('Already up to date for bin size: %s' % bin)
+                except IndexError:
+                    print('Not enough date for inst: %s and bin: %s' % (inst, bin))
