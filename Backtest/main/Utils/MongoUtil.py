@@ -11,12 +11,16 @@ class MongoUtil:
 
     def toMongo(self, data, colName, id, parameters={}):
         for val in data:
-            if len(list(self.db[colName].find({'timestamp': '2018-04-29T06:00:00.000Z'}))) == 0:
+            if len(list(self.db[colName].find({id: val[id]}))) == 0:
                 for param in list(parameters.keys()):
                     if param == 'TS':
                         val['TS'] = int(self.TU.getTS(val[parameters['TS'][0]], timeFormat=parameters['TS'][1]))
                     else:
-                        val[param] = parameters[param]
+                        try:
+                            val[param] = parameters[param]
+                        except TypeError:
+                            print(val)
+                            raise SystemExit
                 self.db[colName].insert_one(val)
 
     def lastVal(self, colName):
