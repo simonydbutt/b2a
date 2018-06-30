@@ -85,7 +85,7 @@ class BinanceDS:
                 col = '%s_%s' % (asset, bin)
                 startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else self.getFirstTrade(asset, bin)
                 if int(time.time() - self.bin2Time['1d']) - startTime > 1000:
-                    print('Starting bin size: %s' % bin)
+                    print('Starting pull of bin size: %s' % bin)
                     print(self.TU.getDatetime(startTime))
                     self.pullCandles(
                         asset=asset, binSize=bin, startTime=startTime

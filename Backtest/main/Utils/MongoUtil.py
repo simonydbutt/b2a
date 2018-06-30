@@ -1,5 +1,5 @@
 from Backtest.main.Utils.TimeUtil import TimeUtil
-from pymongo import MongoClient, DESCENDING
+from pymongo import MongoClient, DESCENDING, ASCENDING
 
 
 class MongoUtil:
@@ -30,4 +30,4 @@ class MongoUtil:
         return self.db[colName].count()
 
     def index(self, colName):
-        return self.db[colName].create_index('TS')
+        self.db[colName].ensure_index('TS', ASCENDING)
