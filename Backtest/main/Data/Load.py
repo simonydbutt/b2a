@@ -9,6 +9,9 @@ class Load:
         self.TU = TimeUtil()
         self.db = MongoClient('localhost', 27017)[dbName]
 
+    def listAssets(self, contains=''):
+        return [col for col in self.db.list_collection_names() if contains in col]
+
     def loadOne(self, col, timeStart, timeEnd=None, limit=100, paramList=None):
         """
             timeStart in format:
@@ -45,4 +48,3 @@ class Load:
             ).sort('TS', ASCENDING).limit(limit))
         key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
         return pd.DataFrame(data, columns=key)
-

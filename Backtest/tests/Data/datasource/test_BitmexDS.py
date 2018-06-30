@@ -24,4 +24,3 @@ def test_getInst():
     # Assumption: XBTUSD and ETHM18 contracts still exist
     instList = BDS.getInst()
     assert 'XBTUSD' in instList
-    assert 'ETHM18' in instList
