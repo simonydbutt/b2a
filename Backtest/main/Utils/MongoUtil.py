@@ -28,3 +28,6 @@ class MongoUtil:
 
     def count(self, colName):
         return self.db[colName].count()
+
+    def index(self, colName):
+        return self.db[colName].create_index('TS')

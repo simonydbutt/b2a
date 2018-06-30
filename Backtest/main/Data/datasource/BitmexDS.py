@@ -76,10 +76,11 @@ class BitmexDS:
                     if int(time.time() - self.bin2Time['1d']) - startTime > 1000:
                         print('Starting bin size: %s' % bin)
                         print('Start time: %s, End time: %s' % (self.TU.getDatetime(startTime), self.TU.getDatetime(time.time()-self.bin2Time['1d'])))
-                        #self.pullCandles(
-                        #    asset=inst, binSize=bin,
-                        #    startTime=startTime
-                        #)
+                        self.pullCandles(
+                            asset=inst, binSize=bin,
+                            startTime=startTime
+                        )
+                        self.MU.index(colName=col)
                         print('%s updated' % col)
                     else:
                         print('Already up to date for bin size: %s' % bin)
