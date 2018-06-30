@@ -16,11 +16,10 @@ class BinanceDS:
         self.TU = TimeUtil()
         self.baseUrl = 'https://api.binance.com'
         self.bin2Time = {
-            '1m': 60, '3m': 3*60, '5m': 5*60, '15m': 15*60,
-            '30m': 30*60, '1h': 60*60, '2h': 2*60*60,
-            '4h': 4*60*60, '6h': 6*60*60, '8h': 8*60*60,
-            '12h': 12*60*60, '1d': 24*60*60, '3d': 3*24*60*60,
-            '1w': 7*24*60*60
+            '1w': 7 * 24 * 60 * 60, '3d': 3 * 24 * 60 * 60, '1d': 24 * 60 * 60,
+            '12h': 12 * 60 * 60, '6h': 6 * 60 * 60, '4h': 4 * 60 * 60,
+            '2h': 2 * 60 * 60, '1h': 60 * 60 , '30m': 30 * 60#, '15m': 15 * 60,
+            #'5m': 60, '1m': 5 * 60,
         }
 
     def pullData(self, endPoint, params=None):
@@ -51,20 +50,22 @@ class BinanceDS:
     def pullCandles(self, asset, binSize, startTime, endTime=None, isDemo=False):
         data = []
         tmpTime = startTime * 1000
-        endTime = endTime if endTime else time.time() - self.bin2Time['1d']
-        while tmpTime + 500 * self.bin2Time[binSize] < endTime:
+        endTime = endTime*1000 if endTime else (time.time() - self.bin2Time['1d'])*1000
+        while tmpTime + 500 * self.bin2Time[binSize]*1000 < endTime:
+            tmpData = []
+            print(tmpTime + 500 * self.bin2Time[binSize] * 1000 - endTime)
             try:
                 tmpData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s' %
-                                   (asset, binSize, startTime))
+                                   (asset, binSize, int(tmpTime)))
             except OSError:
                 time.sleep(30)
                 tmpData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s' %
-                                   (asset, binSize, startTime))
-            tmpTime = tmpData[-1][6] / 1000
+                                   (asset, binSize, int(tmpTime)))
+            tmpTime = tmpData[-1][6]
             data += [self.list2Dict(val) for val in tmpData]
-            time.sleep(1.5)
+            time.sleep(2)
         lastData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s&endTime=%s' %
-                            (asset, binSize, tmpTime, endTime * 1000))
+                            (asset, binSize, int(tmpTime), int(endTime * 1000)))
         data += [self.list2Dict(val) for val in lastData]
         if not isDemo:
             print('Add mongo implementation')
@@ -89,6 +90,7 @@ class BinanceDS:
                     self.pullCandles(
                         asset=asset, binSize=bin, startTime=startTime
                     )
+                    self.MU.index(colName=col)
                     print('%s updated' % col)
                 else:
                     print('Already up to date for bin size: %s' % bin)
