@@ -4,3 +4,4 @@ from Backtest.main.Attributes.lib.MarubozaUp import MarubozaUp
 from Backtest.main.Attributes.lib.MarubozaDown import MarubozaDown
 from Backtest.main.Attributes.lib.Doji import Doji
 from Backtest.main.Attributes.lib.Hammer import Hammer
+from Backtest.main.Attributes.lib.MA import MA
