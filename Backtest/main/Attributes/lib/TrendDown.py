@@ -1,4 +1,4 @@
-class DownTrend:
+class TrendDown:
 
     def __init__(self, df, params):
         self.df = df
@@ -6,7 +6,7 @@ class DownTrend:
         self.L = self.df['low']
         self.numPeriods = params['numPeriods']
         self.coef = params['coef'] if 'coef' in list(params.keys()) else 1
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'downTrend'
+        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'trendDown'
 
     def run(self):
         trendList = [False for _ in range(len(self.df))]
@@ -16,5 +16,5 @@ class DownTrend:
             isTrendLow = False not in [True if self.coef*self.L.iloc[j] < self.L.iloc[j-1] else False
                                        for j in range(i-self.numPeriods, i)]
             trendList[i] = isTrendHigh and isTrendLow
-        return self.attrName, trendList
+        return [(self.attrName, trendList)]
 
