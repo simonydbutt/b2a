@@ -14,6 +14,3 @@ class Attr:
             self.df[attrVal[0]] = attrVal[1]
         return self.df
 
-
-df = Load('binance').loadOne('ETHBTC_1d', '01/01/2018', limit=25)
-print(Attr(df).add('Hammer', params={'coef': 5}))
