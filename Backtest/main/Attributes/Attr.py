@@ -9,10 +9,11 @@ class Attr:
 
     def add(self, metricName, fields=None, params=None):
         reqFields = self.df[fields] if fields else self.df
-        attrVals = eval(metricName)(df=reqFields, params=params).run()
-        self.df[attrVals[0]] = attrVals[1]
+        attrList = eval(metricName)(df=reqFields, params=params).run()
+        for attrVal in attrList:
+            self.df[attrVal[0]] = attrVal[1]
         return self.df
 
 
 df = Load('binance').loadOne('ETHBTC_1d', '01/01/2018', limit=25)
-print(Attr(df).add('DownTrend', fields=['high', 'low'], params={'numPeriods': 2}))
+print(Attr(df).add('Hammer', params={'coef': 5}))
