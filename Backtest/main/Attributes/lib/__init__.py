@@ -5,3 +5,6 @@ from Backtest.main.Attributes.lib.MarubozaDown import MarubozaDown
 from Backtest.main.Attributes.lib.Doji import Doji
 from Backtest.main.Attributes.lib.Hammer import Hammer
 from Backtest.main.Attributes.lib.MA import MA
+from Backtest.main.Attributes.lib.VolNorm import VolNormMA
+from Backtest.main.Attributes.lib.Resistance import Resistance
+from Backtest.main.Attributes.lib.Support import Support

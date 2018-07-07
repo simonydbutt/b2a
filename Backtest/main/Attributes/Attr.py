@@ -16,4 +16,4 @@ class Attr:
 
 
 df = Load('binance').loadOne('ETHBTC_1d', '01/01/2018', limit=25)
-print(Attr(df).add('MA', params={'numPeriods': 10}))
+print(Attr(df).add('VolNormMA', params={'numPeriods': 10}))
