@@ -47,4 +47,7 @@ class Load:
                 }
             ).sort('TS', ASCENDING).limit(limit))
         key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
-        return pd.DataFrame(data, columns=key)
+        df = pd.DataFrame(data, columns=key)
+        df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']] = \
+            df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']].apply(pd.to_numeric)
+        return df
