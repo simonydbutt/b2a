@@ -2,7 +2,7 @@ class Hammer:
 
     def __init__(self, df, params):
         self.df = df
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 5
+        self.coef = params['coef'] if 'coef' in list(params.keys()) else 3
         self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'hammer'
         self.dir = params['dir'] if 'dir' in list(params.keys()) else 'None'
 

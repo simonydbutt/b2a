@@ -8,3 +8,4 @@ from Backtest.main.Attributes.lib.MA import MA
 from Backtest.main.Attributes.lib.VolNorm import VolNormMA
 from Backtest.main.Attributes.lib.Resistance import Resistance
 from Backtest.main.Attributes.lib.Support import Support
+from Backtest.main.Attributes.lib.Bollinger import Bollinger
