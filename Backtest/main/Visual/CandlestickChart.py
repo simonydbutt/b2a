@@ -31,8 +31,8 @@ class CandlestickChart:
             for i in MA:
                 p.line(df['date'], df[i], line_color='purple')
         if Bollinger:
-            p.line(df['date'], df[Bollinger+'Up'])
-            p.line(df['date'], df[Bollinger+'Down'])
+            p.line(df['date'], df['bollingerUp'])
+            p.line(df['date'], df['bollingerDown'])
 
         p.xaxis.major_label_orientation = self.orientation
         p.grid.grid_line_alpha = self.gridAlpha
