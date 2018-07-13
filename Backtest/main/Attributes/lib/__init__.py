@@ -9,3 +9,5 @@ from Backtest.main.Attributes.lib.VolNorm import VolNorm
 from Backtest.main.Attributes.lib.Resistance import Resistance
 from Backtest.main.Attributes.lib.Support import Support
 from Backtest.main.Attributes.lib.Bollinger import Bollinger
+from Backtest.main.Attributes.lib.Candlestick.WhiteSoldiers import WhiteSoldiers
+from Backtest.main.Attributes.lib.Candlestick.UpGap import UpGap

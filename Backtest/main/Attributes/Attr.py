@@ -16,8 +16,6 @@ class Attr:
         return self.df
 
 
-# df = Load('binance').loadOne('BNBBTC_12h', '01/01/2018', timeEnd='01/06/2018')
-# df = Attr(
-#     Attr(df).add('MA', params={'numPeriods': 50})
-# ).add('Bollinger', params={'numPeriods': 50, 'numStd': 1.5})
-# CandlestickChart().plot(df, 12*60*60, MA=['ma50'], Bollinger=True)
+# df = Load('binance').loadOne('XMRBTC_1h', '01/01/2018', timeEnd='01/06/2018')
+# df = Attr(df).add('UpGap')
+# CandlestickChart().plotEx(df, 'upGap', num=2)
