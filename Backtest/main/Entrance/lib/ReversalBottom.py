@@ -1,5 +1,6 @@
 from Backtest.main.Attributes.Attr import Attr
 from Backtest.main.Data.Load import Load
+from Backtest.main.Visual.CandlestickChart import CandlestickChart
 
 
 class ReversalBottom:
@@ -40,6 +41,10 @@ class ReversalBottom:
         return row['vol'] > self.volCoef*row['volMA'] and row['close'] < self.bolCoef*row['bollingerDown']
 
 
-df = Load('binance').loadOne('XMRBTC_6h', '01/01/2018', timeEnd='01/06/2018')
-RB = ReversalBottom(df, params={'volCoef': 1, 'numStd': 1.5})
-print(len(RB.run())/len(df))
+# df = Load('binance').loadOne('XMRBTC_2h', '01/01/2018', timeEnd='01/06/2018')
+# RB = ReversalBottom(df, params={'volCoef': 1, 'numStd': 1.5})
+# CC = CandlestickChart()
+# print(RB.run())
+#
+# for i in RB.run():
+#     CC.plotStrat(df, i, i+30*2*60*60)
