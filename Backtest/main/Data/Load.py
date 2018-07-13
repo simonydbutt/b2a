@@ -5,9 +5,10 @@ from pymongo import MongoClient, ASCENDING
 
 class Load:
 
-    def __init__(self, dbName):
+    def __init__(self, dbName, dbLite=False):
         self.TU = TimeUtil()
-        self.db = MongoClient('localhost', 27017)[dbName]
+        if not dbLite:
+            self.db = MongoClient('localhost', 27017)[dbName]
 
     def listAssets(self, contains=''):
         return [col for col in self.db.list_collection_names() if contains in col]
@@ -51,3 +52,10 @@ class Load:
         df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']] = \
             df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']].apply(pd.to_numeric)
         return df
+
+    def loadCSV(self, file, location='./csv/'):
+        df = pd.read_csv('%s%s.csv.gz' % (location, file))
+        df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']] = \
+            df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']].apply(pd.to_numeric)
+        return df
+
