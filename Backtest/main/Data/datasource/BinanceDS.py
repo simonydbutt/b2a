@@ -94,3 +94,8 @@ class BinanceDS:
                     print('%s updated' % col)
                 else:
                     print('Already up to date for bin size: %s' % bin)
+
+    def createCSV(self, asset, binSize, startTime, location='../csv/', endTime=None):
+        df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime,
+                              endTime=endTime, isDemo=True)
+        df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip')
