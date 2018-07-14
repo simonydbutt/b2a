@@ -1,6 +1,4 @@
 from Backtest.main.Attributes.Attr import Attr
-from Backtest.main.Data.Load import Load
-from Backtest.main.Visual.CandlestickChart import CandlestickChart
 
 
 class IsFeasible:
@@ -44,20 +42,10 @@ class IsFeasible:
             'numPeriods': self.volMAShortPeriods,
             'attrName': 'volMAShort'
         }).iloc[max(self.volMALongPeriods, self.maPeriods):]
-        print(len(df))
 
     def run(self):
         self.df['isReversal'] = self.df.apply(self.conditions, axis=1)
-        return list(self.df[self.df['isReversal'] == True]['TS'].values)
+        return list(self.df[self.df['isReversal']]['TS'].values)
 
     def conditions(self, row):
         return row['volMAShort'] > self.volCoef*row['volMALong'] and row['close'] < self.bolCoef*row['bollingerDown']
-
-
-df = Load('binance').loadOne('XMRBTC_12h', '01/01/2018', timeEnd='01/06/2018')
-RB = ReversalBottom(df, params={'numStd': 1})
-CC = CandlestickChart()
-print(len(RB.run())/len(df))
-
-for i in RB.run()[:3]:
-    CC.plotStrat(df, i-5*12*60*60, i+30*12*60*60)

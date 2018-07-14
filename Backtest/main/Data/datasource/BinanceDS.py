@@ -15,12 +15,7 @@ class BinanceDS:
         self.MU = MongoUtil(dbName='binance')
         self.TU = TimeUtil()
         self.baseUrl = 'https://api.binance.com'
-        self.bin2Time = {
-            '1w': 7 * 24 * 60 * 60, '3d': 3 * 24 * 60 * 60, '1d': 24 * 60 * 60,
-            '12h': 12 * 60 * 60, '6h': 6 * 60 * 60, '4h': 4 * 60 * 60,
-            '2h': 2 * 60 * 60, '1h': 60 * 60 , '30m': 30 * 60#, '15m': 15 * 60,
-            #'5m': 60, '1m': 5 * 60,
-        }
+        self.bin2TS = self.TU.bin2TS
 
     def pullData(self, endPoint, params=None):
         data = requests.get(self.baseUrl + endPoint, params=params).content.decode('utf-8')
@@ -50,10 +45,10 @@ class BinanceDS:
     def pullCandles(self, asset, binSize, startTime, endTime=None, isDemo=False):
         data = []
         tmpTime = startTime * 1000
-        endTime = endTime*1000 if endTime else (time.time() - self.bin2Time['1d'])*1000
-        while tmpTime + 500 * self.bin2Time[binSize]*1000 < endTime:
+        endTime = endTime*1000 if endTime else (time.time() - self.bin2TS['1d'])*1000
+        while tmpTime + 500 * self.bin2TS[binSize]*1000 < endTime:
             tmpData = []
-            print(tmpTime + 500 * self.bin2Time[binSize] * 1000 - endTime)
+            print(tmpTime + 500 * self.bin2TS[binSize] * 1000 - endTime)
             try:
                 tmpData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s' %
                                    (asset, binSize, int(tmpTime)))
@@ -81,10 +76,10 @@ class BinanceDS:
     def updateDB(self):
         for asset in self.getBTCAssets() + self.getUSDTAssets():
             print('For asset: %s' % asset)
-            for bin in self.bin2Time.keys():
+            for bin in self.bin2TS.keys():
                 col = '%s_%s' % (asset, bin)
                 startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else self.getFirstTrade(asset, bin)
-                if int(time.time() - self.bin2Time['1d']) - startTime > 1000:
+                if int(time.time() - self.bin2TS['1d']) - startTime > 1000:
                     print('Starting pull of bin size: %s' % bin)
                     print(self.TU.getDatetime(startTime))
                     self.pullCandles(

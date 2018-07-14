@@ -1,1 +1,1 @@
-from Backtest.main.Entrance.lib.HammerReversalUp import HammerReversalUp
+from Backtest.main.Entrance.lib.IsFeasible import IsFeasible
