@@ -2,9 +2,9 @@ class MarubozaDown:
 
     def __init__(self, df, params):
         self.df = df
-        self.type = params['type'] if 'type' in list(params.keys()) else 'full'
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'marubozaDown'
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 4
+        self.type = params['type'] if 'type' in params.keys() else 'full'
+        self.attrName = params['attrName'] if 'attrName' in params.keys() else 'marubozaDown'
+        self.coef = params['coef'] if 'coef' in params.keys() else 4
 
     def run(self):
         if self.type.lower() == 'ls':

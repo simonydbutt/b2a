@@ -1,6 +1,8 @@
 from Backtest.main.Attributes.lib import *
 from Backtest.main.Data.Load import Load
+from Backtest.main.Utils.TimeUtil import TimeUtil
 from Backtest.main.Entrance.lib import *
+from Backtest.main.Visual.CandlestickChart import CandlestickChart
 
 
 class Enter:
@@ -22,12 +24,17 @@ class Enter:
             enterTmp = []
             for strat in self.stratDict.keys():
                 enterTmp.append(eval(strat)(df=self.dfDict[asset], params=self.stratDict[strat]).run())
-            enterAtList = enterTmp[0]
+            enterAtList = set(enterTmp[0])
             if len(enterTmp) > 1:
                 for i in enterTmp[1:]:
-                    enterAtList.intersection_update(i)
-            enterAtDict[asset] = enterAtList
+                    enterAtList.intersection_update(set(i))
+            enterAtDict[asset] = list(enterAtList)
         return enterAtDict
 
 
-#print(Enter('binance', ['XMRBTC', 'LTCBTC', 'BNBBTC', 'ETHBTC', 'NULSBTC'], '12h', {'IsFeasible': {}}).run())
+# T = TimeUtil()
+# E = Enter('binance', ['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], '2h', {'LadderBottom': {}})
+# print(E.run())
+# for enterAt in E.run()['NULSBTC']:
+#     CandlestickChart().plotStrat(E.dfDict['XRPBTC'], timeStart=enterAt - T.bin2TS['2h']*5,
+#                                  timeEnd=enterAt + T.bin2TS['2h']*15)

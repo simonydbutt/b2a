@@ -1,5 +1,6 @@
 from Backtest.main.Entrance.Enter import Enter
 from Backtest.main.Utils.TimeUtil import TimeUtil
+from Backtest.main.Utils.AssetBrackets import AssetBrackets
 import numpy as np
 
 
@@ -29,6 +30,7 @@ class TestEntry:
         resultsDict = {
             asset: {str(period): [[],[]] for period in self.periodList} for asset in self.assetList + ['Total']
         }
+        resultsDict['Total']['dfSize'] = 0
         for asset in self.assetList:
             df = self.dfDict[asset]
             gran = int(df['TS'].iloc[1] - df['TS'].iloc[0])
@@ -51,20 +53,25 @@ class TestEntry:
                             round(100 * (self.getDD(df, position, position + gran * period) / val - 1), 6)
                         )
             resultsDict[asset]['gran'] = gran
+            resultsDict[asset]['dfSize'] = len(df)
+            resultsDict['Total']['dfSize'] += len(df)
         resultsDict['Total']['gran'] = gran
+        print(resultsDict)
         self.printStats(resultsDict)
 
     def printStats(self, resultsDict):
         for asset in resultsDict.keys():
-            granularity = resultsDict[asset]['gran']
+            noEntries = len(list(resultsDict[asset].values())[0])
             print('_________________________________')
             print('---------------------------------')
             print('Asset\t\t |\t%s\n'
                   'Granularity\t |\t%s\n'
                   'No. Entries\t |\t%s\n'
+                  'Availability\t|\t%.4f\n'
                   '---------------------------------'
-                  % (asset, self.ts2Bin[str(granularity)], len(resultsDict[asset][list(resultsDict[asset].keys())[0]][0])))
-            for period in [p for p in resultsDict[asset].keys() if p != 'gran']:
+                  % (asset, self.ts2Bin[str(resultsDict[asset]['gran'])], noEntries,
+                     100*(noEntries/resultsDict[asset]['dfSize'])))
+            for period in [p for p in resultsDict[asset].keys() if p != 'gran' and p != 'dfSize']:
                 results = resultsDict[asset][period][0]
                 if len(results) > 0:
                     ddList = resultsDict[asset][period][1]
@@ -75,7 +82,7 @@ class TestEntry:
                           'Sharpe Ratio |\t%.2f\n'
                           'Win/Loss\t |\t%.f%%\n'
                           'Av Drawdown\t |\t%.4f%%\n'
-                          'Min Drawdown |\t%.4f%%\n'
+                          'Max Drawdown |\t%.4f%%\n'
                           % (
                             period, float(np.nanmean(results)),
                             float(np.nanmax(results)), float(np.nanmin(results)),
@@ -87,8 +94,8 @@ class TestEntry:
             print('_________________________________')
 
 
-# E = Enter('binance', ['POEBTC', 'VENBTC', 'MTLBTC', 'MTHBTC', 'BQXBTC', 'NULSBTC', 'BCDBTC', 'VIBBTC', 'DNTBTC',
-#                       'QTUMBTC', 'ARKBTC', 'FUELBTC', 'KNCBTC', 'WAVESBTC', 'BCPTBTC', 'MODBTC', 'BATBTC', 'KMDBTC',
-#                       'CMTBTC', 'SALTBTC', 'HSRBTC', 'CNDBTC', 'XLMBTC', 'GASBTC'], '6h', stratDict={'IsFeasible': {'numStd':1.5}},
-#           startTime=1514764800)
-# TestEntry(E).run()
+A = AssetBrackets().getBrackets()
+E = Enter('binance', A['big'], '12h', stratDict={'IsFeasible': {'volCoef': 1, 'numStd': .5, 'delay':1},
+                                                 'LadderBottom': {'numBSPeriods': 2, 'gapPeriods': 1}},
+           startTime=1514764800)
+TestEntry(E).run()

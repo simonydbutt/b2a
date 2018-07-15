@@ -2,12 +2,12 @@ class Doji:
 
     def __init__(self, df, params):
         self.df = df
-        self.uCoef = params['uCoef'] if 'uCoef' in list(params.keys()) else 0.9
-        self.dCoef = params['dCoef'] if 'dCoef' in list(params.keys()) else 0.9
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 0.05
-        self.type = params['type'] if 'type' in list(params.keys()) else 'longLeggedDoji'
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'doji'
-        self.dir = params['dir'] if 'dir' in list(params.keys()) else ''
+        self.uCoef = params['uCoef'] if 'uCoef' in params.keys() else 0.9
+        self.dCoef = params['dCoef'] if 'dCoef' in params.keys() else 0.9
+        self.coef = params['coef'] if 'coef' in params.keys() else 0.05
+        self.type = params['type'] if 'type' in params.keys() else 'longLeggedDoji'
+        self.attrName = params['attrName'] if 'attrName' in params.keys() else 'doji'
+        self.dir = params['dir'] if 'dir' in params.keys() else ''
 
     def run(self):
         if self.type == 'dragonfly':

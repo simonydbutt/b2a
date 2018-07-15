@@ -4,9 +4,9 @@ class TrendUp:
         self.df = df
         self.H = self.df['high']
         self.L = self.df['low']
-        self.numPeriods = params['numPeriods'] if 'numPeriods' in list(params.keys()) else 3
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 1
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'trendUp'
+        self.numPeriods = params['numPeriods'] if 'numPeriods' in params.keys() else 3
+        self.coef = params['coef'] if 'coef' in params.keys() else 1
+        self.attrName = params['attrName'] if 'attrName' in params.keys() else 'trendUp'
 
     def run(self):
         trendList = [False for _ in range(len(self.df))]

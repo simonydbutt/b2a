@@ -16,6 +16,11 @@ class Attr:
         return self.df
 
 
+# df = Load('binance').loadOne('ETHBTC_1h', '01/01/2018', timeEnd='01/06/2018')
+# print(df[:2])
 # df = Load('binance').loadOne('XMRBTC_1h', '01/01/2018', timeEnd='01/06/2018')
-# df = Attr(df).add('UpGap')
+# print(df[:2])
+# df = Load('binance').loadOne('NULSBTC_1h', '01/01/2018', timeEnd='01/06/2018')
+# print(df[:2])
+# df = Attr(df).add('UpGap', params={'numPeriods': 2})
 # CandlestickChart().plotEx(df, 'upGap', num=2)

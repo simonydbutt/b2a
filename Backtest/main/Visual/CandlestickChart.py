@@ -53,4 +53,7 @@ class CandlestickChart:
     def plotStrat(self, df, timeStart, timeEnd):
         df_ = df[(df['TS'] >= timeStart) & (df['TS'] < timeEnd)]
         gran = df.iloc[1]['TS'] - df.iloc[0]['TS']
-        self.plot(df=df_, granularity=gran, MA=['ma'], Bollinger='bollinger')
+        if 'ma' in df_.keys() and 'bollinger' in df_.keys():
+            self.plot(df=df_, granularity=gran, MA=['ma'], Bollinger='bollinger')
+        else:
+            self.plot(df=df_, granularity=gran)

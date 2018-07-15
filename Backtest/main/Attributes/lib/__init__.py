@@ -5,9 +5,9 @@ from Backtest.main.Attributes.lib.Candlestick.MarubozaDown import MarubozaDown
 from Backtest.main.Attributes.lib.Candlestick.Doji import Doji
 from Backtest.main.Attributes.lib.Candlestick.Hammer import Hammer
 from Backtest.main.Attributes.lib.MA import MA
-from Backtest.main.Attributes.lib.VolNorm import VolNorm
 from Backtest.main.Attributes.lib.Resistance import Resistance
 from Backtest.main.Attributes.lib.Support import Support
 from Backtest.main.Attributes.lib.Bollinger import Bollinger
 from Backtest.main.Attributes.lib.Candlestick.WhiteSoldiers import WhiteSoldiers
 from Backtest.main.Attributes.lib.Candlestick.UpGap import UpGap
+from Backtest.main.Attributes.lib.Candlestick.BlackSoldiers import BlackSoldiers
