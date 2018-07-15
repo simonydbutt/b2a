@@ -2,9 +2,9 @@ class UpGap:
 
     def __init__(self, df, params):
         self.df = df
-        self.attrName = params['gap'] if 'attrName' in list(params.keys()) else 'upGap'
-        self.numPeriods = params['numPeriods'] if 'numPeriods' in list(params.keys()) else 1
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 1.005
+        self.attrName = params['gap'] if 'attrName' in params.keys() else 'upGap'
+        self.numPeriods = params['numPeriods'] if 'numPeriods' in params.keys() else 1
+        self.coef = params['coef'] if 'coef' in params.keys() else 1.005
 
     def run(self):
         gapList = [False for _ in range(len(self.df))]

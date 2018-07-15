@@ -10,3 +10,4 @@ build/
 DB/
 *.html
 *.csv.gz
+*.csv

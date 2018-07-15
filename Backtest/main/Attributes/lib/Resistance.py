@@ -6,9 +6,9 @@ class Resistance:
     def __init__(self, df, params):
         self.df = df
         self.high = self.df['high']
-        self.numPeriods = params['numPeriods'] if 'numPeriods' in list(params.keys()) else 12
-        self.coef = params['coef'] if 'coef' in list(params.keys()) else 1
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'resistance'
+        self.numPeriods = params['numPeriods'] if 'numPeriods' in params.keys() else 12
+        self.coef = params['coef'] if 'coef' in params.keys() else 1
+        self.attrName = params['attrName'] if 'attrName' in params.keys() else 'resistance'
 
     def run(self):
         resList = [np.NaN for _ in range(self.numPeriods)]

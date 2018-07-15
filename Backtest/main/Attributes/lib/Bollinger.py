@@ -6,10 +6,10 @@ class Bollinger:
     def __init__(self, df, params):
         self.df = df
         self.C = self.df['close']
-        self.attrName = params['attrName'] if 'attrName' in list(params.keys()) else 'bollinger'
-        self.numPeriods = params['numPeriods'] if 'numPeriods' in list(params.keys()) else 24
-        self.MAField = params['maField'] if 'maField' in list(params.keys()) else 'ma%s' % self.numPeriods
-        self.numStd = params['numStd'] if 'numStd' in list(params.keys()) else 2
+        self.attrName = params['attrName'] if 'attrName' in params.keys() else 'bollinger'
+        self.numPeriods = params['numPeriods'] if 'numPeriods' in params.keys() else 24
+        self.MAField = params['maField'] if 'maField' in params.keys() else 'ma%s' % self.numPeriods
+        self.numStd = params['numStd'] if 'numStd' in params.keys() else 2
 
     def run(self):
         bollingerUp = [np.NAN for i in range(self.numPeriods)]
