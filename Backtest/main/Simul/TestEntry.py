@@ -61,7 +61,7 @@ class TestEntry:
 
     def printStats(self, resultsDict):
         for asset in resultsDict.keys():
-            noEntries = len(list(resultsDict[asset].values())[0])
+            noEntries = len(list(resultsDict[asset].values())[0][0])
             print('_________________________________')
             print('---------------------------------')
             print('Asset\t\t |\t%s\n'
@@ -94,8 +94,7 @@ class TestEntry:
             print('_________________________________')
 
 
-A = AssetBrackets().getBrackets()
-E = Enter('binance', A['big'], '12h', stratDict={'IsFeasible': {'volCoef': 1, 'numStd': .5, 'delay':1},
-                                                 'LadderBottom': {'numBSPeriods': 2, 'gapPeriods': 1}},
-           startTime=1514764800)
-TestEntry(E).run()
+# A = AssetBrackets().getBrackets()
+# E = Enter('binance', A['big'], '2h', stratDict={'IsFeasible': {'volCoef': 1, 'numStd': 1}},
+#            startTime=1514764800)
+# TestEntry(E).run()
