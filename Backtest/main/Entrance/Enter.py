@@ -33,8 +33,10 @@ class Enter:
 
 
 # T = TimeUtil()
-# E = Enter('binance', ['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], '2h', {'LadderBottom': {}})
-# print(E.run())
-# for enterAt in E.run()['NULSBTC']:
-#     CandlestickChart().plotStrat(E.dfDict['XRPBTC'], timeStart=enterAt - T.bin2TS['2h']*5,
+# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='2h',
+#           stratDict={'BullSqueezeConf': {}})
+# enterDict = E.run()
+# print(enterDict)
+# for enterAt in enterDict['ETHBTC']:
+#     CandlestickChart().plotStrat(E.dfDict['ETHBTC'], timeStart=enterAt - T.bin2TS['2h']*5,
 #                                  timeEnd=enterAt + T.bin2TS['2h']*15)

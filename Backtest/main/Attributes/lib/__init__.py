@@ -11,3 +11,4 @@ from Backtest.main.Attributes.lib.Bollinger import Bollinger
 from Backtest.main.Attributes.lib.Candlestick.WhiteSoldiers import WhiteSoldiers
 from Backtest.main.Attributes.lib.Candlestick.UpGap import UpGap
 from Backtest.main.Attributes.lib.Candlestick.BlackSoldiers import BlackSoldiers
+from Backtest.main.Attributes.lib.Candlestick.BullSqueeze import BullSqueeze
