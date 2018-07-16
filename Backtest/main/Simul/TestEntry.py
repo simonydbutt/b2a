@@ -61,13 +61,13 @@ class TestEntry:
 
     def printStats(self, resultsDict):
         for asset in resultsDict.keys():
-            noEntries = len(list(resultsDict[asset].values())[0])
+            noEntries = len(list(resultsDict[asset].values())[0][0])
             print('_________________________________')
             print('---------------------------------')
             print('Asset\t\t |\t%s\n'
                   'Granularity\t |\t%s\n'
                   'No. Entries\t |\t%s\n'
-                  'Availability\t|\t%.4f\n'
+                  'Availability |\t%.4f\n'
                   '---------------------------------'
                   % (asset, self.ts2Bin[str(resultsDict[asset]['gran'])], noEntries,
                      100*(noEntries/resultsDict[asset]['dfSize'])))
@@ -94,8 +94,7 @@ class TestEntry:
             print('_________________________________')
 
 
-A = AssetBrackets().getBrackets()
-E = Enter('binance', A['big'], '12h', stratDict={'IsFeasible': {'volCoef': 1, 'numStd': .5, 'delay':1},
-                                                 'LadderBottom': {'numBSPeriods': 2, 'gapPeriods': 1}},
-           startTime=1514764800)
-TestEntry(E).run()
+# A = AssetBrackets().getBrackets()
+# E = Enter('binance', A['all'], '12h', stratDict={'BullSqueezeConf': {}},
+#            startTime=1514764800) # To start from 2018/01
+# TestEntry(E).run()
