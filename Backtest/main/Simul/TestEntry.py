@@ -33,6 +33,8 @@ class TestEntry:
         resultsDict['Total']['dfSize'] = 0
         for asset in self.assetList:
             df = self.dfDict[asset]
+            print(asset)
+            print(len(df))
             gran = int(df['TS'].iloc[1] - df['TS'].iloc[0])
             enterList = self.enterAtDict[asset]
             n = 0
@@ -94,7 +96,7 @@ class TestEntry:
             print('_________________________________')
 
 
-# A = AssetBrackets().getBrackets()
-# E = Enter('binance', A['all'], '12h', stratDict={'BullSqueezeConf': {}},
-#            startTime=1514764800) # To start from 2018/01
-# TestEntry(E).run()
+A = AssetBrackets().getBrackets(base='BTC')
+E = Enter('binance', A['all'], '12h', stratDict={'IsFeasible': {}})
+
+TestEntry(E).run()
