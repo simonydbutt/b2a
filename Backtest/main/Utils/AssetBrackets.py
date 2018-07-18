@@ -9,7 +9,17 @@ class AssetBrackets:
         self.baseDB = self.client[exchangeName]
         self.measure = measure
 
-    def getVols(self):
+    def getUSDTVols(self):
+        return {
+            asset[:-3]: np.nanmean([
+                float(val[self.measure]) for val in
+                list(self.baseDB[asset].find(
+                    {},{self.measure: 1, '_id': 0}
+                ).sort('TS', DESCENDING).limit(10))])
+            for asset in [col for col in self.baseDB.collection_names() if '_1d' in col and 'USDT' in col]
+        }
+
+    def getBTCVols(self):
         return {
             asset[:-3]: np.nanmean([
                 float(val[self.measure]) for val in
@@ -19,8 +29,8 @@ class AssetBrackets:
             for asset in [col for col in self.baseDB.collection_names() if '_1d' in col and 'USDT' not in col]
         }
 
-    def getBrackets(self, numStd=1):
-        volList = self.getVols()
+    def getBrackets(self, numStd=1, base='BTC'):
+        volList = self.getUSDTVols() if base == 'USDT' else self.getBTCVols()
         maxVol = np.max(list(volList.values()))
         bracketDict = {
             'shit': [],
@@ -39,3 +49,4 @@ class AssetBrackets:
             else:
                 bracketDict['shit'].append(asset)
         return bracketDict
+

@@ -34,7 +34,7 @@ class Enter:
 
 # T = TimeUtil()
 # E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='2h',
-#           stratDict={'BullSqueezeConf': {}})
+#           stratDict={'IsFeasible': {}})
 # enterDict = E.run()
 # print(enterDict)
 # for enterAt in enterDict['ETHBTC']:

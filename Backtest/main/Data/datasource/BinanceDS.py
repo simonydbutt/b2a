@@ -74,7 +74,7 @@ class BinanceDS:
             )
 
     def updateDB(self):
-        for asset in self.getBTCAssets() + self.getUSDTAssets():
+        for asset in self.getUSDTAssets(): #+ self.getBTCAssets():
             print('For asset: %s' % asset)
             for bin in self.bin2TS.keys():
                 col = '%s_%s' % (asset, bin)
@@ -94,3 +94,6 @@ class BinanceDS:
         df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime,
                               endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip')
+
+
+BinanceDS().updateDB()
