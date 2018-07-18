@@ -12,5 +12,5 @@ class MA:
     def run(self):
         maList = [np.NAN for _ in range(self.numPeriods)]
         for i in range(self.numPeriods, len(self.col)):
-            maList.append(np.mean(self.col[i-self.numPeriods: i].values))
+            maList.append(round(float(np.mean(self.col[i-self.numPeriods: i].values)), 6))
         return [(self.attrName, maList)]
