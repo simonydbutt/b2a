@@ -96,7 +96,7 @@ class TestEntry:
             print('_________________________________')
 
 
-A = AssetBrackets().getBrackets(base='USDT')
-E = Enter('binance', A['all'], '12h', stratDict={'IsFeasible': {}},  # 'volDir': 'low'}},
-          startTime=1514764800)  # To start from 2018/01
-TestEntry(E).run()
+# A = AssetBrackets().getBrackets(base='USDT')
+# E = Enter('binance', A['all'], '12h', stratDict={'IsFeasible': {}},  # 'volDir': 'low'}},
+#           startTime=1514764800)  # To start from 2018/01
+# TestEntry(E).run()
