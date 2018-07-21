@@ -4,6 +4,7 @@ from Backtest.main.Utils.AssetBrackets import AssetBrackets
 from Backtest.main.Utils.TimeUtil import TimeUtil
 from Backtest.main.Visual.StratVisual import StratVisual
 import numpy as np
+from scipy import stats
 
 
 class TestStrat:
@@ -67,11 +68,13 @@ class TestStrat:
                         len([_ for _ in results if _ > 0])*100 / len(results)
                         ))
                 print('---------------------------------')
-                print('Avg Periods\t |\t%.2f\n'
+                print('Mean Periods |\t%.2f\n'
+                      'Mode Periods |\t%s\n'
                       'Max Periods\t |\t%s\n'
                       'Min Periods\t |\t%s\n'
                     % (
                         float(np.nanmean(periods)),
+                        stats.mode(periods).mode[0],
                         float(np.nanmax(periods)),
                         float(np.nanmin(periods))
                         ))
@@ -82,7 +85,7 @@ class TestStrat:
             S.periodReturns()
 
 
-A = AssetBrackets().getBrackets(base='BTC')
-E = Enter('binance', A['all'], '2h', stratDict={'IsFeasible': {}},  # 'volDir': 'low'}},
-          )  # To start from 2018/01
-TestStrat(E, ('ResistanceLoss', {}), isVisual=True).run()
+# A = AssetBrackets().getBrackets(base='BTC')
+# E = Enter('binance', A['big'], '2h', stratDict={'Rand': {'sampSize': 5}},  # 'volDir': 'low'}},
+#           )  # To start from 2018/01
+# TestStrat(E, ('ResistanceLoss', {}), isVisual=True).run()

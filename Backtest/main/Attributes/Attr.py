@@ -15,8 +15,7 @@ class Attr:
             self.df[attrVal[0]] = attrVal[1]
         return self.df
 
-
 # df = Load('binance').loadOne('NULSBTC_1h', '01/01/2018', timeEnd='01/06/2018')
-# df = Attr(df).add('Resistance', params={'numPeriods': 5})
-# print(df[-10:])
-# CandlestickChart().plotEx(df, 'resistance', num=2)
+# df = Attr(df).add('BullSqueeze', params={'numPeriods': 3})
+# print(df[-5:])
+# CandlestickChart().plotEx(df, 'bullSqueeze', num=2)
