@@ -34,7 +34,6 @@ class TestEntry:
         for asset in self.assetList:
             df = self.dfDict[asset]
 
-            print(len(df))
             gran = int(df['TS'].iloc[1] - df['TS'].iloc[0])
             enterList = self.enterAtDict[asset]
             n = 0
@@ -58,7 +57,6 @@ class TestEntry:
             resultsDict[asset]['dfSize'] = len(df)
             resultsDict['Total']['dfSize'] += len(df)
         resultsDict['Total']['gran'] = gran
-        print(resultsDict)
         self.printStats(resultsDict)
 
     def printStats(self, resultsDict):
@@ -96,7 +94,7 @@ class TestEntry:
             print('_________________________________')
 
 
-# A = AssetBrackets().getBrackets(base='USDT')
-# E = Enter('binance', A['all'], '12h', stratDict={'IsFeasible': {}},  # 'volDir': 'low'}},
+# A = AssetBrackets().getBrackets(base='BTC')
+# E = Enter('binance', A['all'], '12h', stratDict={'Rand': {'sampSize': 100}},  # 'volDir': 'low'}},
 #           startTime=1514764800)  # To start from 2018/01
 # TestEntry(E).run()

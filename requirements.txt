@@ -5,3 +5,4 @@ requests
 pytest
 pymongo
 bokeh
+scipy
