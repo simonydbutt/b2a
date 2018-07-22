@@ -12,3 +12,5 @@ from Backtest.main.Attributes.lib.Candlestick.WhiteSoldiers import WhiteSoldiers
 from Backtest.main.Attributes.lib.Candlestick.UpGap import UpGap
 from Backtest.main.Attributes.lib.Candlestick.BlackSoldiers import BlackSoldiers
 from Backtest.main.Attributes.lib.Candlestick.BullSqueeze import BullSqueeze
+from Backtest.main.Attributes.lib.Candlestick.OutsideUp import OutsideUp
+from Backtest.main.Attributes.lib.IsWhiteBlack import IsWhiteBlack

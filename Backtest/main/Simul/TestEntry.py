@@ -10,13 +10,14 @@ class TestEntry:
         Tests entrance strategies class:Enter over a number of time periods with result visualisation
     """
 
-    def __init__(self, EntryStrat, periodList=(5, 10, 15)):
+    def __init__(self, EntryStrat, periodList=(5, 10, 15), verbose=False):
         self.periodList = periodList
         self.E = EntryStrat
         self.ts2Bin = TimeUtil().ts2Bin
         self.assetList = self.E.assetList
         self.enterAtDict = self.E.run()
         self.dfDict = self.E.dfDict
+        self.verbose = verbose
 
     def getVal(self, df, TS):
         val = df.loc[df['TS'] == int(TS)]['close'].values
@@ -60,14 +61,15 @@ class TestEntry:
         self.printStats(resultsDict)
 
     def printStats(self, resultsDict):
-        for asset in resultsDict.keys():
+        printList = resultsDict.keys() if self.verbose else ['Total']
+        for asset in printList:
             noEntries = len(list(resultsDict[asset].values())[0][0])
             print('_________________________________')
             print('---------------------------------')
             print('Asset\t\t |\t%s\n'
                   'Granularity\t |\t%s\n'
                   'No. Entries\t |\t%s\n'
-                  'Availability |\t%.4f\n'
+                  'Availability |\t%.2f%%\n'
                   '---------------------------------'
                   % (asset, self.ts2Bin[str(resultsDict[asset]['gran'])], noEntries,
                      100*(noEntries/resultsDict[asset]['dfSize'])))
@@ -83,18 +85,19 @@ class TestEntry:
                           'Win/Loss\t |\t%.f%%\n'
                           'Av Drawdown\t |\t%.4f%%\n'
                           'Max Drawdown |\t%.4f%%\n'
+                          'PnL p. Period|\t%.4f%%\n'
                           % (
                             period, float(np.nanmean(results)),
                             float(np.nanmax(results)), float(np.nanmin(results)),
                             float(np.nanmean(results)/np.nanstd(results)),
                             len([_ for _ in results if _ > 0])*100 / len(results),
-                            float(np.nanmean(ddList)), float(np.nanmin(ddList))
+                            float(np.nanmean(ddList)), float(np.nanmin(ddList)),
+                            float(np.nanmean(results))/int(period)
                             ))
                 print('---------------------------------')
             print('_________________________________')
 
 
 # A = AssetBrackets().getBrackets(base='BTC')
-# E = Enter('binance', A['all'], '12h', stratDict={'Rand': {'sampSize': 100}},  # 'volDir': 'low'}},
-#           startTime=1514764800)  # To start from 2018/01
-# TestEntry(E).run()
+# E = Enter('binance', A['all'], '1h', stratDict={'OutsideUp': {}})  # To start from 2018/01
+# TestEntry(E, periodList=(3, 5, 7, 10, 14, 18), verbose=False).run()

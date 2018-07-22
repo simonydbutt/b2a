@@ -5,6 +5,7 @@ from Backtest.main.Entrance.lib import *
 from Backtest.main.Visual.CandlestickChart import CandlestickChart
 
 
+
 class Enter:
 
     """
@@ -34,9 +35,9 @@ class Enter:
 
 # T = TimeUtil()
 # E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='2h',
-#           stratDict={'Rand': {'sampSize': 10}})
+#           stratDict={'BullHammer': {}})
 # enterDict = E.run()
 # print(enterDict)
 # for enterAt in enterDict['ETHBTC']:
 #     CandlestickChart().plotStrat(E.dfDict['ETHBTC'], timeStart=enterAt - T.bin2TS['2h']*5,
-#                                  timeEnd=enterAt + T.bin2TS['2h']*15)
+#                                  timeEnd=enterAt + T.bin2TS['2h']*15, vol=True)
