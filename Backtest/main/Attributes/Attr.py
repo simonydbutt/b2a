@@ -15,7 +15,8 @@ class Attr:
             self.df[attrVal[0]] = attrVal[1]
         return self.df
 
-# df = Load('binance').loadOne('NULSBTC_1h', '01/01/2018', timeEnd='01/06/2018')
+
+# df = Load('poloniex').loadOne('BTCETH_2h', '01/01/2016')
 # df = Attr(df).add('IsWhiteBlack', params={'blackList': [0, 1, 2, 4, 5], 'whiteList': [3]})
 # print(df[-5:])
-# CandlestickChart().plotEx(df, 'isWhiteBlack', num=2)
+# CandlestickChart().plotEx(df, 'isWhiteBlack', num=2, volName='quoteVolume')

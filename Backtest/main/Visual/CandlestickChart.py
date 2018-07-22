@@ -7,10 +7,11 @@ import pandas as pd
 class CandlestickChart:
 
     def __init__(self, gridAlpha=0.6, orientation=pi/4):
+
         self.gridAlpha = gridAlpha
         self.orientation = orientation
 
-    def plot(self, df, granularity, MA=False, Bollinger=False, Vol=False):
+    def plot(self, df, granularity, MA=False, Bollinger=False, Vol=False, volName=''):
         df['date'] = pd.to_datetime(df['TS'], unit='s')
 
         mids = (df.open + df.close) / 2
@@ -44,8 +45,8 @@ class CandlestickChart:
         if Vol:
             p.add_layout(LinearAxis(y_range_name='Vol', axis_label='Volume'), 'right')
             p.extra_y_ranges = {'Vol': Range1d(
-                start=0, end=float(max(df['takerBaseAssetVol']) * 4))}
-            p.rect(df['date'], df['takerBaseAssetVol'] / 2, w, df['takerBaseAssetVol'],
+                start=0, end=float(max(df[volName]) * 4))}
+            p.rect(df['date'], df[volName] / 2, w, df[volName],
                    fill_color='darkgrey', color='black', y_range_name='Vol')
 
         p.xaxis.major_label_orientation = self.orientation
@@ -53,7 +54,7 @@ class CandlestickChart:
 
         show(p)
 
-    def plotEx(self, df, field, num=1, range=20):
+    def plotEx(self, df, field, num=1, range=20, volName='takerBaseAssetVol'):
         targetCol = df[field]
         gran = df.iloc[1]['TS'] - df.iloc[0]['TS']
         i = 0
@@ -61,7 +62,7 @@ class CandlestickChart:
         while j < num and i < len(targetCol):
             if targetCol.iloc[i]:
                 self.plot(df.iloc[int(max(0, i-(range/2))): int(min(i + (range/2), len(df)))],
-                          granularity=gran, Vol=True)
+                          granularity=gran, Vol=True, volName=volName)
                 j += 1
             i += 1
 

@@ -6,6 +6,7 @@ from pymongo import MongoClient, ASCENDING
 class Load:
 
     def __init__(self, dbName, dbLite=False):
+        self.volField = 'takerBaseAssetVol' if dbName == 'Binance' else 'quoteVolume'
         self.TU = TimeUtil()
         if not dbLite:
             self.db = MongoClient('localhost', 27017)[dbName]
@@ -49,13 +50,13 @@ class Load:
             ).sort('TS', ASCENDING).limit(limit))
         key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
         df = pd.DataFrame(data, columns=key)
-        df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']] = \
-            df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']].apply(pd.to_numeric)
+        df[['open', 'close', 'high', 'low', self.volField]] = \
+            df[['open', 'close', 'high', 'low', self.volField]].apply(pd.to_numeric)
         return df
 
     def loadCSV(self, file, location='./csv/'):
         df = pd.read_csv('%s%s.csv.gz' % (location, file))
-        df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']] = \
-            df[['open', 'close', 'high', 'low', 'takerBaseAssetVol', 'takerQuoteAssetVol']].apply(pd.to_numeric)
+        df[['open', 'close', 'high', 'low', self.volField]] = \
+            df[['open', 'close', 'high', 'low', self.volField]].apply(pd.to_numeric)
         return df
 

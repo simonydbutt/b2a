@@ -2,7 +2,6 @@ from Backtest.main.Utils.MongoUtil import MongoUtil
 from Backtest.main.Utils.TimeUtil import TimeUtil
 import pandas as pd
 import json
-import json
 import requests
 import time
 
@@ -57,7 +56,7 @@ class PoloniexDS:
                 if int(time.time() - self.TU.bin2TS['1d']) - startTime > 1000:
                     print('Starting pull of bin size: %s' % bin)
                     self.pullCandles(
-                        asset=asset, binSize=bin, startTime=startTime
+                        asset=asset, binSize=bin, startTime=startTime, endTime=1496275200
                     )
                     self.MU.index(colName=col)
                     print('%s updated' % col)
