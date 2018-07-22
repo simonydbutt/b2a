@@ -16,6 +16,6 @@ class Attr:
         return self.df
 
 # df = Load('binance').loadOne('NULSBTC_1h', '01/01/2018', timeEnd='01/06/2018')
-# df = Attr(df).add('BullSqueeze', params={'numPeriods': 3})
+# df = Attr(df).add('IsWhiteBlack', params={'blackList': [0, 1, 2, 4, 5], 'whiteList': [3]})
 # print(df[-5:])
-# CandlestickChart().plotEx(df, 'bullSqueeze', num=2)
+# CandlestickChart().plotEx(df, 'isWhiteBlack', num=2)
