@@ -10,7 +10,7 @@ class BitmexDS:
 
     """
         Datasource for Bitmex exchange
-        TODO: Complete!
+        TODO: WIP complete!
     """
 
     def __init__(self):
