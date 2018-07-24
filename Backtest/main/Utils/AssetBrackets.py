@@ -4,10 +4,10 @@ import numpy as np
 
 class AssetBrackets:
 
-    def __init__(self, exchangeName='binance', measure='takerQuoteAssetVol'):
+    def __init__(self, exchangeName='binance'):
         self.client = MongoClient('localhost', 27017)
         self.baseDB = self.client[exchangeName]
-        self.measure = measure
+        self.measure = 'takerQuoteAssetVol' if exchangeName == 'binance' else 'volume'
 
     def getUSDTVols(self):
         return {

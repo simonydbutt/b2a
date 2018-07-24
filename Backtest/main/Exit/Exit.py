@@ -23,6 +23,6 @@ class Exit:
         return positionDict
 
 
-# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='2h',
-#           stratDict={'IsFeasible': {}})
-# print(Exit(E, ('ResistanceLoss', {})).run())
+# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='12h',
+#           stratDict={'Rand': {'sampSize': 10}})
+# print(Exit(E, ('StdExit', {})).run())

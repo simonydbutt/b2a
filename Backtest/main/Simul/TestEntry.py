@@ -98,6 +98,7 @@ class TestEntry:
             print('_________________________________')
 
 
-# A = AssetBrackets().getBrackets(base='BTC')
-# E = Enter('binance', A['all'], '1h', stratDict={'OutsideUp': {}})  # To start from 2018/01
-# TestEntry(E, periodList=(3, 5, 7, 10, 14, 18), verbose=False).run()
+# A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
+# print(A['all'])
+# E = Enter('binance', A['all'], '12h', stratDict={'InsideUp': {}})  # To start from 2018/01
+# TestEntry(E, periodList=(7, 10, 14, 17, 20), verbose=False).run()

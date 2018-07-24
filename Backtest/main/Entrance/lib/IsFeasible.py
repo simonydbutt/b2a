@@ -18,6 +18,7 @@ class IsFeasible:
         self.maPeriods = params['numPeriodsMA'] if 'numPeriodsMA' in params.keys() else 30
         self.numStd = params['numStd'] if 'numStd' in params.keys() else 2
         self.bolCoef = params['bolCoef'] if 'bolCoef' in params.keys() else 1
+        self.volCol = params['volCol'] if 'volCol' in params.keys() else 'takerBaseAssetVol'
         if len(df) > self.volMALongPeriods:
             self.df = Attr(
                 Attr(
@@ -33,12 +34,12 @@ class IsFeasible:
                         'attrName': 'bollinger'
                     })
                 ).add('MA', params={
-                    'col': 'takerQuoteAssetVol',
+                    'col': self.volCol,
                     'numPeriods': self.volMALongPeriods,
                     'attrName': 'volMALong'
                 })
             ).add('MA', params={
-                'col': 'takerQuoteAssetVol',
+                'col': self.volCol,
                 'numPeriods': self.volMAShortPeriods,
                 'attrName': 'volMAShort'
             }).iloc[max(self.volMALongPeriods, self.maPeriods):]
