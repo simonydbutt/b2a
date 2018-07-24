@@ -9,14 +9,15 @@ from scipy import stats
 
 class TestStrat:
 
-    def __init__(self, Entrance, exitStrat, isVisual=False):
+    def __init__(self, Entrance, exitStrat, isVisual=False, verbose=False):
         self.E = Entrance
         self.positionDict = Exit(self.E, exitStrat).run()
         print(self.positionDict)
         self.assetList = self.E.assetList
         self.dfDict = self.E.dfDict
         self.ts2Bin = TimeUtil().ts2Bin
-        self.isVisual=isVisual
+        self.isVisual = isVisual
+        self.verbose = verbose
 
     def run(self):
         resultsDict = {
@@ -30,7 +31,7 @@ class TestStrat:
             n = 0
             for position in positionList:
                 if position[1] < len(df):
-                    result = (df.iloc[position[0]]['close']/df.iloc[position[1]]['close'] - 1)*100
+                    result = (df.iloc[position[1]]['close']/df.iloc[position[0]]['close'] - 1)*100
                     resultsDict[asset]['results'].append(result)
                     resultsDict[asset]['numPeriods'].append(position[1] - position[0])
                     resultsDict['Total']['results'].append(result)
@@ -42,7 +43,8 @@ class TestStrat:
         self.printStats(resultsDict)
 
     def printStats(self, resultsDict):
-        for asset in resultsDict.keys():
+        printList = resultsDict.keys() if self.verbose else ['Total']
+        for asset in printList:
             noEntries = len(resultsDict[asset]['results'])
             print('_________________________________')
             print('---------------------------------')
@@ -61,20 +63,22 @@ class TestStrat:
                       'Max Loss\t |\t%.4f%%\n'
                       'Sharpe Ratio |\t%.2f\n'
                       'Win/Loss\t |\t%.f%%\n'
+                      'Cum. P&L 5%% |\t%.2f\n'
                     % (
                         float(np.nanmean(results)),
                         float(np.nanmax(results)), float(np.nanmin(results)),
                         float(np.nanmean(results)/np.nanstd(results)) if len(results) != 1 else np.NaN,
-                        len([_ for _ in results if _ > 0])*100 / len(results)
+                        len([_ for _ in results if _ > 0])*100 / len(results),
+                        float(1 + np.mean(results)/100)**len(results)*float(np.mean(results)/100)
                         ))
                 print('---------------------------------')
                 print('Mean Periods |\t%.2f\n'
-                      'Mode Periods |\t%s\n'
+                      'Med. Periods |\t%s\n'
                       'Max Periods\t |\t%s\n'
                       'Min Periods\t |\t%s\n'
                     % (
                         float(np.nanmean(periods)),
-                        stats.mode(periods).mode[0],
+                        float(np.median(periods)),
                         float(np.nanmax(periods)),
                         float(np.nanmin(periods))
                         ))
@@ -84,8 +88,9 @@ class TestStrat:
             S = StratVisual(resultsDict=resultsDict)
             S.periodReturns()
 
-
-# A = AssetBrackets().getBrackets(base='BTC')
-# E = Enter('binance', A['big'], '2h', stratDict={'Rand': {'sampSize': 5}},  # 'volDir': 'low'}},
-#           )  # To start from 2018/01
-# TestStrat(E, ('ResistanceLoss', {}), isVisual=True).run()
+#
+# A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
+# print(A['all'])
+# E = Enter('binance', A['all'], '12h', stratDict={'InsideUp': {}})
+# TestStrat(E, ('StdExit', {'numPeriods': 50, 'closeAt': 50, 'stdDict': {'up': 1, 'down': 0.5}, 'maxRun': True}), isVisual=True).run()
+#

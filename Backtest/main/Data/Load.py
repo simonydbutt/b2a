@@ -6,7 +6,7 @@ from pymongo import MongoClient, ASCENDING
 class Load:
 
     def __init__(self, dbName, dbLite=False):
-        self.volField = 'takerBaseAssetVol' if dbName == 'Binance' else 'quoteVolume'
+        self.volField = 'takerBaseAssetVol' if dbName == 'binance' else 'quoteVolume'
         self.TU = TimeUtil()
         if not dbLite:
             self.db = MongoClient('localhost', 27017)[dbName]
