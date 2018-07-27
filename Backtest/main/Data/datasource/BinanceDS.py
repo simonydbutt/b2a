@@ -5,6 +5,7 @@ import json
 import requests
 import time
 
+
 class BinanceDS:
 
     """
@@ -60,8 +61,9 @@ class BinanceDS:
             data += [self.list2Dict(val) for val in tmpData]
             time.sleep(2)
         lastData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s&endTime=%s' %
-                            (asset, binSize, int(tmpTime), int(endTime * 1000)))
+                            (asset, binSize, int(tmpTime), int(endTime)))
         data += [self.list2Dict(val) for val in lastData]
+
         if not isDemo:
             print('Add mongo implementation')
             self.MU.toMongo(
@@ -93,7 +95,4 @@ class BinanceDS:
     def createCSV(self, asset, binSize, startTime, location='../csv/', endTime=None):
         df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime,
                               endTime=endTime, isDemo=True)
-        df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip')
-
-
-BinanceDS().updateDB()
+        df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip', index=False)
