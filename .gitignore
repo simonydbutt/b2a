@@ -10,5 +10,4 @@ build/
 DB/
 *.json
 *.html
-*.csv.gz
-*.csv
+csv/

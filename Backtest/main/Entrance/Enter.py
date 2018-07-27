@@ -1,9 +1,4 @@
-from Backtest.main.Attributes.lib import *
 from Backtest.main.Data.Load import Load
-from Backtest.main.Utils.TimeUtil import TimeUtil
-from Backtest.main.Entrance.lib import *
-from Backtest.main.Visual.CandlestickChart import CandlestickChart
-
 
 
 class Enter:

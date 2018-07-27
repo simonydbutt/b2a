@@ -1,6 +1,7 @@
 from Backtest.main.Utils.TimeUtil import TimeUtil
 import pandas as pd
 from pymongo import MongoClient, ASCENDING
+from Backtest.main.Utils.TimeUtil import TimeUtil
 
 
 class Load:
@@ -50,13 +51,13 @@ class Load:
             ).sort('TS', ASCENDING).limit(limit))
         key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
         df = pd.DataFrame(data, columns=key)
-        df[['open', 'close', 'high', 'low', self.volField]] = \
-            df[['open', 'close', 'high', 'low', self.volField]].apply(pd.to_numeric)
+        return self.makeNumeric(df, fieldList=['open', 'close', 'high', 'low', self.volField])
+
+    def makeNumeric(self, df, fieldList):
+        df[fieldList] = df[fieldList].apply(pd.to_numeric)
         return df
 
     def loadCSV(self, file, location='./csv/'):
         df = pd.read_csv('%s%s.csv.gz' % (location, file))
-        df[['open', 'close', 'high', 'low', self.volField]] = \
-            df[['open', 'close', 'high', 'low', self.volField]].apply(pd.to_numeric)
-        return df
+        return self.makeNumeric(df, fieldList=['open', 'close', 'high', 'low', self.volField])
 

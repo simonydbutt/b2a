@@ -15,7 +15,6 @@ def test_pullData():
 def test_pullCandles():
     data = BDS.pullCandles(asset='XBTUSD', binSize='1h', startTime='2018-05-01T00:00:00.000Z',
                           endTime='2018-05-03T00:00:00.000Z', isDemo=True)
-    print(data)
     assert len(data) == 49
 
 
@@ -24,3 +23,5 @@ def test_getInst():
     # Assumption: XBTUSD and ETHM18 contracts still exist
     instList = BDS.getInst()
     assert 'XBTUSD' in instList
+
+test_pullCandles()
