@@ -18,9 +18,7 @@ def test_MakeNumeric():
 
 
 def test_loadCSV():
-    df = L.loadCSV(file='XMRBTC', location='../resources/')
-    print(df)
-    print(len(df))
+    df = L.loadCSV(file='XMRBTC', location='./Backtest/tests/Data/resources/')
     assert len(df) == 19
     assert list(df.keys()) == ['milliTimestamp', 'open', 'high', 'low', 'close', 'volume', 'quoteVol',
                                'numTrades', 'takerBaseAssetVol', 'takerQuoteAssetVol', 'TS']
