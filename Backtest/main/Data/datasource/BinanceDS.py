@@ -96,6 +96,3 @@ class BinanceDS:
         df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime,
                               endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip', index=False)
-
-
-BinanceDS().createCSV('XMRBTC', '1d', startTime=1514764800, endTime=1514764800+86400)

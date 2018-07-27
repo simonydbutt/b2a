@@ -25,5 +25,3 @@ def test_loadCSV():
     assert list(df.keys()) == ['milliTimestamp', 'open', 'high', 'low', 'close', 'volume', 'quoteVol',
                                'numTrades', 'takerBaseAssetVol', 'takerQuoteAssetVol', 'TS']
 
-
-test_loadCSV()
