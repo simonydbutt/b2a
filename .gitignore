@@ -8,6 +8,7 @@ tmp/*
 dist/
 build/
 DB/
+*.json
 *.html
 *.csv.gz
 *.csv
