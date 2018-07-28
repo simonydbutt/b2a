@@ -3,6 +3,10 @@ import numpy as np
 
 class Bollinger:
 
+    """
+        Requires an ma field
+    """
+
     def __init__(self, df, params):
         self.df = df
         self.C = self.df['close']
@@ -16,8 +20,8 @@ class Bollinger:
         bollingerDown = [np.NAN for i in range(self.numPeriods)]
         for i in range(self.numPeriods, len(self.df)):
             std = np.std(self.C.iloc[i - self.numPeriods: i].values)
-            bollingerUp.append(self.df[self.MAField].iloc[i] + self.numStd * std)
-            bollingerDown.append(self.df[self.MAField].iloc[i] - self.numStd * std)
+            bollingerUp.append(round(float(self.df[self.MAField].iloc[i] + self.numStd * std), 6))
+            bollingerDown.append(round(float(self.df[self.MAField].iloc[i] - self.numStd * std), 6))
         return [
             (self.attrName + 'Up', bollingerUp),
             (self.attrName + 'Down', bollingerDown)
