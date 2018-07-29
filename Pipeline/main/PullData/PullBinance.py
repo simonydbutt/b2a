@@ -1,7 +1,8 @@
 import pandas as pd
 import requests
 import json
-
+import logging
+import time
 
 
 class PullBinance:
@@ -14,11 +15,16 @@ class PullBinance:
         if req.status_code == 200:
             return json.loads(req.content.decode('utf-8'))
         elif req.status_code == 429:
-            print('rate limit hit')
-            return -1
+            logging.warning('binance rate limit hit, 30 second sleep')
+            time.sleep(30)
+            req = requests.get(self.baseUrl + endPoint, params=params)
+            if req.status_code == 429:
+                logging.error('Rate limit error after timeout')
+            else:
+                logging.info('Rate limit back to normal')
+                return json.loads(req.content.decode('utf-8'))
         else:
-            print('Other Error')
-            return -2
+            logging.error('pullData requests error with error code %s' % req.status_code)
 
     def getBTCAssets(self):
         return [val['symbol'] for val in self._pullData('/api/v1/exchangeInfo')['symbols'] if
