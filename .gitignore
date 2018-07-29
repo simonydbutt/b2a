@@ -9,5 +9,6 @@ dist/
 build/
 DB/
 *.json
+*.ujson
 *.html
 csv/
