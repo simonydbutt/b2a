@@ -83,4 +83,4 @@ class InitalSetup:
             print('No action taken')
 
 
-InitalSetup(gran='1d')
+InitalSetup(gran='2h')
