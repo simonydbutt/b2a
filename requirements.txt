@@ -7,3 +7,5 @@ pymongo
 bokeh
 scipy
 ujson
+yaml
+tinydb

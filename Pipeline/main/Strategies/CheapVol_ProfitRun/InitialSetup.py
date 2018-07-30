@@ -53,16 +53,14 @@ class InitalSetup:
                 'maxLoss': 0,
                 'numTrades': 0,
                 'winLoss': 0,
-                'avgPeriods': 0,
-                'sharpeRatio': 0,
-                'daysLive': 0
+                'avgPeriods': 0
             },
             'kelly': {
                 'coef': 0.5,
                 'crit': 0.1
             }
         }
-        filePath = '%s/Pipeline/DB/configs/%s.yml' % (Settings.BASE_PATH, stratName)
+        filePath = '%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)
         response = '1'
         if os.path.exists(filePath):
             print('Config file already exists')
@@ -75,12 +73,13 @@ class InitalSetup:
         if response == '1' or response == '2':
             log = 'Config Replaced' if response == '1' else 'Config Created'
             fileName = '%s.yml' % stratName if response == '1' else '%s_2.yml' % stratName
-            with open('%s/Pipeline/DB/configs/%s' % (Settings.BASE_PATH, fileName), 'w') as file:
+            with open('%s/Pipeline/DB/Configs/%s' % (Settings.BASE_PATH, fileName), 'w') as file:
                 yaml.dump(self.configDict, file)
             TinyDB('%s/Pipeline/DB/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.stratID))
+            TinyDB('%s/Pipeline/DB/PerformanceLogs/StratLogs/%s.ujson' % (Settings.BASE_PATH, self.stratID))
             print(log)
         else:
             print('No action taken')
 
 
-InitalSetup(gran='2h')
+InitalSetup(gran='12h')

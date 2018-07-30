@@ -10,7 +10,7 @@ class CloseOut():
         self.fees = fees
         with open('%s/Pipeline/DB/Capital.yml' % Settings.BASE_PATH) as capitalFile:
             self.capitalDict = yaml.load(capitalFile)
-        with open('%s/Pipeline/DB/configs/%s.yml' % (Settings.BASE_PATH, stratName)) as configFile:
+        with open('%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)) as configFile:
             self.configFile = yaml.load(configFile)
         self.transLogDB = TinyDB('%s/Pipeline/DB/PerformanceLogs/TransactionLog.ujson' % Settings.BASE_PATH)
 
