@@ -28,7 +28,7 @@ class RunStrat:
         console = logging.StreamHandler()
         console.setLevel(consoleLogLevel)
         logging.getLogger('').addHandler(console)
-        with open('%s/Pipeline/DB/configs/%s.yml' % (Settings.BASE_PATH, self.stratName)) as configFile:
+        with open('%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, self.stratName)) as configFile:
             self.config = yaml.load(configFile)
         self.P = PullBinance()
         self.HK = HistoricalKellyPS(self.config)
