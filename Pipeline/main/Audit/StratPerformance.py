@@ -14,7 +14,7 @@ class StratPerformance:
         self.stratDict = {
 
         }
-        transDB = TinyDB('%s/TransactionLog.ujson' % dbPath)
+        transDB = TinyDB('%s/PerformanceLogs/TransactionLog.ujson' % dbPath)
         for stratFileName in os.listdir('%s/Configs' % dbPath):
             stratName = stratFileName[:-4]
             with open('%s/Configs/%s' % (dbPath, stratFileName)) as configFile:

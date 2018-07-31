@@ -128,7 +128,7 @@ class RunStrat:
         logging.info('Time end: %s' % datetime.datetime.fromtimestamp(round(endTime)).isoformat())
         logging.info('Time taken: %ss' % round(endTime - startTime, 2))
         logging.info('%s trades entered' % len(enterList))
-        if len(openList) != 0:
+        if len(enterList) != 0:
             logging.info('Entered trades: %s' % [trade for trade in enterList])
         logging.info('%s trades exited' % len(exitList))
         if len(exitList) != 0:
@@ -142,4 +142,4 @@ class RunStrat:
             logging.info('No data assets: %s' % [asset for asset in noDataList])
 
 
-RunStrat(gran='1d', consoleLogLevel=logging.INFO)
+RunStrat(gran='12h', consoleLogLevel=logging.INFO)
