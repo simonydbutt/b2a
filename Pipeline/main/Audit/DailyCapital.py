@@ -13,7 +13,6 @@ class DailyCapital:
         with open('%s/Capital.yml' % self.dirPath) as capFile:
             self.capitalDict = yaml.load(capFile)
         self.db = TinyDB('%s/PerformanceLogs/DailyCapitalLog.ujson' % self.dirPath)
-        self.run()
 
     def run(self):
         lastPaperCap = self.db.all()[-1]['PaperCapital'] if len(self.db.all()) != 0 else self.capitalDict['initialCapital']
@@ -27,6 +26,7 @@ class DailyCapital:
             'percentAllocated': self.capitalDict['percentAllocated'],
             'dailyPerformance': self.capitalDict['paperCurrent'] / lastPaperCap - 1,
             'runningPerformance': self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'] - 1,
-            'numOpenTrades': numOpen
+            'numOpenTrades': numOpen,
         }
         self.db.insert(dailyCapLog)
+        return dailyCapLog

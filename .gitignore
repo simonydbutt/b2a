@@ -12,3 +12,4 @@ DB/
 *.ujson
 *.html
 csv/
+Settings.py

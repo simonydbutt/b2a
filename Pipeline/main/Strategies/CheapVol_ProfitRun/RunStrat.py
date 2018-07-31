@@ -11,13 +11,14 @@ from tinydb import TinyDB, Query
 import uuid
 import time
 import logging
+import sys
 
 
 class RunStrat:
 
-    def __init__(self, gran='1d', base='BTC', assetList='all',
+    def __init__(self, stratName=None, gran='1d', base='BTC', assetList='all',
                  fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
-        self.stratName = 'CheapVol_ProfitRun_%s_%s_%s' % (gran, base, assetList)
+        self.stratName = 'CheapVol_ProfitRun_%s_%s_%s' % (gran, base, assetList) if not stratName else stratName
         dTime = datetime.datetime.fromtimestamp(round(time.time())).isoformat()
         logging.basicConfig(
             level=fileLogLevel,
@@ -142,4 +143,4 @@ class RunStrat:
             logging.info('No data assets: %s' % [asset for asset in noDataList])
 
 
-RunStrat(gran='12h', consoleLogLevel=logging.INFO)
+RunStrat(stratName=sys.argv[1], consoleLogLevel=logging.INFO)
