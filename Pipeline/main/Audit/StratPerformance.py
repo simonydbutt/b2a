@@ -10,19 +10,19 @@ import Settings
 class StratPerformance:
 
     def __init__(self):
-        dbPath = '%s/Pipeline/DB' % Settings.BASE_PATH
-        self.stratDict = {
+        self.dbPath = '%s/Pipeline/DB' % Settings.BASE_PATH
+        self.transDB = TinyDB('%s/PerformanceLogs/TransactionLog.ujson' % self.dbPath)
 
-        }
-        transDB = TinyDB('%s/PerformanceLogs/TransactionLog.ujson' % dbPath)
-        for stratFileName in os.listdir('%s/Configs' % dbPath):
+    def run(self):
+        stratDict = {}
+        for stratFileName in os.listdir('%s/Configs' % self.dbPath):
             stratName = stratFileName[:-4]
-            with open('%s/Configs/%s' % (dbPath, stratFileName)) as configFile:
+            with open('%s/Configs/%s' % (self.dbPath, stratFileName)) as configFile:
                 config = yaml.load(configFile)
             q = Query
-            currentTrades = TinyDB('%s/CurrentPositions/%s.ujson' % (dbPath, config['stratID'])).all()
-            logDB = TinyDB('%s/PerformanceLogs/StratLogs/%s.ujson' % (dbPath, config['stratID']))
-            transLog = transDB.search(q.StratID == config['StratID']) if len(transDB.all()) != 0 else []
+            currentTrades = TinyDB('%s/CurrentPositions/%s.ujson' % (self.dbPath, config['stratID'])).all()
+            logDB = TinyDB('%s/PerformanceLogs/StratLogs/%s.ujson' % (self.dbPath, config['stratID']))
+            transLog = self.transDB.search(q.StratID == config['StratID']) if len(self.transDB.all()) != 0 else []
             pastLog = logDB.all()[-1] if len(logDB.all()) != 0 else {'daysLive': 0, 'percentPnL': 0}
             stratLog = config['performance']
             stratLog['timestamp'] = round(time.time())
@@ -34,5 +34,6 @@ class StratPerformance:
             stratLog['numCurrent'] = len(currentTrades)
             stratLog['currentList'] = [trade['asset'] for trade in currentTrades]
             logDB.insert(stratLog)
-
-StratPerformance()
+            stratLog['currentTrades'] = currentTrades
+            stratDict[stratName] = stratLog
+        return stratDict
