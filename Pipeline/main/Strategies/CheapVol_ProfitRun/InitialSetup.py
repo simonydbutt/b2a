@@ -61,7 +61,7 @@ class InitalSetup:
             }
         }
         filePath = '%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)
-        response = '1'
+        response = '0'
         if os.path.exists(filePath):
             print('Config file already exists')
             print('User input required:')
@@ -70,9 +70,9 @@ class InitalSetup:
             print('Else\t-\tIgnore request')
             response = str(input())
 
-        if response == '1' or response == '2':
+        if response == '1' or response == '2' or response == '0':
             log = 'Config Replaced' if response == '1' else 'Config Created'
-            fileName = '%s.yml' % stratName if response == '1' else '%s_2.yml' % stratName
+            fileName = '%s_2.yml' % stratName if response == '2' else '%s.yml' % stratName
             with open('%s/Pipeline/DB/Configs/%s' % (Settings.BASE_PATH, fileName), 'w') as file:
                 yaml.dump(self.configDict, file)
             TinyDB('%s/Pipeline/DB/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.stratID))
@@ -82,4 +82,4 @@ class InitalSetup:
             print('No action taken')
 
 
-InitalSetup(gran='12h')
+InitalSetup(gran='1d')
