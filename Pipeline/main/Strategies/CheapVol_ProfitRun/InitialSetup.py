@@ -80,6 +80,3 @@ class InitalSetup:
             print(log)
         else:
             print('No action taken')
-
-
-InitalSetup(gran='1d')

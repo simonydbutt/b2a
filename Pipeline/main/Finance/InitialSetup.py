@@ -27,6 +27,3 @@ class InitalSetup:
                     }, file
                 )
             TinyDB('%s/Pipeline/DB/PerformanceLogs/DailyCapitalLog.ujson' % Settings.BASE_PATH)
-
-
-InitalSetup(initialCapital=100)

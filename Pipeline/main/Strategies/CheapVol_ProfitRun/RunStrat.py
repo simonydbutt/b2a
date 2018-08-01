@@ -11,7 +11,6 @@ from tinydb import TinyDB, Query
 import uuid
 import time
 import logging
-import sys
 
 
 class RunStrat:
@@ -36,7 +35,6 @@ class RunStrat:
         self.CO = CloseOut(stratName=self.stratName)
         self.assetList = self.P.getBTCAssets() if assetList == 'all' else assetList
         self.currentDB = TinyDB('%s/Pipeline/DB/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.config['stratID']))
-        self.run()
 
     def run(self):
         startTime = round(time.time())
@@ -141,6 +139,3 @@ class RunStrat:
         if len(noDataList):
             logging.info('%s assets have not enough data' % len(noDataList))
             logging.info('No data assets: %s' % [asset for asset in noDataList])
-
-
-RunStrat(stratName=sys.argv[1], consoleLogLevel=logging.INFO)
