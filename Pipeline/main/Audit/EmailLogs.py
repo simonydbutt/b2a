@@ -45,6 +45,3 @@ class EmailLogs:
                                                        stats['winLoss'], stats['changePnL'], stats['sharpeRatio'],
                                                        [trade['asset'] for trade in stats['currentTrades']])
         return perfMessage
-
-
-EmailLogs()
