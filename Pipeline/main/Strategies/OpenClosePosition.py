@@ -4,7 +4,7 @@ import yaml
 from tinydb import TinyDB
 
 
-class CloseOut():
+class OpenClosePosition:
 
     def __init__(self, stratName, fees=0.001):
         self.fees = fees
@@ -14,6 +14,9 @@ class CloseOut():
             self.configFile = yaml.load(configFile)
         self.transLogDB = TinyDB('%s/Pipeline/DB/PerformanceLogs/TransactionLog.ujson' % Settings.BASE_PATH)
 
+    def openPosition(self, openDict):
+        self.capitalDict['liquidCurrent'] -= openDict['capAllocated']
+        self.capitalDict['percentAllocated'] = 100*round(1 - self.capitalDict['liquidCurrent']/self.capitalDict['paperCurrent'], 2)
 
     def closePosition(self, tradeDict):
         P = PaperGainz(fees=self.fees)
@@ -21,7 +24,7 @@ class CloseOut():
                                                               (1 + self.fees)*tradeDict['openPrice'])
         tradeDict['percentPnL'] = tradeDict['closePrice'] / tradeDict['openPrice'] - 1
         self.transLogDB.insert(tradeDict)
-        self.capitalDict['liquidCurrent'] += float(tradeDict['realPnL'])
+        self.capitalDict['liquidCurrent'] += (tradeDict['amountHeld'] / tradeDict['closePrice'])*(1-self.fees)
         self.capitalDict['paperCurrent'] = float(self.capitalDict['liquidCurrent'] + P.calc())
         self.capitalDict['paperPnL'] = float(self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'])
         self.capitalDict['percentAllocated'] = float(P.allocated() / self.capitalDict['paperCurrent'])
@@ -36,7 +39,6 @@ class CloseOut():
                                                     (pStats['numTrades'] + 1)
         self.configFile['performance']['avgPeriods'] = (pStats['avgPeriods'] * pStats['numTrades'] +
                                                         tradeDict['periods']) / (pStats['numTrades'] + 1)
-
 
     def add2Books(self):
         with open('%s/Pipeline/DB/Capital.yml' % Settings.BASE_PATH, 'w') as capFile:
