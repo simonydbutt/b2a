@@ -16,8 +16,9 @@ class DailyCapital:
 
     def run(self):
         lastPaperCap = self.db.all()[-1]['PaperCapital'] if len(self.db.all()) != 0 else self.capitalDict['initialCapital']
-        numOpen = sum([sum(TinyDB('%s/CurrentPositions/%s' % (self.dirPath, stratID)).all()) for
+        numOpen = sum([len(TinyDB('%s/CurrentPositions/%s' % (self.dirPath, stratID)).all()) for
                        stratID in os.listdir('%s/CurrentPositions' % self.dirPath)])
+
         dailyCapLog = {
             'TS': round(time.time()),
             'Date': datetime.datetime.fromtimestamp(round(time.time())).isoformat(),
