@@ -19,7 +19,6 @@ class EmailLogs:
         msg['To'] = Settings.EMAIL_SEND_USER
         msg.set_content(self.capitalMessage() + self.performanceMessage())
         self.server.send_message(msg=msg, from_addr=Settings.EMAIL_USER, to_addrs=Settings.EMAIL_SEND_USER)
-        self.performanceMessage()
 
     def capitalMessage(self):
         dC = DailyCapital().run()

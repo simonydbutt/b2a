@@ -2,7 +2,7 @@ from Pipeline.main.Strategies.CheapVol_ProfitRun.IsCheapVol import IsCheapVol
 from Pipeline.main.Strategies.CheapVol_ProfitRun.IsProfitRun import IsProfitRun
 from Pipeline.main.PullData.PullBinance import PullBinance
 from Pipeline.main.Finance.HistoricalKellyPS import HistoricalKellyPS
-from Pipeline.main.Strategies.CloseOut import CloseOut
+from Pipeline.main.Strategies.OpenClosePosition import OpenClosePosition
 import datetime
 import numpy as np
 import yaml
@@ -16,8 +16,9 @@ import logging
 class RunStrat:
 
     def __init__(self, stratName=None, gran='1d', base='BTC', assetList='all',
-                 fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
+                 fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING, fees=0.001):
         self.stratName = 'CheapVol_ProfitRun_%s_%s_%s' % (gran, base, assetList) if not stratName else stratName
+        self.fees = fees
         dTime = datetime.datetime.fromtimestamp(round(time.time())).isoformat()
         logging.basicConfig(
             level=fileLogLevel,
@@ -32,7 +33,7 @@ class RunStrat:
             self.config = yaml.load(configFile)
         self.P = PullBinance()
         self.HK = HistoricalKellyPS(self.config)
-        self.CO = CloseOut(stratName=self.stratName)
+        self.CO = OpenClosePosition(stratName=self.stratName, fees=self.fees)
         self.assetList = self.P.getBTCAssets() if assetList == 'all' else assetList
         self.currentDB = TinyDB('%s/Pipeline/DB/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.config['stratID']))
 
@@ -67,7 +68,8 @@ class RunStrat:
                         'periods': tradeParams['periods'] + 1,
                         'capitalAllocated': tradeParams['capAllocated'],
                         'TSOpen': tradeParams['TSOpen'],
-                        'TSClose': row['TS']
+                        'TSClose': row['TS'],
+                        'amountHeld': tradeParams['amountHeld']
                     }
                     self.CO.closePosition(tradeDict=tradeDict)
                     exitList.append(asset)
@@ -102,7 +104,8 @@ class RunStrat:
                             self.P.getCandles(asset=asset, limit=params['numPeriods'], interval=self.config['granularity'])
                         closeVal = df.iloc[-1]['close']
                         stdVal = np.std(df[-params['numPeriods']:]['close'])
-                        self.currentDB.insert({
+                        positionSize = self.HK.size(self.CO.capitalDict['liquidCurrent'])
+                        openParams = {
                             'asset': asset,
                             'std': stdVal,
                             'openPrice': closeVal,
@@ -110,10 +113,13 @@ class RunStrat:
                             'tradeID': str(uuid.uuid1()),
                             'sellPrice': closeVal - params['stdDict']['down'] * stdVal,
                             'hitPrice': closeVal + params['stdDict']['up'] * stdVal,
-                            'capAllocated': self.HK.size(self.CO.capitalDict['liquidCurrent']),
+                            'capAllocated': positionSize,
                             'periods': 0,
-                            'TSOpen': df.iloc[-1]['TS']
-                        })
+                            'TSOpen': df.iloc[-1]['TS'],
+                            'amountHeld': (positionSize*(1-self.fees))*closeVal
+                        }
+                        self.CO.openPosition(openParams)
+                        self.currentDB.insert(openParams)
                         enterList.append(asset)
                     else:
                         noActionList.append(asset)
@@ -139,3 +145,4 @@ class RunStrat:
         if len(noDataList):
             logging.info('%s assets have not enough data' % len(noDataList))
             logging.info('No data assets: %s' % [asset for asset in noDataList])
+
