@@ -146,5 +146,3 @@ class RunStrat:
             logging.info('%s assets have not enough data' % len(noDataList))
             logging.info('No data assets: %s' % [asset for asset in noDataList])
 
-
-RunStrat(gran='5m', consoleLogLevel=logging.INFO).run()

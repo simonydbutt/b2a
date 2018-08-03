@@ -15,8 +15,8 @@ os.mkdir('%s/Pipeline/DB/CodeLogs' % Settings.BASE_PATH)
 CapInit(initialCapital=1000)
 
 # Initially testing over timeframes: 1d, 12h, 6h, 2h
-StratInit(gran='5m')
-# StratInit(gran='12h')
-# StratInit(gran='6h')
-# StratInit(gran='2h')
+StratInit(gran='1d')
+StratInit(gran='12h')
+StratInit(gran='6h')
+StratInit(gran='2h')
 
