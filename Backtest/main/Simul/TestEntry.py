@@ -1,4 +1,6 @@
 from Backtest.main.Utils.TimeUtil import TimeUtil
+from Backtest.main.Utils.AssetBrackets import AssetBrackets
+from Backtest.main.Entrance.Enter import Enter
 import numpy as np
 
 
@@ -11,11 +13,13 @@ class TestEntry:
     def __init__(self, EntryStrat, periodList=(5, 10, 15), verbose=False):
         self.periodList = periodList
         self.E = EntryStrat
+        self.enterAtDict = self.E.run()
         self.ts2Bin = TimeUtil().ts2Bin
         self.assetList = self.E.assetList
-        self.enterAtDict = self.E.run()
         self.dfDict = self.E.dfDict
         self.verbose = verbose
+        self.period = str(periodList[0])
+
 
     def getVal(self, df, TS):
         val = df.loc[df['TS'] == int(TS)]['close'].values
@@ -96,7 +100,17 @@ class TestEntry:
             print('_________________________________')
 
 
-# A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
-# print(A['all'])
-# E = Enter('binance', A['all'], '12h', stratDict={'InsideUp': {}})  # To start from 2018/01
-# TestEntry(E, periodList=(7, 10, 14, 17, 20), verbose=False).run()
+A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
+print(A['all'])
+
+E = Enter('binance', A['all'], '2h', stratDict={
+    'IsFeasible': {
+        'numPeriodsVolLong': 50,
+        'numPeriodsVolShort': 5,
+        'volCoef': 1.75,
+        'numPeriodsMA': 60,
+        'numStd': 2.5,
+        'bolCoef': 1
+    }
+})
+TestEntry(E, periodList=(5,10,15,20,30), verbose=False).run()

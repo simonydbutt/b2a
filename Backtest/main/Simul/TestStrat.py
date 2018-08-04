@@ -1,6 +1,8 @@
 from Backtest.main.Exit.Exit import Exit
 from Backtest.main.Utils.TimeUtil import TimeUtil
 from Backtest.main.Visual.StratVisual import StratVisual
+from Backtest.main.Utils.AssetBrackets import AssetBrackets
+from Backtest.main.Entrance.Enter import Enter
 import numpy as np
 
 
@@ -85,9 +87,22 @@ class TestStrat:
             S = StratVisual(resultsDict=resultsDict)
             S.periodReturns()
 
-#
-# A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
-# print(A['all'])
-# E = Enter('binance', A['all'], '12h', stratDict={'InsideUp': {}})
-# TestStrat(E, ('StdExit', {'numPeriods': 50, 'closeAt': 50, 'stdDict': {'up': 1, 'down': 0.5}, 'maxRun': True}), isVisual=True).run()
-#
+
+A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
+print(A['all'])
+E = Enter('binance', A['all'], '2h', stratDict={
+    'IsFeasible': {
+        'numPeriodsVolLong': 50,
+        'numPeriodsVolShort': 5,
+        'volCoef': 1.75,
+        'numPeriodsMA': 60,
+        'numStd': 2.5,
+        'bolCoef': 1
+    }
+})
+
+
+TestStrat(E, ('StdExit', {
+    'numPeriods': 40, 'closeAt': 40, 'stdDict': {'up': 1.5, 'down': 2}, 'maxRun': True
+}), isVisual=False).run()
+
