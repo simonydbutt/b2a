@@ -63,7 +63,7 @@ class RunStrat:
                         'stratID': self.config['stratID'],
                         'tradeID': tradeParams['tradeID'],
                         'granularity': self.config['granularity'],
-                        'openFce': tradeParams['openPrice'],
+                        'openPrice': tradeParams['openPrice'],
                         'closePrice': close,
                         'periods': tradeParams['periods'] + 1,
                         'capitalAllocated': tradeParams['capAllocated'],
