@@ -33,6 +33,10 @@ class InitalSetup:
                     'down': 0.5
                 },
                 'maxRun': True,
+            },
+            KellyParams={
+                'coef': 0.5,
+                'adv': 0.1
             }
     ):
         stratName = 'CheapVol_ProfitRun_%s_%s_%s' % (gran, base, assetList)
@@ -55,10 +59,7 @@ class InitalSetup:
                 'winLoss': 0,
                 'avgPeriods': 0
             },
-            'kelly': {
-                'coef': 0.5,
-                'crit': 0.1
-            }
+            'kelly': KellyParams
         }
         filePath = '%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)
         response = '0'

@@ -24,4 +24,8 @@ def test_getInst():
     instList = BDS.getInst()
     assert 'XBTUSD' in instList
 
-test_pullCandles()
+
+if __name__ == '__main__':
+    test_pullData()
+    test_pullCandles()
+    test_getInst()

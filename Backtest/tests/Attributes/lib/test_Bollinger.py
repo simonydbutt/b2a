@@ -1,12 +1,12 @@
 from Backtest.main.Attributes.lib.Bollinger import Bollinger
-from Backtest.tests.resources.TestingLoad import TestingLoad
+from Backtest.tests.resources.TestingLoad import testingLoad
 from Backtest.main.Attributes.Attr import Attr
 import numpy as np
 
 
 def test_Bollinger():
     numPeriods = 5
-    df = Attr(TestingLoad().df).add('MA', params={'numPeriods': numPeriods})
+    df = Attr(testingLoad()).add('MA', params={'numPeriods': numPeriods})
     maCol = df['ma%s' % numPeriods]
     bol = Bollinger(df=df, params={'numPeriods': numPeriods, 'numStd': 10}).run()
     p = 8

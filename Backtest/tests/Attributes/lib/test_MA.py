@@ -1,11 +1,11 @@
-from Backtest.tests.resources.TestingLoad import TestingLoad
+from Backtest.tests.resources.TestingLoad import testingLoad
 from Backtest.main.Attributes.lib.MA import MA
 import numpy as np
 
 
 
 def test_MA():
-    df = TestingLoad().df
+    df = testingLoad()
     periods = 5
     ma = MA(df, params={
         'numPeriods': periods,

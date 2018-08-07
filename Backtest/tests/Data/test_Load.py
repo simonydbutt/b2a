@@ -1,5 +1,6 @@
 from Backtest.main.Data.Load import Load
 import pandas as pd
+import Settings
 import os
 
 
@@ -19,8 +20,14 @@ def test_MakeNumeric():
 
 
 def test_loadCSV():
-    df = L.loadCSV(file='XMRBTC_1d_11', location='./Backtest/tests/resources/')
+    loc = '../resources/' if os.getcwd() == '%s/Backtests/tests/Data/' % Settings.BASE_PATH else\
+        '%s/Backtest/tests/resources/' % Settings.BASE_PATH
+    df = L.loadCSV(file='XMRBTC_1d_11', location=loc)
     assert len(df) == 11
     assert list(df.keys()) == ['milliTimestamp', 'open', 'high', 'low', 'close', 'volume', 'quoteVol',
                                'numTrades', 'takerBaseAssetVol', 'takerQuoteAssetVol', 'TS']
 
+
+if __name__ == '__main__':
+    test_loadCSV()
+    test_MakeNumeric()

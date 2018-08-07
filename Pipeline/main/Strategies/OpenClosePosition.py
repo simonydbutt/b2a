@@ -1,4 +1,4 @@
-from Pipeline.main.Finance.PaperGainz import PaperGainz
+from Pipeline.main.Finance.PaperGains import PaperGains
 import Settings
 import yaml
 from tinydb import TinyDB
@@ -19,7 +19,7 @@ class OpenClosePosition:
         self.capitalDict['percentAllocated'] = 100*round(1 - self.capitalDict['liquidCurrent']/self.capitalDict['paperCurrent'], 2)
 
     def closePosition(self, tradeDict):
-        P = PaperGainz(fees=self.fees)
+        P = PaperGains(fees=self.fees)
         tradeDict['realPnL'] = tradeDict['capitalAllocated']*((1 - self.fees)*tradeDict['closePrice'] -
                                                               (1 + self.fees)*tradeDict['openPrice'])
         tradeDict['percentPnL'] = tradeDict['closePrice'] / tradeDict['openPrice'] - 1
@@ -27,7 +27,7 @@ class OpenClosePosition:
         self.capitalDict['liquidCurrent'] += (tradeDict['amountHeld'] / tradeDict['closePrice'])*(1-self.fees)
         self.capitalDict['paperCurrent'] = float(self.capitalDict['liquidCurrent'] + P.calc())
         self.capitalDict['paperPnL'] = float(self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'])
-        self.capitalDict['percentAllocated'] = float(P.allocated() / self.capitalDict['paperCurrent'])
+        self.capitalDict['percentAllocated'] = float(P.allocated(liquidCurrent=self.capitalDict['liquidCurrent']))
         pStats = self.configFile['performance']
         self.configFile['performance']['percentPnL'] = (pStats['percentPnL']*pStats['numTrades'] +
                                                         tradeDict['percentPnL']) / (pStats['percentPnL'] + 1)
