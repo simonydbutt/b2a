@@ -104,7 +104,7 @@ class RunStrat:
                             self.P.getCandles(asset=asset, limit=params['numPeriods'], interval=self.config['granularity'])
                         closeVal = df.iloc[-1]['close']
                         stdVal = np.std(df[-params['numPeriods']:]['close'])
-                        positionSize = self.HK.size(self.CO.capitalDict['liquidCurrent'])
+                        positionSize = self.HK.positionSize(self.CO.capitalDict['liquidCurrent'])
                         openParams = {
                             'asset': asset,
                             'std': stdVal,
@@ -146,3 +146,5 @@ class RunStrat:
             logging.info('%s assets have not enough data' % len(noDataList))
             logging.info('No data assets: %s' % [asset for asset in noDataList])
 
+
+RunStrat(gran='1d').run()

@@ -24,3 +24,8 @@ def test_list2Dict():
     }
     dict = B.list2Dict(rawData)
     assert False not in [dictData[val] == dict[val] for val in dictData.keys()]
+
+
+if __name__ == '__main__':
+    test_pullCandles()
+    test_list2Dict()

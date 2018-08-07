@@ -4,8 +4,10 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import logging
 
 """
+    TODO: Run tests before start to make sure everything is running correctly
+        - Email results
     TODO: Find delay on Binance kline and adjust accordingly
-    TODO: Auto schedule jobs to avoid others
+    TODO: Auto schedule jobs to avoid other
 """
 
 if __name__ == '__main__':
