@@ -8,8 +8,8 @@ import os
 
 class DailyCapital:
 
-    def __init__(self):
-        self.dirPath = '%s/Pipeline/DB' % Settings.BASE_PATH
+    def __init__(self, dbPath='Pipeline/DB'):
+        self.dirPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
         with open('%s/Capital.yml' % self.dirPath) as capFile:
             self.capitalDict = yaml.load(capFile)
         self.db = TinyDB('%s/PerformanceLogs/DailyCapitalLog.ujson' % self.dirPath)
