@@ -6,7 +6,7 @@ class IsProfitRun:
         self.stratParams = stratParams
 
     def run(self):
-        if self.tradeParams['periods'] == self.stratParams['closeAt']:
+        if self.tradeParams['periods'] >= self.stratParams['closeAt']:
             return 0
         else:
             if self.closeVal < self.tradeParams['sellPrice']:

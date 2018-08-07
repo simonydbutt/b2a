@@ -15,8 +15,8 @@ def test_connection():
     assert round(PB._pullData('/api/v1/time')['serverTime']/10000) == round(time.time()/10)
 
 def test_getCandles():
-    data = PB.getCandles('ETHBTC', 15, '1d')
-    assert len(data) == 15
+    data = PB.getCandles('ETHBTC', 5, '1d')
+    assert len(data) == 5
     assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']
 
 
