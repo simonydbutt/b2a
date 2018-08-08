@@ -12,13 +12,13 @@ class EmailLogs:
     def __init__(self):
         self.server = smtplib.SMTP('smtp.gmail.com', 587)
         self.server.starttls()
-        self.server.login(Settings.EMAIL_USER, Settings.EMAIL_PASSWORD)
+        self.server.login(Settings.EMAIL['USER'], Settings.EMAIL['PASSWORD'])
         msg = EmailMessage()
         msg['Subject'] = 'B2B Performance Sandbox - %s' % datetime.datetime.fromtimestamp(round(time.time())).isoformat()
-        msg['From'] = Settings.EMAIL_USER
-        msg['To'] = Settings.EMAIL_SEND_USER
+        msg['From'] = Settings.EMAIL['USER']
+        msg['To'] = Settings.EMAIL['SEND_USER']
         msg.set_content(self.capitalMessage() + self.performanceMessage())
-        self.server.send_message(msg=msg, from_addr=Settings.EMAIL_USER, to_addrs=Settings.EMAIL_SEND_USER)
+        self.server.send_message(msg=msg, from_addr=Settings.EMAIL['USER'], to_addrs=Settings.EMAIL['SEND_USER'])
 
     def capitalMessage(self):
         dC = DailyCapital().run()

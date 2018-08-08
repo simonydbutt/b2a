@@ -12,8 +12,4 @@ def test_positionSize():
             'coef': 0.05,
             'adv': 0.05
         }}).positionSize(985) == 2.463
-    print('Tested kelly position sizing')
 
-
-if __name__ == '__main__':
-    test_positionSize()

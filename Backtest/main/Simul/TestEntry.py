@@ -103,13 +103,13 @@ class TestEntry:
 A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
 print(A['all'])
 
-E = Enter('binance', A['all'], '2h', stratDict={
+E = Enter('binance', A['all'], '6h', stratDict={
     'IsFeasible': {
         'numPeriodsVolLong': 50,
         'numPeriodsVolShort': 5,
-        'volCoef': 1.75,
-        'numPeriodsMA': 60,
-        'numStd': 2.5,
+        'volCoef': 1.2,
+        'numPeriodsMA': 30,
+        'numStd': 2,
         'bolCoef': 1
     }
 })

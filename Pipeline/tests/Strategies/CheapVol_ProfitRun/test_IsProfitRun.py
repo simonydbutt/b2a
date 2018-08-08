@@ -11,6 +11,3 @@ def test_IsProfitRun():
     assert IPR(closeVal=10, stratParams={'closeAt': 10},
                tradeParams={'sellPrice': 11, 'hitPrice': 15, 'periods': 11}).run() == 0
 
-
-if __name__ == '__main__':
-    test_IsProfitRun()
