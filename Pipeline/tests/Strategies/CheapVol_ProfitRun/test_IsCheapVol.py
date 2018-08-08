@@ -35,7 +35,4 @@ def test_IsCheapVol():
     assert CV1.run()
     assert not CV2.run()
     assert not CV3.run()
-    print('IsCheapVol working')
 
-if __name__ == '__main__':
-    test_IsCheapVol()

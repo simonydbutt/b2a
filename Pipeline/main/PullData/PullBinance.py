@@ -34,13 +34,14 @@ class PullBinance:
         df = pd.DataFrame(
             self._pullData('/api/v1/klines', params={
                 'symbol': asset,
-                'limit': limit,
+                'limit': limit+1,
                 'interval': interval
             }),
             columns=['milliTSOpen', 'open', 'high', 'low', 'close', 'volume',
                      'milliTSClose', 'quoteVol', 'numTrades', 'takerBaseVol',
                      'takerQuoteVol', 'id_']
         )
+        df = df.iloc[:-1] if df.iloc[-1]['milliTSClose']/1000 - time.time() > 0 else df.iloc[1:]
         df[['open', 'close', 'high', 'low', 'takerQuoteVol']] = \
             df[['open', 'close', 'high', 'low', 'takerQuoteVol']].apply(pd.to_numeric)
         df['TS'] = df['milliTSClose'] / 1000

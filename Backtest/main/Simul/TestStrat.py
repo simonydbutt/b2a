@@ -90,19 +90,19 @@ class TestStrat:
 
 A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
 print(A['all'])
-E = Enter('binance', A['all'], '2h', stratDict={
+E = Enter('binance', A['all'], '6h', stratDict={
     'IsFeasible': {
         'numPeriodsVolLong': 50,
         'numPeriodsVolShort': 5,
-        'volCoef': 1.75,
-        'numPeriodsMA': 60,
-        'numStd': 2.5,
+        'volCoef': 1.2,
+        'numPeriodsMA': 30,
+        'numStd': 2,
         'bolCoef': 1
     }
 })
 
-
-TestStrat(E, ('StdExit', {
-    'numPeriods': 40, 'closeAt': 40, 'stdDict': {'up': 1.5, 'down': 2}, 'maxRun': True
-}), isVisual=False).run()
+for nP in [30, 40, 50]:
+    TestStrat(E, ('StdExit', {
+        'numPeriods': 50, 'closeAt': 50, 'stdDict': {'up': 1, 'down': 1.5}, 'maxRun': True
+    }), isVisual=False).run()
 
