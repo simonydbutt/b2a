@@ -12,7 +12,7 @@ class OpenClosePosition:
             self.capitalDict = yaml.load(capitalFile)
         with open('%s/%s/Configs/%s.yml' % (Settings.BASE_PATH, dbPath, stratName)) as configFile:
             self.configFile = yaml.load(configFile)
-        self.transLogDB = TinyDB('%s/Pipeline/%s/TransactionLog.ujson' % (Settings.BASE_PATH, dbPath))
+        self.transLogDB = TinyDB('%s/%s/PerformanceLogs/TransactionLog.ujson' % (Settings.BASE_PATH, dbPath))
 
     def openPosition(self, openDict):
         self.capitalDict['liquidCurrent'] -= openDict['capAllocated']
