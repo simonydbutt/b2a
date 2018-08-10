@@ -161,4 +161,4 @@ class RunStrat:
         self.logResults(startTime=start, endTime=end)
 
 
-RunStrat(gran='6h', consoleLogLevel=logging.INFO).run()
+# RunStrat(gran='6h', consoleLogLevel=logging.INFO).run()

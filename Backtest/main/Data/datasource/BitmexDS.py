@@ -87,4 +87,4 @@ class BitmexDS:
                     print('Not enough date for inst: %s and bin: %s' % (inst, bin))
 
 
-BitmexDS().updateDB()
+# BitmexDS().updateDB()

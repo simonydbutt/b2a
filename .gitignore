@@ -13,3 +13,4 @@ DB/
 *.html
 csv/
 Settings.py
+Pipeline/tests/testsDB/CodeLogs/*
