@@ -6,11 +6,11 @@ from tinydb import TinyDB
 
 class OpenClosePosition:
 
-    def __init__(self, stratName, fees=0.001):
+    def __init__(self, stratName, fees=0.001, dbPath='Pipeline/DB'):
         self.fees = fees
-        with open('%s/Pipeline/DB/Capital.yml' % Settings.BASE_PATH) as capitalFile:
+        with open('%s/%s/Capital.yml' % (Settings.BASE_PATH, dbPath)) as capitalFile:
             self.capitalDict = yaml.load(capitalFile)
-        with open('%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)) as configFile:
+        with open('%s/%s/Configs/%s.yml' % (Settings.BASE_PATH, dbPath, stratName)) as configFile:
             self.configFile = yaml.load(configFile)
         self.transLogDB = TinyDB('%s/Pipeline/DB/PerformanceLogs/TransactionLog.ujson' % Settings.BASE_PATH)
 
