@@ -22,8 +22,7 @@ StratInit(
         'numPeriodsVolShort': 5,
         'volCoef': 1.2,
         'numPeriodsMA': 30,
-        'numStd': 2,
-        'bolCoef': 1
+        'bolStd': 2
     },
     ProfitRunParams={
         'numPeriods': 50, 'closeAt': 50, 'stdDict': {'up': 1, 'down': 1.5}, 'maxRun': True

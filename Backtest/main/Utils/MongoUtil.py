@@ -17,17 +17,22 @@ class MongoUtil:
 
     def toMongo(self, data, colName, id, parameters={}):
         for val in data:
-            if len(list(self.db[colName].find({id: val[id]}))) == 0:
-                for param in parameters.keys():
-                    if param == 'TS' and self.dbName == 'binance':
-                        val['TS'] = int(self.TU.getTS(val[parameters['TS'][0]], timeFormat=parameters['TS'][1]))
-                    else:
-                        try:
-                            val[param] = val[parameters[param]]
-                        except TypeError:
-                            print(val)
-                            raise SystemExit
-                self.db[colName].insert_one(val)
+            try:
+                if len(list(self.db[colName].find({id: val[id]}))) == 0:
+                    for param in parameters.keys():
+                        if param == 'TS' and self.dbName == 'binance' or self.dbName == 'bitmex':
+                            val['TS'] = int(self.TU.getTS(val[parameters['TS'][0]], timeFormat=parameters['TS'][1]))
+                        else:
+                            try:
+                                val[param] = val[parameters[param]]
+                            except TypeError:
+                                print(val)
+                                raise SystemExit
+                    self.db[colName].insert_one(val)
+            except TypeError:
+                print('\n\n')
+                print(list(self.db[colName].find({id: val[id]})))
+                break
 
     def lastVal(self, colName):
         return list(self.db[colName].find({}, {'_id': 0, 'TS': 1}).sort('TS', DESCENDING).limit(1))[0]['TS']

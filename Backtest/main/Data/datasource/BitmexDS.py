@@ -10,7 +10,6 @@ class BitmexDS:
 
     """
         Datasource for Bitmex exchange
-        TODO: WIP complete!
     """
 
     def __init__(self):
@@ -21,7 +20,6 @@ class BitmexDS:
             '1d': 60 * 60 * 24,
             '1h': 60 * 60,
             '5m': 60 * 5,
-            '1m': 60
         }
 
     def pullData(self, endPoint, params=None):
@@ -58,7 +56,7 @@ class BitmexDS:
                 )
             else:
                 df = pd.DataFrame(data, columns=['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'trades', 'volume',
-                                                   'vmap', 'lastSize', 'turnover', 'homeNotional', 'foreignNotional']
+                                                 'vmap', 'lastSize', 'turnover', 'homeNotional', 'foreignNotional']
                               ).drop_duplicates('timestamp')
                 df['binSize'] = self.bin2Time[binSize]
                 return df
@@ -87,3 +85,6 @@ class BitmexDS:
                         print('Already up to date for bin size: %s' % bin)
                 except IndexError:
                     print('Not enough date for inst: %s and bin: %s' % (inst, bin))
+
+
+# BitmexDS().updateDB()

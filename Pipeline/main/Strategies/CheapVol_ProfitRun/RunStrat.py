@@ -35,7 +35,7 @@ class RunStrat:
             self.config = yaml.load(configFile)
         self.P = PullBinance()
         self.HK = HistoricalKellyPS(self.config)
-        self.CO = OpenClosePosition(stratName=self.stratName, fees=self.fees)
+        self.CO = OpenClosePosition(stratName=self.stratName, fees=self.fees, dbPath=self.dbPath)
         self.assetList = self.P.getBTCAssets() if assetList == 'all' else assetList
         self.currentDB = TinyDB('%s/%s/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.dbPath, self.config['stratID']))
         self.noActionList = []
@@ -139,6 +139,9 @@ class RunStrat:
             logging.info('%s assets have not enough data' % len(self.noDataList))
             logging.info('No data assets: %s' % [asset for asset in self.noDataList])
 
+    def queryInOutPosition(self, asset):
+        return asset in [val['asset'] for val in self.currentDB.all()]
+
     def run(self):
         start = round(time.time())
         logging.info('Strategy Name: %s' % self.stratName)
@@ -146,7 +149,7 @@ class RunStrat:
         logging.info('Num. assets analysed: %s' % len(self.assetList))
         for asset in self.assetList:
             logging.debug(asset)
-            if asset in [val['asset'] for val in self.currentDB.all()]:
+            if self.queryInOutPosition(asset):
                 self.inPosition(asset=asset)
             else:
                 self.outPosition(asset=asset)
@@ -156,3 +159,6 @@ class RunStrat:
         end = time.time()
         logging.info('Run complete')
         self.logResults(startTime=start, endTime=end)
+
+
+# RunStrat(gran='6h', consoleLogLevel=logging.INFO).run()
