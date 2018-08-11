@@ -22,7 +22,7 @@ class StratPerformance:
             q = Query
             currentTrades = TinyDB('%s/CurrentPositions/%s.ujson' % (self.dbPath, config['stratID'])).all()
             logDB = TinyDB('%s/PerformanceLogs/StratLogs/%s.ujson' % (self.dbPath, config['stratID']))
-            transLog = self.transDB.search(q.StratID == config['StratID']) if len(self.transDB.all()) != 0 else []
+            transLog = self.transDB.search(q.StratID == config['stratID']) if len(self.transDB.all()) != 0 else []
             pastLog = logDB.all()[-1] if len(logDB.all()) != 0 else {'daysLive': 0, 'percentPnL': 0}
             stratLog = config['performance']
             stratLog['timestamp'] = round(time.time())
