@@ -1,33 +1,21 @@
+from Pipeline.main.PullData._Pull import _Pull
 import pandas as pd
-import requests
-import json
-import logging
 import time
 
 
-class PullBinance:
+class PullBinance(_Pull):
+
+    """
+        # TODO: add amount to getAssetPrice to get the exact price will buy at
+    """
 
     def __init__(self):
+        _Pull.__init__(self)
         self.baseUrl = 'https://api.binance.com'
 
-    def _pullData(self, endPoint, params=None):
-        req = requests.get(self.baseUrl + endPoint, params=params)
-        if req.status_code == 200:
-            return json.loads(req.content.decode('utf-8'))
-        elif req.status_code == 429:
-            logging.warning('binance rate limit hit, 30 second sleep')
-            time.sleep(30)
-            req = requests.get(self.baseUrl + endPoint, params=params)
-            if req.status_code == 429:
-                logging.error('Rate limit error after timeout')
-            else:
-                logging.info('Rate limit back to normal')
-                return json.loads(req.content.decode('utf-8'))
-        else:
-            logging.error('pullData requests error with error code %s' % req.status_code)
-
-    def getBTCAssets(self):
-        return [val['symbol'] for val in self._pullData('/api/v1/exchangeInfo')['symbols'] if
+    def getBTCAssets(self, justQuote=False):
+        return [val['symbol'][:-3] if justQuote else val['symbol']
+                for val in self._pullData('/api/v1/exchangeInfo')['symbols'] if
                 'BTC' in val['symbol'] and 'USDT' not in val['symbol']]
 
     def getCandles(self, asset, limit, interval, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']):
@@ -46,3 +34,7 @@ class PullBinance:
             df[['open', 'close', 'high', 'low', 'takerQuoteVol']].apply(pd.to_numeric)
         df['TS'] = df['milliTSClose'] / 1000
         return df[columns]
+
+    def getAssetPrice(self, sym, dir='buy'):
+        tickData = self._pullData('/api/v1/depth', params={'symbol': sym, 'limit': 5})
+        return float(tickData['bids' if dir == 'sell' else 'asks'][0][0])

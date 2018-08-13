@@ -3,6 +3,7 @@ from Pipeline.main.Strategies.CheapVol_ProfitRun.IsProfitRun import IsProfitRun
 from Pipeline.main.PullData.PullBinance import PullBinance
 from Pipeline.main.Finance.HistoricalKellyPS import HistoricalKellyPS
 from Pipeline.main.Strategies.OpenClosePosition import OpenClosePosition
+from Pipeline.main.Utils.AddLogger import AddLogger
 import datetime
 import numpy as np
 import yaml
@@ -17,27 +18,27 @@ class RunStrat:
 
     def __init__(self, stratName=None, gran='1d', base='BTC', assetList='all',
                  fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING, fees=0.001,
-                 dbPath='Pipeline/DB'):
+                 dbPath='Pipeline/DB', baseStratName='CheapVol_ProfitRun'):
+        self.compDBPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
+        self.baseStratName = baseStratName
         self.stratName = 'CheapVol_ProfitRun_%s_%s_%s' % (gran, base, assetList) if not stratName else stratName
         self.fees = fees
         self.dbPath = dbPath
-        dTime = datetime.datetime.fromtimestamp(round(time.time())).isoformat()
-        logging.basicConfig(
-            level=fileLogLevel,
-            format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-            filename='%s/%s/CodeLogs/%s_%s' % (Settings.BASE_PATH, self.dbPath, self.stratName, dTime),
-            filemode='w'
-        )
-        console = logging.StreamHandler()
-        console.setLevel(consoleLogLevel)
-        logging.getLogger('').addHandler(console)
-        with open('%s/%s/Configs/%s.yml' % (Settings.BASE_PATH, self.dbPath, self.stratName)) as configFile:
+        self.logger = AddLogger(
+            filePath='%s/CodeLogs/%s' % (self.compDBPath, self.baseStratName),
+            stratName=self.stratName,
+            fileLogLevel=fileLogLevel,
+            consoleLogLevel=consoleLogLevel
+        ).logger
+        with open('%s/Configs/%s/%s.yml' % (self.compDBPath, self.baseStratName, self.stratName)) as configFile:
             self.config = yaml.load(configFile)
         self.P = PullBinance()
         self.HK = HistoricalKellyPS(self.config)
-        self.CO = OpenClosePosition(stratName=self.stratName, fees=self.fees, dbPath=self.dbPath)
+        self.CO = OpenClosePosition(stratName=self.stratName, baseStratName=self.baseStratName,
+                                    fees=self.fees, dbPath=self.dbPath)
         self.assetList = self.P.getBTCAssets() if assetList == 'all' else assetList
-        self.currentDB = TinyDB('%s/%s/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.dbPath, self.config['stratID']))
+        self.currentDB = TinyDB('%s/CurrentPositions/%s/%s.ujson' %
+                                (self.compDBPath, self.baseStratName, self.config['stratID']))
         self.noActionList = []
         self.enterList = []
         self.exitList = []
@@ -123,32 +124,32 @@ class RunStrat:
             self.noDataList.append(asset)
 
     def logResults(self, startTime, endTime):
-        logging.info('Time end: %s' % datetime.datetime.fromtimestamp(round(endTime)).isoformat())
-        logging.info('Time taken: %ss' % round(endTime - startTime, 2))
-        logging.info('%s trades entered' % len(self.enterList))
+        self.logger.info('Time end: %s' % datetime.datetime.fromtimestamp(round(endTime)).isoformat())
+        self.logger.info('Time taken: %ss' % round(endTime - startTime, 2))
+        self.logger.info('%s trades entered' % len(self.enterList))
         if len(self.enterList) != 0:
-            logging.info('Entered trades: %s' % [trade for trade in self.enterList])
-        logging.info('%s trades exited' % len(self.exitList))
+            self.logger.info('Entered trades: %s' % [trade for trade in self.enterList])
+        self.logger.info('%s trades exited' % len(self.exitList))
         if len(self.exitList) != 0:
-            logging.info('Exited trades: %s' % [trade for trade in self.exitList])
-        logging.info('%s trades open' % len(self.openList))
+            self.logger.info('Exited trades: %s' % [trade for trade in self.exitList])
+        self.logger.info('%s trades open' % len(self.openList))
         if len(self.openList) != 0:
-            logging.info('Open postions: %s' % [asset for asset in self.openList])
-        logging.info('%s assets no action' % len(self.noActionList))
+            self.logger.info('Open postions: %s' % [asset for asset in self.openList])
+        self.logger.info('%s assets no action' % len(self.noActionList))
         if len(self.noDataList):
-            logging.info('%s assets have not enough data' % len(self.noDataList))
-            logging.info('No data assets: %s' % [asset for asset in self.noDataList])
+            self.logger.info('%s assets have not enough data' % len(self.noDataList))
+            self.logger.info('No data assets: %s' % [asset for asset in self.noDataList])
 
     def queryInOutPosition(self, asset):
         return asset in [val['asset'] for val in self.currentDB.all()]
 
     def run(self):
         start = round(time.time())
-        logging.info('Strategy Name: %s' % self.stratName)
-        logging.info('Time start: %s' % datetime.datetime.fromtimestamp(start).isoformat())
-        logging.info('Num. assets analysed: %s' % len(self.assetList))
+        self.logger.info('Strategy Name: %s' % self.stratName)
+        self.logger.info('Time start: %s' % datetime.datetime.fromtimestamp(start).isoformat())
+        self.logger.info('Num. assets analysed: %s' % len(self.assetList))
         for asset in self.assetList:
-            logging.debug(asset)
+            self.logger.debug(asset)
             if self.queryInOutPosition(asset):
                 self.inPosition(asset=asset)
             else:
@@ -157,8 +158,6 @@ class RunStrat:
             time.sleep(.5)
         self.CO.add2Books()
         end = time.time()
-        logging.info('Run complete')
+        self.logger.info('Run complete')
         self.logResults(startTime=start, endTime=end)
-
-
-# RunStrat(gran='6h', consoleLogLevel=logging.INFO).run()
+        self.CO.add2Books()

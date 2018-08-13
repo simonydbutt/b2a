@@ -6,25 +6,27 @@ from tinydb import TinyDB
 
 class OpenClosePosition:
 
-    def __init__(self, stratName, fees=0.001, dbPath='Pipeline/DB'):
+    def __init__(self, stratName, baseStratName, fees=0.001, dbPath='Pipeline/DB',):
         self.fees = fees
         with open('%s/%s/Capital.yml' % (Settings.BASE_PATH, dbPath)) as capitalFile:
             self.capitalDict = yaml.load(capitalFile)
-        with open('%s/%s/Configs/%s.yml' % (Settings.BASE_PATH, dbPath, stratName)) as configFile:
+        with open('%s/%s/Configs/%s/%s.yml' % (Settings.BASE_PATH, dbPath, baseStratName, stratName)) as configFile:
             self.configFile = yaml.load(configFile)
-        self.transLogDB = TinyDB('%s/%s/PerformanceLogs/TransactionLog.ujson' % (Settings.BASE_PATH, dbPath))
+        self.transLogDB = TinyDB('%s/%s/PerformanceLogs/%s/TransactionLog.ujson' %
+                                 (Settings.BASE_PATH, dbPath, baseStratName))
 
     def openPosition(self, openDict):
         self.capitalDict['liquidCurrent'] -= openDict['capAllocated']
         self.capitalDict['percentAllocated'] = 100*round(1 - self.capitalDict['liquidCurrent']/self.capitalDict['paperCurrent'], 2)
 
     def closePosition(self, tradeDict):
-        P = PaperGains(fees=self.fees)
-        tradeDict['realPnL'] = tradeDict['capitalAllocated']*((1 - self.fees)*tradeDict['closePrice'] -
-                                                              (1 + self.fees)*tradeDict['openPrice'])
+        fees = self.fees if type(self.fees) != dict else self.fees[tradeDict['Exchange']]
+        P = PaperGains(fees=fees)
+        tradeDict['realPnL'] = tradeDict['capitalAllocated']*((1 - fees)*tradeDict['closePrice'] -
+                                                              (1 + fees)*tradeDict['openPrice'])
         tradeDict['percentPnL'] = tradeDict['closePrice'] / tradeDict['openPrice'] - 1
         self.transLogDB.insert(tradeDict)
-        self.capitalDict['liquidCurrent'] += (tradeDict['amountHeld'] / tradeDict['closePrice'])*(1-self.fees)
+        self.capitalDict['liquidCurrent'] += (tradeDict['amountHeld'] / tradeDict['closePrice'])*(1-fees)
         self.capitalDict['paperCurrent'] = float(self.capitalDict['liquidCurrent'] + P.calc())
         self.capitalDict['paperPnL'] = float(self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'])
         self.capitalDict['percentAllocated'] = float(P.allocated(liquidCurrent=self.capitalDict['liquidCurrent']))
@@ -37,8 +39,6 @@ class OpenClosePosition:
         isWin = 1 if tradeDict['percentPnL'] > 0 else 0
         self.configFile['performance']['winLoss'] = (pStats['winLoss'] * pStats['numTrades'] + isWin) / \
                                                     (pStats['numTrades'] + 1)
-        self.configFile['performance']['avgPeriods'] = (pStats['avgPeriods'] * pStats['numTrades'] +
-                                                        tradeDict['periods']) / (pStats['numTrades'] + 1)
 
     def add2Books(self):
         with open('%s/Pipeline/DB/Capital.yml' % Settings.BASE_PATH, 'w') as capFile:

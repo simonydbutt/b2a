@@ -4,7 +4,7 @@ import os
 from tinydb import TinyDB
 
 
-class InitalSetup:
+class InitialSetup:
 
     def __init__(self, initialCapital):
         filePath = '%s/Pipeline/DB/Capital.yml' % Settings.BASE_PATH

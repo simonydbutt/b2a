@@ -18,3 +18,8 @@ def test_getCandles():
     data = PB.getCandles('ETHBTC', 5, '1d')
     assert len(data) == 5
     assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']
+
+
+if __name__ == '__main__':
+    test_connection()
+    test_getCandles()
