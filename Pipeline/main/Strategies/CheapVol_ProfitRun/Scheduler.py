@@ -1,7 +1,7 @@
 from Pipeline.main.Audit.EmailLogs import EmailLogs
 from Pipeline.main.Strategies.CheapVol_ProfitRun.RunStrat import RunStrat
 from apscheduler.schedulers.blocking import BlockingScheduler
-from Pipeline.tests.RunPipelineTests import RunPipelineTests
+from Pipeline.RunPipelineTests import RunPipelineTests
 import logging
 
 """
