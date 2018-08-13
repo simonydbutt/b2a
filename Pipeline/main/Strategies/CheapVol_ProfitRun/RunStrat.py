@@ -45,6 +45,26 @@ class RunStrat:
         self.openList = []
         self.noDataList = []
 
+    def updatePosition(self, returnVal, close, asset):
+        q = Query()
+        stratParams = self.config['parameters']['ProfitRun']
+        tradeParams = self.currentDB.search(q.asset == asset)[0]
+        if returnVal == 2:
+            self.currentDB.update(
+                {
+                    'periods': tradeParams['periods'] + 1,
+                    'currentPrice': close,
+                    'sellPrice': close - tradeParams['std'] * stratParams['stdDict']['down'],
+                    'hitPrice': close + tradeParams['std'] * stratParams['stdDict']['up']
+                }, q.asset == asset)
+            self.openList.append(asset)
+        else:
+            self.currentDB.update({
+                'periods': tradeParams['periods'] + 1,
+                'currentPrice': close
+            }, q.asset == asset)
+            self.openList.append(asset)
+
     def inPosition(self, asset):
         row = self.P.getCandles(asset=asset, limit=1, interval=self.config['granularity']).iloc[-1]
         close = row['close']
@@ -69,21 +89,8 @@ class RunStrat:
             }
             self.CO.closePosition(tradeDict=tradeDict)
             self.exitList.append(asset)
-        elif returnVal == 2:
-            self.currentDB.update(
-                {
-                    'periods': tradeParams['periods'] + 1,
-                    'currentPrice': close,
-                    'sellPrice': close - tradeParams['std'] * stratParams['stdDict']['down'],
-                    'hitPrice': close + tradeParams['std'] * stratParams['stdDict']['up']
-                }, q.asset == asset)
-            self.openList.append(asset)
         else:
-            self.currentDB.update({
-                'periods': tradeParams['periods'] + 1,
-                'currentPrice': close
-            }, q.asset == asset)
-            self.openList.append(asset)
+            self.updatePosition(returnVal, close, asset)
 
     def outPosition(self, asset):
         df = self.P.getCandles(
@@ -113,7 +120,7 @@ class RunStrat:
                     'capAllocated': positionSize,
                     'periods': 0,
                     'TSOpen': df.iloc[-1]['TS'],
-                    'amountHeld': (positionSize * (1 - self.fees)) * closeVal
+                    'amountHeld': (positionSize * (1 - self.fees))/closeVal
                 }
                 self.CO.openPosition(openParams)
                 self.currentDB.insert(openParams)

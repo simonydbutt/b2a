@@ -1,1 +1,1 @@
-{"_default":{"1":{"asset":"VIABTC","std":0.0000032537,"openPrice":0.0001428,"currentPrice":0.0001428,"tradeID":"edf6b8f0-98e9-11e8-bd1d-acbc32cfb125","sellPrice":0.0001362927,"hitPrice":0.0001476805,"capAllocated":50.0,"periods":0,"TSOpen":1533499199.9990000725,"amountHeld":0.00713286},"2":{"asset":"SKYBTC","std":0.0000347712,"openPrice":0.000545,"currentPrice":0.000545,"tradeID":"fd96f57a-98e9-11e8-9326-acbc32cfb125","sellPrice":0.0004754576,"hitPrice":0.0005971568,"capAllocated":47.5,"periods":0,"TSOpen":1533499199.9990000725,"amountHeld":0.0258616125}}}
+{"_default":{}}

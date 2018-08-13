@@ -1,1 +1,1 @@
-{"_default":{}}
+{"_default":{"1":{"asset":"BCCBTC","std":0.0039707341,"openPrice":0.08571,"currentPrice":0.08571,"tradeID":"244c223e-9f46-11e8-b06c-acbc32cfb125","sellPrice":0.0797538988,"hitPrice":0.0896807341,"capAllocated":0.451,"periods":0,"TSOpen":1534183199.9990000725,"amountHeld":5.2566678334},"2":{"asset":"SKYBTC","std":0.0000704464,"openPrice":0.000376,"currentPrice":0.000376,"tradeID":"733ad228-9f46-11e8-b774-acbc32cfb125","sellPrice":0.0002703305,"hitPrice":0.0004464464,"capAllocated":0.429,"periods":0,"TSOpen":1534183199.9990000725,"amountHeld":1139.8164893617}}}

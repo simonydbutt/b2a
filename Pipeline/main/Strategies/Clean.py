@@ -6,7 +6,7 @@ import shutil
 
 class Clean:
 
-    def __init__(self, stratName, fullSweep=False):
+    def __init__(self, stratName='', fullSweep=False):
         dbPath = '%s/Pipeline/DB' % Settings.BASE_PATH
         if fullSweep:
             if input('This will wipe whole DB, type 1 to confirm: ') == '1':
@@ -22,4 +22,4 @@ class Clean:
             print('Strat: %s cleaned' % stratName)
 
 
-Clean(stratName='CommitValue')
+Clean(fullSweep=True)

@@ -9,7 +9,7 @@ SetupUtil().createDirStructure(dbPath=dbPath, baseStratName='CheapVol_ProfitRun'
 
 
 # Setup capital files with initial capital £1000
-CapInit(initialCapital=1000)
+CapInit(initialCapital=10)
 
 # Initially testing over timeframes: 1d, 12h, 6h, 2h
 StratInit(
