@@ -1,6 +1,6 @@
 from Pipeline.tests.Audit.test_DailyCapital import *
 from Pipeline.tests.Finance.test_HistoricalKellyPS import *
-from Pipeline.tests.Finance.test_PaperGains import *
+from Pipeline.tests.Finance.test_AnalyseOpenTrades import *
 from Pipeline.tests.PullData.test_PullBinance import *
 from Pipeline.tests.Strategies.CheapVol_ProfitRun.test_IsProfitRun import *
 from Pipeline.tests.Strategies.CheapVol_ProfitRun.test_IsCheapVol import *

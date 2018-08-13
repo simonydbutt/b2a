@@ -1,4 +1,4 @@
-from Pipeline.main.Finance.PaperGains import PaperGains
+from Pipeline.main.Finance.AnalyseOpenTrades import AnalyseOpenTrades
 from tinydb import TinyDB
 import yaml
 import Settings
@@ -17,7 +17,7 @@ class DailyCapital:
 
     def run(self):
         lastPaperCap = self.db.all()[-1]['PaperCapital'] if len(self.db.all()) != 0 else self.capitalDict['initialCapital']
-        numOpen = PaperGains(dbPath='%s/CurrentPositions' % self.dbPath).numOpenTrades()
+        numOpen = AnalyseOpenTrades(dbPath='%s/CurrentPositions' % self.dbPath).numOpenTrades()
         dailyCapLog = {
             'TS': round(time.time()),
             'Date': datetime.datetime.fromtimestamp(round(time.time())).isoformat(),

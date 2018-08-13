@@ -4,15 +4,14 @@ import Settings
 import itertools
 
 
-class PaperGains:
+class AnalyseOpenTrades:
 
     """
         TODO: change name to analyseOpenTrades as what it's turning into...
     """
 
-    def __init__(self, fees=.001, dbPath='Pipeline/DB/CurrentPositions', baseStrat='all'):
+    def __init__(self, dbPath='Pipeline/DB/CurrentPositions', baseStrat='all'):
         dbCompPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
-        self.fees = fees
         dirPath = '%s' % dbCompPath if baseStrat == 'all' \
             else '%s/%s' % (dbCompPath, baseStrat)
         self.dbList = [TinyDB('%s/%s' % (dirPath, strat)) for strat in os.listdir(dirPath)] if baseStrat != 'all' \
@@ -23,14 +22,14 @@ class PaperGains:
             ] for bStrat in os.listdir(dirPath)]
         ))
 
-    def calc(self):
+    def paperValue(self):
         return round(sum([
-            sum([trade['amountHeld'] / trade['currentPrice'] for trade in db.all()])
+            sum([trade['amountHeld'] * trade['currentPrice'] for trade in db.all()])
             for db in self.dbList
         ]),2)
 
     def allocated(self, liquidCurrent):
-        positionCap = self.calc()
+        positionCap = self.paperValue()
         return round(positionCap/(liquidCurrent+positionCap), 4)
 
     def numOpenTrades(self):
