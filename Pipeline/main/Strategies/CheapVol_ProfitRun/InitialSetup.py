@@ -1,16 +1,9 @@
-from tinydb import TinyDB
+from Pipeline.main.Utils.SetupUtil import SetupUtil
 import uuid
-import yaml
-import os
 import Settings
 
 
-class InitalSetup:
-
-    """
-        For performance, calc all but the daysLive and sharpeRatio which are calced in
-        daily audit
-    """
+class InitialSetup:
 
     def __init__(
             self,
@@ -61,23 +54,5 @@ class InitalSetup:
             },
             'kelly': KellyParams
         }
-        filePath = '%s/Pipeline/DB/Configs/%s.yml' % (Settings.BASE_PATH, stratName)
-        response = '0'
-        if os.path.exists(filePath):
-            print('Config file already exists')
-            print('User input required:')
-            print('1   \t-\tReplace existing file')
-            print('2   \t-\tCreate _2 file')
-            print('Else\t-\tIgnore request')
-            response = str(input())
+        SetupUtil().createConfigs(configDict=self.configDict, baseStrat='CheapVol_ProfitRun', stratName=stratName)
 
-        if response == '1' or response == '2' or response == '0':
-            log = 'Config Replaced' if response == '1' else 'Config Created'
-            fileName = '%s_2.yml' % stratName if response == '2' else '%s.yml' % stratName
-            with open('%s/Pipeline/DB/Configs/%s' % (Settings.BASE_PATH, fileName), 'w') as file:
-                yaml.dump(self.configDict, file)
-            TinyDB('%s/Pipeline/DB/CurrentPositions/%s.ujson' % (Settings.BASE_PATH, self.stratID))
-            TinyDB('%s/Pipeline/DB/PerformanceLogs/StratLogs/%s.ujson' % (Settings.BASE_PATH, self.stratID))
-            print(log)
-        else:
-            print('No action taken')
