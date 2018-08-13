@@ -9,4 +9,3 @@ scipy
 ujson
 tinydb
 apscheduler
-yaml
