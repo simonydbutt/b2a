@@ -9,19 +9,24 @@ import Settings
 
 class StratPerformance:
 
-    def __init__(self):
+    """
+        TODO: test_StratPerformance
+    """
+
+    def __init__(self, stratName='CheapVol_ProfitRun'):
+        self.stratName = stratName
         self.dbPath = '%s/Pipeline/DB' % Settings.BASE_PATH
         self.transDB = TinyDB('%s/PerformanceLogs/TransactionLog.ujson' % self.dbPath)
 
     def run(self):
         stratDict = {}
-        for stratFileName in os.listdir('%s/Configs' % self.dbPath):
+        for stratFileName in os.listdir('%s/Configs/%s' % (self.dbPath, self.stratName)):
             stratName = stratFileName[:-4]
-            with open('%s/Configs/%s' % (self.dbPath, stratFileName)) as configFile:
+            with open('%s/Configs/%s/%s' % (self.dbPath, self.stratName, stratFileName)) as configFile:
                 config = yaml.load(configFile)
             q = Query
-            currentTrades = TinyDB('%s/CurrentPositions/%s.ujson' % (self.dbPath, config['stratID'])).all()
-            logDB = TinyDB('%s/PerformanceLogs/StratLogs/%s.ujson' % (self.dbPath, config['stratID']))
+            currentTrades = TinyDB('%s/CurrentPositions/%s/%s.ujson' % (self.dbPath, self.stratName, config['stratID'])).all()
+            logDB = TinyDB('%s/PerformanceLogs/%s/%s.ujson' % (self.dbPath, self.stratName, config['stratID']))
             transLog = self.transDB.search(q.stratID == config['stratID']) if len(self.transDB.all()) != 0 else []
             pastLog = logDB.all()[-1] if len(logDB.all()) != 0 else {'daysLive': 0, 'percentPnL': 0}
             stratLog = config['performance']
