@@ -64,6 +64,9 @@ class RunStrat:
                 # Update Position
                 newCap = round(self.CO.capitalDict['liquidCurrent']*newPositions[sym]['Allocate']*
                                (1 - self.feeDict[cP['Exchange']]), 4)
+                print(newCap)
+                print(self.CO.capitalDict['liquidCurrent'])
+                print(newPositions[sym]['Allocate'])
                 changeCap = round(currentCap - newCap, 4)
                 self.currentDB.update(
                     {

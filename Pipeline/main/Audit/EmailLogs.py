@@ -23,11 +23,11 @@ class EmailLogs:
     def capitalMessage(self):
         dC = DailyCapital().run()
         return '-------------------------------  General  -------------------------------\n\n' \
-               'Date:\t\t\t\t%s\nReal Capital:\t\t    $%s\nPaper Capital:\t\t   $%s\n' \
-               'Percent Allocated:\t %s\nDaily Performance:\t%s\nTotal Performance:\t %s\n' \
+               'Date:\t\t\t\t%s\nReal Capital:\t\t     %s\nPaper Capital:\t\t    %s\n' \
+               'Percent Allocated:\t %s%%\nDaily Performance:\t%s%%\nTotal Performance:\t %s%%\n' \
                'Num. Open Trades:      %s\n\n\n' % (dC['Date'], dC['RealCapital'], dC['PaperCapital'],
-                                                  dC['percentAllocated'], dC['dailyPerformance'],
-                                                  dC['runningPerformance'], dC['numOpenTrades'])
+                                                  100*dC['percentAllocated'], 100*dC['dailyPerformance'],
+                                                  100*dC['runningPerformance'], dC['numOpenTrades'])
 
     def performanceMessage(self):
         sD = StratPerformance().run()

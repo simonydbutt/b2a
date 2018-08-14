@@ -22,10 +22,10 @@ class DailyCapital:
             'TS': round(time.time()),
             'Date': datetime.datetime.fromtimestamp(round(time.time())).isoformat(),
             'RealCapital': self.capitalDict['liquidCurrent'],
-            'PaperCapital': self.capitalDict['paperCurrent'],
+            'PaperCapital': round(self.capitalDict['paperCurrent'], 4),
             'percentAllocated': self.capitalDict['percentAllocated'],
-            'dailyPerformance': self.capitalDict['paperCurrent'] / lastPaperCap - 1,
-            'runningPerformance': self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'] - 1,
+            'dailyPerformance': round(self.capitalDict['paperCurrent'] / lastPaperCap - 1, 4),
+            'runningPerformance': round(self.capitalDict['paperCurrent'] / self.capitalDict['initialCapital'] - 1, 4),
             'numOpenTrades': numOpen,
         }
         self.db.insert(dailyCapLog)
