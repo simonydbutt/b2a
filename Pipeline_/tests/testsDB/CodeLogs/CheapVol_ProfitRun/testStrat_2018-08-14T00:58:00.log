@@ -1,0 +1,6 @@
+2018-08-14 01:00:33,112 apscheduler.scheduler INFO     Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2018-08-14 01:00:33,113 apscheduler.scheduler INFO     Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2018-08-14 01:00:33,113 apscheduler.scheduler INFO     Added job "RunStrat.run" to job store "default"
+2018-08-14 01:00:33,114 apscheduler.scheduler INFO     Added job "EmailLogs" to job store "default"
+2018-08-14 01:00:33,114 apscheduler.scheduler INFO     Scheduler started
+2018-08-14 01:04:05,627 apscheduler.scheduler INFO     Scheduler has been shut down

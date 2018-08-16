@@ -1,0 +1,6 @@
+2018-08-16 00:43:28,612 root         WARNING  Rate limit hit, 30 second sleep
+2018-08-16 00:43:28,614 root         ERROR    Rate limit error after timeout
+2018-08-16 00:43:28,614 root         WARNING  Rate limit hit, 30 second sleep
+2018-08-16 00:43:28,616 root         ERROR    pullData requests error with error code 999
+2018-08-16 00:43:28,619 root         ERROR    Test Error
+2018-08-16 00:43:28,620 root         WARNING  Test Warning
