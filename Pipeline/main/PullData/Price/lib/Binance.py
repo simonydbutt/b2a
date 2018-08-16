@@ -1,13 +1,11 @@
 from Pipeline.main.PullData.Price.lib._Pull import _Pull
 import pandas as pd
-import time
 
 
 class Binance(_Pull):
 
     def __init__(self, logger):
         _Pull.__init__(self, logger=logger)
-        self.logger = logger
         self.baseURL = 'https://api.binance.com'
 
     def getBTCAssets(self, justQuote=False):
@@ -15,7 +13,7 @@ class Binance(_Pull):
                 for val in self._pullData('/api/v1/exchangeInfo')['symbols'] if
                 'BTC' in val['symbol'] and 'USDT' not in val['symbol']]
 
-    def getCandles(self, asset, limit, interval, columns):
+    def getCandles(self, asset, limit, interval, columns, lastReal):
         df = pd.DataFrame(
             self._pullData('/api/v1/klines', params={
                 'symbol': asset,
@@ -26,7 +24,7 @@ class Binance(_Pull):
                      'milliTSClose', 'quoteVol', 'numTrades', 'takerBaseVol',
                      'takerQuoteVol', 'id_']
         )
-        df = df.iloc[:-1] if df.iloc[-1]['milliTSClose']/1000 - time.time() > 0 else df.iloc[1:]
+        df = df.iloc[:-1] if lastReal else df.iloc[1:]
         df[['open', 'close', 'high', 'low', 'takerQuoteVol']] = \
             df[['open', 'close', 'high', 'low', 'takerQuoteVol']].apply(pd.to_numeric)
         df['TS'] = df['milliTSClose'] / 1000

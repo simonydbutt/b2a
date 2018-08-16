@@ -40,8 +40,10 @@ class _Pull:
     def getBTCAssets(self, justQuote=False):
         return []
 
-    def getCandles(self, asset, limit, interval, columns):
+    def getCandles(self, asset, limit, interval, columns, lastReal):
+
         return pd.DataFrame([], columns=columns)
 
     def getAssetPrice(self, sym, dir):
+        # TODO: change to add the exact amount required
         return -1
