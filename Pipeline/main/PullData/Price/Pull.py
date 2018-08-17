@@ -10,8 +10,9 @@ class Pull:
     def BTCAssets(self, justQuote=False):
         return eval(self.exchange)(logger=self.logger).getBTCAssets(justQuote=justQuote)
 
-    def candles(self, asset, limit, interval, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']):
-        return eval(self.exchange)(logger=self.logger).getCandles(asset=asset, limit=limit, interval=interval, columns=columns)
+    def candles(self, asset, limit, interval, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True):
+        return eval(self.exchange)(logger=self.logger).getCandles(asset=asset, limit=limit, interval=interval,
+                                                                  columns=columns, lastReal=lastReal)
 
     def assetPrice(self, symbol, dir='buy'):
         return eval(self.exchange)(logger=self.logger).getAssetPrice(symbol, dir)

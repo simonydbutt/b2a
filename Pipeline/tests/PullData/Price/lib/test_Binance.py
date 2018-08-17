@@ -19,11 +19,12 @@ def test_connection():
     assert round(PB._pullData('/api/v1/time')['serverTime']/10000) == round(time.time()/10)
     CCD.clean()
 
+
 def test_getCandles():
     CCD.create()
     AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Binance', stratName='test_Pull')
     PB = Binance(logger=AL.logger)
-    data = PB.getCandles('ETHBTC', 5, '1d', columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'])
+    data = PB.getCandles('ETHBTC', 5, 86400, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True)
     assert len(data) == 5
     assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']
     CCD.clean()

@@ -1,0 +1,5 @@
+assetList: all
+baseAsset: BTC
+granularity: 300
+positionSize: {name: Basic, percent: 0.05}
+
