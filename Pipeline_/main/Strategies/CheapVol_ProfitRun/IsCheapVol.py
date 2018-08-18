@@ -13,3 +13,4 @@ class IsCheapVol:
 
     def run(self):
         return self.row['volS'] > self.volCoef*self.row['volL'] and self.row['close'] < self.row['bolDown']
+2
