@@ -1,5 +1,6 @@
 assetList: all
 baseAsset: BTC
-granularity: 300
 positionSize: {name: Basic, percent: 0.05}
+enter: {name: CheapVol, exchange: Binance, granularity: 300, periodsVolLong: 5, periodsVolShort: 3, periodsMA: 5,
+        volCoef: 1, bolStd: 2}
 
