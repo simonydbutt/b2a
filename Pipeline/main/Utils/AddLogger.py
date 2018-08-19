@@ -8,7 +8,7 @@ import sys
 
 class AddLogger:
 
-    def __init__(self, dirPath, stratName, fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
+    def __init__(self, stratName, dirPath, fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
         self.filePath = '%s/%s' % (Settings.BASE_PATH, dirPath)
         dTime = datetime.datetime.fromtimestamp(round(time.time())).isoformat()
         logFormat = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')

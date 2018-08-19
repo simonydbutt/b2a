@@ -5,11 +5,10 @@ import yaml
 
 class Position:
 
-    def __init__(self, stratFilePath, capFileName='Capital.yml', capFilePath='Pipeline/DB'):
-        with open('%s/%s' % (Settings.BASE_PATH, stratFilePath)) as stratFile:
-            self.strat = yaml.load(stratFile)['positionSize']
-        with open('%s/%s/%s' % (Settings.BASE_PATH, capFilePath, capFileName)) as capFile:
-            self.capital = yaml.load(capFile)
+    def __init__(self, stratConfig, capConfig):
+        self.stratConfig = stratConfig
+        self.capConfig = capConfig
+
 
     def getSize(self, asset=None):
-        return eval(self.strat['name'])(stratParams=self.strat, capParams=self.capital).get(asset=asset)
+        return eval(self.stratConfig['positionSize']['name'])(stratParams=self.stratConfig['positionSize'], capParams=self.capConfig).get(asset=asset)

@@ -2,7 +2,7 @@ class ExchangeUtil:
 
     def __init__(self, exchange):
         self.exchange = exchange
-        self.candlestickDict = {
+        self.exchangeDict = {
             'Binance': {
                 'interval': {
                     '60': '1m', '180': '3m', '300': '5m', '900': '15m',
@@ -12,21 +12,26 @@ class ExchangeUtil:
                     '604800': '1w'
                 },
                 'columns': ['milliTSOpen', 'open', 'high', 'low', 'close', 'volume',
-                     'milliTSClose', 'quoteVol', 'numTrades', 'takerBaseVol',
-                     'takerQuoteVol', 'id_']
+                            'milliTSClose', 'quoteVol', 'numTrades', 'takerBaseVol',
+                            'takerQuoteVol', 'id_'],
+                'fees': 0.001
             },
             'Hadax': {
                 'interval': {
                     '60': '1min', '300': '5min', '900': '15min',
                     '3600': '60min', '86400': '1day', '604800': '1week'
                 },
-                'columns': ['TS', 'open', 'close', 'low', 'high', 'amount', 'vol', 'count']
+                'columns': ['TS', 'open', 'close', 'low', 'high', 'amount', 'vol', 'count'],
+                'fees': 0.002
             }
         }
 
     def candlestickInterval(self, period):
-        return self.candlestickDict[self.exchange]['interval'][str(period)] if \
-            self.exchange in self.candlestickDict.keys() else -1
+        return self.exchangeDict[self.exchange]['interval'][str(period)] if \
+            self.exchange in self.exchangeDict.keys() else -1
 
     def candlestickColumns(self):
-        return self.candlestickDict[self.exchange]['columns']
+        return self.exchangeDict[self.exchange]['columns']
+
+    def fees(self):
+        return self.exchangeDict[self.exchange]['fees']

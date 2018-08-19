@@ -1,5 +1,6 @@
-from Pipeline.main.Setups.Open.lib.CheapVol import CheapVol
-from Pipeline.tests.Setups.Open.lib.CheapVolTestData import *
+from Pipeline.main.Strategy.Open.lib.CheapVol import CheapVol
+from Pipeline.main.PullData.Price.Pull import Pull
+from Pipeline.tests.Strategy.Open.lib.CheapVolTestData import *
 from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
 import Settings
@@ -14,7 +15,8 @@ with open('%s/Pipeline/tests/test_DB/Configs/testStrat.yml' % Settings.BASE_PATH
 def test_CheapVol():
     CCD.create()
     AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_CheapVol', stratName='test_CheapVol')
-    CV = CheapVol(params=params, logger=AL.logger, isTest=True)
+    P = Pull('Binance', AL.logger)
+    CV = CheapVol(params=params, isTest=True, pullData=P)
     # Will enter position
     assert CV.run(asset='LTCBTC', testData=enterData)
     # Volume too small to enter

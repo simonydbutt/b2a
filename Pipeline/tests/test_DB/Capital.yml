@@ -1,5 +1,1 @@
-initialCapital: 10
-liquidCurrent: 9
-paperCurrent: 10
-paperPnL: 0
-percentAllocated: 10
+{initialCapital: 10, liquidCurrent: 10, paperCurrent: 10, paperPnL: 0, percentAllocated: 10}
