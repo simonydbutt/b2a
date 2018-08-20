@@ -7,30 +7,35 @@ import Settings
 import yaml
 
 
-dbPath = '%s/Pipeline/tests/test_DB' % Settings.BASE_PATH
-CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_CheapVol',
-                                   'Pipeline/tests/test_db/CurrentPositions'])
-with open('%s/Configs/testStrat.yml' % dbPath) as file:
-    params = yaml.load(file)
-baseCapFile = {'initialCapital': 10,'liquidCurrent': 10, 'paperCurrent': 10,'paperPnL': 0, 'percentAllocated': 10}
-with open('%s/Capital.yml' % dbPath, 'w') as capFile:
-    yaml.dump(baseCapFile, capFile)
-CCD.create()
-AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_CheapVol', stratName='test_CheapVol')
-P = Pull('Binance', AL.logger)
-db = TinyDB('%s/CurrentPositions/testStrat.ujson' % dbPath)
-OT = OpenTrade(configParams=params, compPath=dbPath, Pull=P, db=db)
-OT.open('ETHBTC')
+def Enter():
+    dbPath = '%s/Pipeline/tests/test_DB' % Settings.BASE_PATH
+    CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_CheapVol',
+                                       'Pipeline/tests/test_db/CurrentPositions'])
+    with open('%s/Configs/testStrat.yml' % dbPath) as file:
+        params = yaml.load(file)
+    baseCapFile = {'initialCapital': 10,'liquidCurrent': 10, 'paperCurrent': 10,'paperPnL': 0, 'percentAllocated': 10}
+    with open('%s/Capital.yml' % dbPath, 'w') as capFile:
+        yaml.dump(baseCapFile, capFile)
+    CCD.create()
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_CheapVol', stratName='test_CheapVol')
+    P = Pull('Binance', AL.logger)
+    db = TinyDB('%s/CurrentPositions/testStrat.ujson' % dbPath)
+    OT = OpenTrade(configParams=params, compPath=dbPath, Pull=P, db=db)
+    OT.open('ETHBTC')
+    return baseCapFile, db, CCD, dbPath, OT
 
 
 def test_open():
+    baseCapFile, db, CCD, dbPath, OT = Enter()
     entry = db.search(Query().assetName == 'ETHBTC')
-    CCD.clean()
     assert len(entry) == 1
-    assert list(entry[0].keys()) == ['assetName', 'openPrice', 'currentPrice', 'periods', 'positionSize', 'TSOpen']
+    assert list(entry[0].keys()) == ['assetName', 'openPrice', 'currentPrice', 'periods',
+                                     'positionSize', 'paperSize', 'TSOpen']
+    CCD.clean()
 
 
 def test_updateBooks():
+    baseCapFile, db, CCD, dbPath, OT = Enter()
     OT.updateBooks()
     with open('%s/Capital.yml' % dbPath) as capFile:
         currentCap = yaml.load(capFile)
@@ -40,6 +45,7 @@ def test_updateBooks():
     assert currentCap['paperPnL'] == 1
     with open('%s/Capital.yml' % dbPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
+    CCD.clean()
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ with open('%s/%s/Configs/testStrat.yml' % (Settings.BASE_PATH, dbPath)) as strat
 
 def test_Positon():
     P = Position(stratConfig=stratDict, capConfig=capDict)
-    assert P.getSize() == 0.45
+    assert P.getSize() == 0.5
 
 
 if __name__ == '__main__':

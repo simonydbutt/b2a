@@ -13,7 +13,7 @@ CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Binance
 
 def test_connection():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Binance', stratName='test_Pull')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Binance', stratName='test_Pull')
     PB = Binance(logger=AL.logger)
     assert PB._pullData('/api/v1/ping') == {}
     assert round(PB._pullData('/api/v1/time')['serverTime']/10000) == round(time.time()/10)
@@ -22,7 +22,7 @@ def test_connection():
 
 def test_getCandles():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Binance', stratName='test_Pull')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Binance', stratName='test_Pull')
     PB = Binance(logger=AL.logger)
     data = PB.getCandles('ETHBTC', 5, 86400, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True)
     assert len(data) == 5

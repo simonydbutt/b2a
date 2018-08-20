@@ -14,7 +14,7 @@ CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Pull'])
 
 def test_BTCAssets():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Pull', stratName='test_Pull')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Pull', stratName='test_Pull')
     PH = Hadax(logger=AL.logger)
     P = Pull(exchange='Hadax', logger=AL.logger)
     assert PH.getBTCAssets() == P.BTCAssets()
@@ -23,7 +23,7 @@ def test_BTCAssets():
 
 def test_candles():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Pull', stratName='test_Pull')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Pull', stratName='test_Pull')
     BinanceData = Binance(logger=AL.logger).getCandles(
         asset='LTCBTC', limit=5, interval=300, columns=['TS', 'open'], lastReal=True)
     PullData = Pull(exchange='Binance', logger=AL.logger).candles(

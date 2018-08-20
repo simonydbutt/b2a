@@ -16,12 +16,16 @@ class CheapVol:
         self.pull = pullData
 
     def run(self, asset, testData=None):
+        maxPeriods = max(self.params['periodsVolLong'], self.params['periodsMA'])
         df = self.pull.candles(asset=asset, interval=self.params['granularity'],
-                               limit=max(self.params['periodsVolLong'], self.params['periodsMA']),
+                               limit=maxPeriods,
                                columns=['close', 'takerQuoteVol'], lastReal=True) if not self.isTest else testData
-        row = df.iloc[-1]
-        row['volL'] = np.nanmean(df.iloc[-self.params['periodsVolLong']:]['takerQuoteVol'])
-        row['volS'] = np.nanmean(df.iloc[-self.params['periodsVolShort']:]['takerQuoteVol'])
-        bolData = df.iloc[-self.params['periodsMA']:]['close']
-        row['bolDown'] = np.nanmean(bolData) - self.params['bolStd'] * np.nanstd(bolData)
-        return row['volS'] > self.params['volCoef']*row['volL'] and row['close'] < row['bolDown']
+        if len(df) == maxPeriods:
+            row = df.iloc[-1]
+            row['volL'] = np.nanmean(df.iloc[-self.params['periodsVolLong']:]['takerQuoteVol'])
+            row['volS'] = np.nanmean(df.iloc[-self.params['periodsVolShort']:]['takerQuoteVol'])
+            bolData = df.iloc[-self.params['periodsMA']:]['close']
+            row['bolDown'] = np.nanmean(bolData) - self.params['bolStd'] * np.nanstd(bolData)
+            return row['volS'] > self.params['volCoef']*row['volL'] and row['close'] < row['bolDown']
+        else:
+            return False

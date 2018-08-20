@@ -16,7 +16,7 @@ with open('%s/%s/Configs/testStrat.yml' % (Settings.BASE_PATH, dbPath)) as file:
 
 def test_indivEntry():
     CCD.create()
-    AL = AddLogger('%s/CodeLogs/test_Enter' % dbPath, stratName='test_Enter')
+    AL = AddLogger(dirPath='%s/CodeLogs/test_Enter' % dbPath, stratName='test_Enter')
     E = Enter(stratName='testStrat', dbPath=dbPath, logger=AL.logger, isTest=True)
     P = Pull('Binance', AL.logger)
     CV = CheapVol(params=params, pullData=P, isTest=True)

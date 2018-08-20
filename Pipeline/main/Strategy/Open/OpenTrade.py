@@ -9,9 +9,9 @@ class OpenTrade:
     def __init__(self, configParams, compPath, Pull, db, capName='Capital'):
         self.capPath = '%s/%s.yml' % (compPath, capName)
         self.db = db
-        self.Pull = Pull
         self.configParams = configParams
         self.EU = ExchangeUtil(self.configParams['enter']['exchange'])
+        self.Pull = Pull
         with open(self.capPath) as capFile:
             self.capDict = yaml.load(capFile)
         self.P = Position(stratConfig=configParams, capConfig=self.capDict)
@@ -19,12 +19,14 @@ class OpenTrade:
     def open(self, asset):
         openPrice = self.Pull.assetPrice(symbol=asset, dir='buy')
         capAllocated = round(self.P.getSize(asset=asset), 6)
+        posSize = capAllocated * (1 - self.EU.fees())
         openDict = {
             'assetName': asset,
             'openPrice': openPrice,
             'currentPrice': openPrice,
             'periods': 0,
-            'positionSize': capAllocated * (1 - self.EU.fees()),
+            'positionSize': posSize,
+            'paperSize': posSize,
             'TSOpen': round(time.time())
         }
         self.db.insert(openDict)

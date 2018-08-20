@@ -7,14 +7,14 @@ import Settings
 import yaml
 
 
-CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_CheapVol'])
+CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/testCheapVol'])
 with open('%s/Pipeline/tests/test_DB/Configs/testStrat.yml' % Settings.BASE_PATH) as file:
     params = yaml.load(file)
 
 
 def test_CheapVol():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_CheapVol', stratName='test_CheapVol')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/testCheapVol', stratName='testCheapVol')
     P = Pull('Binance', AL.logger)
     CV = CheapVol(params=params, isTest=True, pullData=P)
     # Will enter position

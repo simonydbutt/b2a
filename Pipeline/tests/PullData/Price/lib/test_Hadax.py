@@ -8,7 +8,7 @@ CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Hadax']
 
 def test_getCandles():
     CCD.create()
-    AL = AddLogger('Pipeline/tests/test_DB/CodeLogs/test_Hadax', stratName='test_Hadax')
+    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Hadax', stratName='test_Hadax')
     PH = Hadax(logger=AL.logger)
     data = PH.getCandles(asset='ETHBTC', limit=5, interval=3600, columns=['TS', 'open', 'close', 'low', 'high'],
                          lastReal=True)

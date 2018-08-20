@@ -24,7 +24,8 @@ class BuildStrat:
             dbPath,
             '%s/Configs' % dbPath,
             '%s/CurrentPositions' % dbPath,
-            '%s/PerformanceLogs' % dbPath,
+            '%s/TransactionLogs' % dbPath,
+            '%s/TransactionLogs' % dbPath,
             '%s/CodeLogs' % dbPath,
             '%s/CodeLogs/%s' % (dbPath, stratName)
         ]:
