@@ -24,6 +24,7 @@ class Enter:
         return self.enterStrat.run(asset, testData=testData)
 
     def run(self):
+        openList = []
         self.logger.info('Starting Enter run')
         OT = OpenTrade(self.configParams, compPath=self.compPath, db=self.db, Pull=self.Pull)
         allAssetsList = self.Pull.BTCAssets() if self.configParams['assetList'] == 'all' else self.configParams['assetList']
@@ -31,12 +32,15 @@ class Enter:
             self.logger.debug('Starting asset: %s' % asset)
             if self.enterStrat.run(asset, testData=None):
                 self.logger.info('Entering trade: %s' % asset)
+                openList.append(asset)
                 OT.open(asset)
             else:
                 self.logger.info('No action for asset: %s' % asset)
         OT.updateBooks()
         self.db.close()
         self.logger.info('Ending Enter run')
+        self.logger.info('%s assets analysed' % len(allAssetsList))
+        self.logger.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
 
 
 # from Pipeline.main.Utils.AddLogger import AddLogger

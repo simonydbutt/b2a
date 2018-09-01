@@ -10,33 +10,33 @@ class ProfitRun:
         'sellPrice' increases is close > 'hitPrice'
     """
 
-    def __init__(self, configParams, pullData, db, isTest=False):
+    def __init__(self, configParams, pullData, isTest=False):
         self.isTest = isTest
         self.configParams = configParams['exit']
         self.Pull = pullData
-        self.db = db
 
-    def updatePosition(self, positionData):
-        data = self.Pull.candles(asset=positionData['assetName'], limit=self.configParams['maPeriods'],
-                                 interval=self.configParams['granularity'], lastReal=True)
+    def updatePosition(self, positionData, db, testData=None):
+        data = self.Pull.candles(asset=positionData['assetName'], limit=self.configParams['maPeriods'], lastReal=True,
+                                 interval=self.configParams['granularity'], columns=['close']) if \
+            not self.isTest else testData
         ma, std = np.mean(data['close']), np.std(data['close'])
-        self.db.update(
+        db.update(
             {
-                'hitPrice': ma + self.configParams['stdDict']['up'],
-                'sellPrice': ma - self.configParams['stdDict']['down']
+                'hitPrice': np.round(ma + self.configParams['stdDict']['up']*std, 4),
+                'sellPrice': np.round(ma - self.configParams['stdDict']['down']*std, 4)
             }, Query().assetName == positionData['assetName']
         )
 
-    def run(self, positionData, testData=None):
-        price = self.Pull.assetPrice(positionData['assetName'])
+    def run(self, positionData, db, testPrice=None, testData=None):
+        price = self.Pull.assetPrice(positionData['assetName']) if not self.isTest else testPrice
         if 'hitPrice' not in positionData.keys():
-            self.updatePosition(positionData=positionData)
+            self.updatePosition(positionData=positionData, db=db, testData=None if not self.isTest else testData)
             return False, price
         else:
             if positionData['periods'] > self.configParams['closePeriods']:
                 return True, price
             elif price > positionData['hitPrice']:
-                self.updatePosition(positionData=positionData)
+                self.updatePosition(positionData=positionData, db=db, testData=None if not self.isTest else testData)
                 return False, price
             elif price < positionData['sellPrice']:
                 return True, price

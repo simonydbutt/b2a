@@ -11,10 +11,10 @@ class ExitTrade:
         self.db = db
         with open('%s/%s.yml' % (self.compPath, capName)) as capFile:
             self.capDict = yaml.load(capFile)
-        self.transDB = TinyDB('%s/transactionLogs/%s.ujson' % compPath, stratName)
+        self.transDB = TinyDB('%s/TransactionLogs/%s.ujson' % (compPath, stratName))
 
     def exit(self, positionDict, currentPrice):
-        exitPositionSize = (currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - self.fees)
+        exitPositionSize = round((currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - self.fees),6)
         realPnL = exitPositionSize - positionDict['positionSize']
         self.db.remove(Query().assetName == positionDict['assetName'])
         self.transDB.insert(
@@ -38,8 +38,9 @@ class ExitTrade:
         )
 
     def updateBooks(self):
-        self.capDict['paperCurrent'] = self.capDict['liquidCurrent'] + self.paperValue()
+        self.capDict['paperCurrent'] = round(self.capDict['liquidCurrent'] + self.paperValue(), 4)
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent'] / self.capDict['paperCurrent'], 3)
         self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
+        self.capDict['liquidCurrent'] = round(self.capDict['liquidCurrent'], 4)
         with open('%s/Capital.yml' % self.compPath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)
