@@ -25,12 +25,12 @@ class Exit:
         self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, pullData=self.Pull,
                                                                  isTest=isTest)
 
-    def runIndiv(self, positionData, testPrice):
-        return self.exitStrat.run(positionData, testPrice=testPrice)
+    def runIndiv(self, positionData, testPrice, db):
+        return self.exitStrat.run(positionData, testPrice=testPrice, db=db)
 
     def run(self):
-        db = TinyDB('%s/CurrentPositions/%s.ujson' % (self.compPath, self.stratName))
         self.logger.info('Starting Exit run')
+        db = TinyDB('%s/CurrentPositions/%s.ujson' % (self.compPath, self.stratName))
         U = UpdatePosition(db=db)
         E = ExitTrade(compPath=self.compPath, db=db, stratName=self.stratName, fees=self.fees)
         for positionDict in db.all():
@@ -45,3 +45,4 @@ class Exit:
         E.updateBooks()
         db.close()
         self.logger.info('Ending Exit Run')
+

@@ -17,4 +17,5 @@ class CreateCleanDir:
     def clean(self):
         for filePath in self.filePathList:
             path = '%s/%s' % (Settings.BASE_PATH, filePath)
-            shutil.rmtree(path)
+            if os.path.exists(path):
+                shutil.rmtree(path)

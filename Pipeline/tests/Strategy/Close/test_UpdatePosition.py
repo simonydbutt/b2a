@@ -1,6 +1,6 @@
 from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
-from tinydb import TinyDB, Query
+from tinydb import TinyDB
 import Settings
 
 
