@@ -7,7 +7,6 @@ import itertools
 class AnalyseOpenTrades:
 
     """
-        TODO: change name to analyseOpenTrades as what it's turning into...
     """
 
     def __init__(self, dbPath='Pipeline_/DB/CurrentPositions', baseStrat='all'):

@@ -11,7 +11,7 @@ import yaml
 class Exit:
 
     """
-        If ass
+
     """
 
     def __init__(self, stratName, logger, dbPath='Pipeline/DB', isTest=False):
@@ -31,17 +31,17 @@ class Exit:
     def run(self):
         db = TinyDB('%s/CurrentPositions/%s.ujson' % (self.compPath, self.stratName))
         self.logger.info('Starting Exit run')
-        U = UpdatePosition(db=self.db)
-        E = ExitTrade(compPath=self.compPath, db=self.db, stratName=self.stratName, fees=self.fees)
-        for position in self.db.all():
-            self.logger.debug('Analysing open position: %s' % position['assetName'])
-            isExit, currentPrice = self.exitStrat.run(positionData=position, testData=None, db=db)
+        U = UpdatePosition(db=db)
+        E = ExitTrade(compPath=self.compPath, db=db, stratName=self.stratName, fees=self.fees)
+        for positionDict in db.all():
+            self.logger.debug('Analysing open position: %s' % positionDict['assetName'])
+            isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, db=db)
             if isExit:
                 print('ExitTrade')
-                E.exit(positionDict=position, currentPrice=currentPrice)
+                E.exit(positionDict=positionDict, currentPrice=currentPrice)
             else:
                 print('UpdateTrade')
-                U.update(positionDict=position, currentPrice=currentPrice)
+                U.update(positionDict=positionDict, currentPrice=currentPrice)
         E.updateBooks()
         db.close()
         self.logger.info('Ending Exit Run')

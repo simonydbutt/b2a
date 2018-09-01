@@ -5,7 +5,6 @@ class PullHadax(_Pull):
 
     """
         Initially using for CommitValue
-        # TODO: add amount to getAssetPrice to get the exact price will buy at
     """
 
     def __init__(self):

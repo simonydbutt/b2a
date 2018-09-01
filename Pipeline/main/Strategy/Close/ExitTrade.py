@@ -34,7 +34,7 @@ class ExitTrade:
 
     def paperValue(self):
         return sum(
-            [val['paperSize'] for val in self.db.all()]
+            [val['paperValue'] for val in self.db.all()]
         )
 
     def updateBooks(self):

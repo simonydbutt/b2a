@@ -7,6 +7,11 @@ import pandas as pd
 
 class _Pull:
 
+    """
+        **TODO: on getAssetPrcie: add amount to getAssetPrice to get the exact price will buy at
+    """
+
+
     def __init__(self, logger):
         self.logger = logger
         self.baseURL = ''

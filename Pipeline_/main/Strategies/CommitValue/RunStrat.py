@@ -12,7 +12,6 @@ import time
 class RunStrat:
 
     """
-        TODO: Runs but results clearly wrong
     """
 
     def __init__(self, stratName='CommitValue',

@@ -10,7 +10,6 @@ import Settings
 class StratPerformance:
 
     """
-        TODO: test_StratPerformance
     """
 
     def __init__(self, stratName='CheapVol_ProfitRun'):

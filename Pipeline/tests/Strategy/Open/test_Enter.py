@@ -24,7 +24,5 @@ def test_indivEntry():
     CCD.clean()
 
 
-
-
 if __name__ == '__main__':
     test_indivEntry()

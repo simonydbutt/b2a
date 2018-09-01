@@ -5,10 +5,6 @@ import time
 
 class PullBinance(_Pull):
 
-    """
-        # TODO: add amount to getAssetPrice to get the exact price will buy at
-    """
-
     def __init__(self):
         _Pull.__init__(self)
         self.baseUrl = 'https://api.binance.com'

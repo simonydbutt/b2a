@@ -4,10 +4,6 @@ from Pipeline.main.PullData.Price.lib.Hadax import Hadax
 from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
 
-"""
-    TODO: Add to this when adding other exchanges
-"""
-
 
 CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Pull'])
 
