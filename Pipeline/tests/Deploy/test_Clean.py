@@ -56,11 +56,10 @@ def test_resetStrat():
     Clean('test', 'testStrat').resetStrat()
     assert len(TinyDB('%s/currentPositions.ujson' % stratPath).all()) == 0
     assert len(TinyDB('%s/transactionLogs.ujson' % stratPath).all()) == 0
-    assert len(os.listdir('%s/Codelogs' % stratPath)) == 0
     with open('%s/capital.yml' % stratPath, 'r+') as capFile:
         cap = yaml.load(capFile)
     assert cap == {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10, 'paperPnL': 0, 'percentAllocated': 0}
-    after()
+    #after()
 
 
 if __name__ == '__main__':

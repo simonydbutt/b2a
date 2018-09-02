@@ -27,7 +27,6 @@ class Clean:
         os.remove('%s/currentPositions.ujson' % self.path)
         os.remove('%s/transactionLogs.ujson' % self.path)
         os.mkdir('%s/CodeLogs' % self.path)
-        os.mkdir('%s/TransactionLogs' % self.path)
         TinyDB('%s/currentPositions.ujson' % self.path)
         TinyDB('%s/transactionLogs.ujson' % self.path)
 
