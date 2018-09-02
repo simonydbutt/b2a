@@ -13,6 +13,7 @@ def test_assets():
     config = {'assetSelection': {'name': 'All', 'baseAsset': 'BTC', 'exchangeList': ['Binance']}}
     AL = AddLogger(db='test', stratName='test_Select').logger
     assert Select(config, AL).assets() == All(config['assetSelection'], AL).getAssets()
+    CCD.clean()
 
 
 if __name__ == '__main__':
