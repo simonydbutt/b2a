@@ -8,7 +8,7 @@ import yaml
 import os
 
 
-path = '%s/Pipeline/DB/test/' % Settings.BASE_PATH
+path = '%s/Pipeline/DB/test' % Settings.BASE_PATH
 stratPath = '%s/testStrat' % path
 archivePath = '%s/archive' % path
 
