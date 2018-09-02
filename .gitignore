@@ -14,3 +14,5 @@ DB/
 csv/
 Settings.py
 Pipeline/tests/testsDB/CodeLogs/*
+*.log
+.DS_Store

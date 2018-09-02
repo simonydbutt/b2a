@@ -3,7 +3,6 @@ from Backtest.main.Utils.TimeUtil import TimeUtil
 
 """
     Tests for TimeUtil class
-    TODO: Get working
 """
 
 TU = TimeUtil()
