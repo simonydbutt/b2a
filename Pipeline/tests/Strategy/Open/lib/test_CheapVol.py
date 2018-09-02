@@ -6,23 +6,23 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 import Settings
 import yaml
 
-
-CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/testCheapVol'])
-with open('%s/Pipeline/tests/test_DB/Configs/testStrat.yml' % Settings.BASE_PATH) as file:
+dbPath = 'Pipeline/DB/test'
+CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
     params = yaml.load(file)
 
 
 def test_CheapVol():
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/testCheapVol', stratName='testCheapVol')
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testCheapVol')
     P = Pull('Binance', AL.logger)
-    CV = CheapVol(params=params, isTest=True, pullData=P)
+    CV = CheapVol(params=params, isTest=True)
     # Will enter position
-    assert CV.run(asset='LTCBTC', testData=enterData)
+    assert CV.run(asset='LTCBTC', testData=enterData, Pull=P)
     # Volume too small to enter
-    assert not CV.run(asset='LTCBTC', testData=volSmallData)
+    assert not CV.run(asset='LTCBTC', testData=volSmallData, Pull=P)
     # Price too large to enter
-    assert not CV.run(asset='LTCBTC', testData=closeLargeData)
+    assert not CV.run(asset='LTCBTC', testData=closeLargeData, Pull=P)
     CCD.clean()
 
 

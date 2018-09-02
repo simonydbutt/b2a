@@ -2,10 +2,10 @@ from Pipeline.main.PositionSize.Position import Position
 import Settings
 import yaml
 
-dbPath = 'Pipeline/tests/test_DB'
-with open('%s/%s/Capital.yml' % (Settings.BASE_PATH, dbPath)) as capFile:
+dbPath = 'Pipeline/DB/test'
+with open('%s/%s/capital.yml' % (Settings.BASE_PATH, dbPath)) as capFile:
     capDict = yaml.load(capFile)
-with open('%s/%s/Configs/testStrat.yml' % (Settings.BASE_PATH, dbPath)) as stratFile:
+with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as stratFile:
     stratDict = yaml.load(stratFile)
 
 

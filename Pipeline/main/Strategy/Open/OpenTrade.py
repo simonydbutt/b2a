@@ -6,20 +6,20 @@ import time
 
 class OpenTrade:
 
-    def __init__(self, configParams, compPath, Pull, db, capName='Capital'):
+    def __init__(self, configParams, compPath, db, capName='Capital'):
         self.capPath = '%s/%s.yml' % (compPath, capName)
         self.db = db
         self.configParams = configParams
-        self.EU = ExchangeUtil(self.configParams['enter']['exchange'])
-        self.Pull = Pull
+        self.EU = ExchangeUtil()
         with open(self.capPath) as capFile:
             self.capDict = yaml.load(capFile)
         self.P = Position(stratConfig=configParams, capConfig=self.capDict)
 
-    def open(self, asset):
-        openPrice = self.Pull.assetPrice(symbol=asset, dir='buy')
+    def open(self, assetVals, Pull):
+        asset = assetVals[0]
+        openPrice = Pull.assetPrice(symbol=asset, dir='buy')
         capAllocated = round(self.P.getSize(asset=asset), 6)
-        posSize = capAllocated * (1 - self.EU.fees())
+        posSize = capAllocated * (1 - self.EU.fees(exchange=assetVals[1]))
         openDict = {
             'assetName': asset,
             'openPrice': openPrice,
@@ -27,7 +27,8 @@ class OpenTrade:
             'periods': 0,
             'positionSize': posSize,
             'paperSize': posSize,
-            'TSOpen': round(time.time())
+            'TSOpen': round(time.time()),
+            'exchange': assetVals[1]
         }
         self.db.insert(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)

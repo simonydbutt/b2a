@@ -1,7 +1,6 @@
 class ExchangeUtil:
 
-    def __init__(self, exchange):
-        self.exchange = exchange
+    def __init__(self):
         self.exchangeDict = {
             'Binance': {
                 'interval': {
@@ -26,12 +25,11 @@ class ExchangeUtil:
             }
         }
 
-    def candlestickInterval(self, period):
-        return self.exchangeDict[self.exchange]['interval'][str(period)] if \
-            self.exchange in self.exchangeDict.keys() else -1
+    def candlestickInterval(self, period, exchange):
+        return self.exchangeDict[exchange]['interval'][str(period)] if exchange in self.exchangeDict.keys() else -1
 
-    def candlestickColumns(self):
-        return self.exchangeDict[self.exchange]['columns']
+    def candlestickColumns(self, exchange):
+        return self.exchangeDict[exchange]['columns']
 
-    def fees(self):
-        return self.exchangeDict[self.exchange]['fees']
+    def fees(self, exchange):
+        return self.exchangeDict[exchange]['fees']

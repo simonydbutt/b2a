@@ -9,6 +9,6 @@ class Position:
         self.stratConfig = stratConfig
         self.capConfig = capConfig
 
-
     def getSize(self, asset=None):
-        return eval(self.stratConfig['positionSize']['name'])(stratParams=self.stratConfig['positionSize'], capParams=self.capConfig).get(asset=asset)
+        return eval(self.stratConfig['positionSize']['name'])(stratParams=self.stratConfig['positionSize'],
+                                                              capParams=self.capConfig).get(asset=asset)

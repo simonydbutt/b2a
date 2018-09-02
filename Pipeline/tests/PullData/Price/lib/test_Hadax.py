@@ -3,12 +3,13 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from Pipeline.main.Utils.AddLogger import AddLogger
 
 
-CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Hadax'])
+dbPath = 'Pipeline/DB/test'
+CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
 
 
 def test_getCandles():
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Hadax', stratName='test_Hadax')
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Hadax')
     PH = Hadax(logger=AL.logger)
     data = PH.getCandles(asset='ETHBTC', limit=5, interval=3600, columns=['TS', 'open', 'close', 'low', 'high'],
                          lastReal=True)

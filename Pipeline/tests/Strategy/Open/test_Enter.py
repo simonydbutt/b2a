@@ -6,24 +6,27 @@ from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
 import Settings
 import yaml
+import os
+
 
 def before():
-    dbPath = 'Pipeline/tests/test_DB'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs/test_Enter' % dbPath,
-                                       '%s/CurrentPositions' % dbPath])
-    with open('%s/%s/Configs/testStrat.yml' % (Settings.BASE_PATH, dbPath)) as file:
+    dbPath = 'Pipeline/DB/test'
+    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
         params = yaml.load(file)
     CCD.create()
     return CCD, params, dbPath
 
+
 def test_indivEntry():
     CCD, params, dbPath = before()
-    AL = AddLogger(dirPath='%s/CodeLogs/test_Enter' % dbPath, stratName='test_Enter')
-    E = Enter(stratName='testStrat', dbPath=dbPath, logger=AL.logger, isTest=True)
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Enter')
+    E = Enter(dbPath=dbPath, logger=AL.logger, isTest=True)
     P = Pull('Binance', AL.logger)
-    CV = CheapVol(params=params, pullData=P, isTest=True)
-    assert E.runIndiv(asset='LTCBTC', testData=enterData) == CV.run('LTCBTC', testData=enterData)
+    CV = CheapVol(params=params, isTest=True)
+    assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', Pull=P, testData=enterData)
     CCD.clean()
+    os.remove('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
 from tinydb import TinyDB, Query
 import yaml
 import time
@@ -5,8 +6,7 @@ import time
 
 class ExitTrade:
 
-    def __init__(self, compPath, stratName, db, fees, capName='Capital'):
-        self.fees = fees
+    def __init__(self, compPath, stratName, db, capName='capital'):
         self.compPath = compPath
         self.db = db
         with open('%s/%s.yml' % (self.compPath, capName)) as capFile:
@@ -14,7 +14,8 @@ class ExitTrade:
         self.transDB = TinyDB('%s/TransactionLogs/%s.ujson' % (compPath, stratName))
 
     def exit(self, positionDict, currentPrice):
-        exitPositionSize = round((currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - self.fees),6)
+        fees = ExchangeUtil().fees(exchange=positionDict['exchange'])
+        exitPositionSize = round((currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - fees),6)
         realPnL = exitPositionSize - positionDict['positionSize']
         self.db.remove(Query().assetName == positionDict['assetName'])
         self.transDB.insert(

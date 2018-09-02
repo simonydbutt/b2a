@@ -2,6 +2,9 @@ class Basic:
 
     """
         Simply returns percent of total liquid capital
+
+        Config Requirements:
+            - percent
     """
 
     def __init__(self, stratParams, capParams):

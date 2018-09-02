@@ -1,5 +1,6 @@
 from Pipeline.main.PullData.Price.Pull import Pull
 from Pipeline.main.Strategy.Open.lib import *
+from Pipeline.main.AssetSelection.Select import Select
 from Pipeline.main.Strategy.Open.OpenTrade import OpenTrade
 from tinydb import TinyDB
 import Settings
@@ -8,42 +9,36 @@ import yaml
 
 class Enter:
 
-    def __init__(self, stratName, logger, dbPath='Pipeline/DB', isTest=False):
+    def __init__(self, logger, dbPath, isTest=False):
         self.compPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
-        with open('%s/Configs/%s.yml' % (self.compPath, stratName)) as stratFile:
+        with open('%s/config.yml' % self.compPath) as stratFile:
             self.configParams = yaml.load(stratFile)
-        self.db = TinyDB('%s/CurrentPositions/%s.ujson' % (self.compPath, stratName))
-        self.currentPositions = [val['assetName'] for val in self.db.all()]
-        self.Pull = Pull(exchange=self.configParams['enter']['exchange'], logger=logger)
-        self.enterStrat = eval(self.configParams['enter']['name'])(params=self.configParams, pullData=self.Pull,
-                                                                   isTest=isTest)
+        self.db = TinyDB('%s/currentPositions.ujson' % self.compPath)
+        self.enterStrat = eval(self.configParams['enter']['name'])(params=self.configParams, isTest=isTest)
         self.logger = logger
+        self.Select = Select(config=self.configParams, logger=self.logger)
 
-    def runIndiv(self, asset, testData):
+    def runIndiv(self, asset, Pull, testData):
         # for testing
-        return self.enterStrat.run(asset, testData=testData)
+        return self.enterStrat.run(asset, Pull=Pull, testData=testData)
 
     def run(self):
         openList = []
         self.logger.info('Starting Enter run')
-        OT = OpenTrade(self.configParams, compPath=self.compPath, db=self.db, Pull=self.Pull)
-        allAssetsList = self.Pull.BTCAssets() if self.configParams['assetList'] == 'all' else self.configParams['assetList']
-        for asset in [val for val in allAssetsList if val not in self.currentPositions]:
+        currentPositions = [val['assetName'] for val in self.db.all()]
+        OT = OpenTrade(self.configParams, compPath=self.compPath, db=self.db)
+        assetList = self.Select.assets()
+        for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
+            pull = Pull(exchange=exchange, logger=self.logger)
             self.logger.debug('Starting asset: %s' % asset)
-            if self.enterStrat.run(asset, testData=None):
+            if self.enterStrat.run(asset, Pull=pull, testData=None):
                 self.logger.info('Entering trade: %s' % asset)
                 openList.append(asset)
-                OT.open(asset)
+                OT.open(assetVals=(asset, exchange), Pull=pull)
             else:
                 self.logger.info('No action for asset: %s' % asset)
         OT.updateBooks()
         self.db.close()
         self.logger.info('Ending Enter run')
-        self.logger.info('%s assets analysed' % len(allAssetsList))
+        self.logger.info('%s assets analysed' % len(assetList))
         self.logger.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
-
-
-# from Pipeline.main.Utils.AddLogger import AddLogger
-# import logging
-# AL = AddLogger(dirPath='Pipeline/DB/CodeLogs/CheapVol_ProfitRun', stratName='CheapVol_ProfitRun', consoleLogLevel=logging.DEBUG)
-# Enter(stratName='CheapVol_ProfitRun', logger=AL.logger).run()

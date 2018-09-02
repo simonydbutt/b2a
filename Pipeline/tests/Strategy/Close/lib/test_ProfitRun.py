@@ -9,31 +9,30 @@ import yaml
 
 
 def before():
-    dbPath = 'Pipeline/tests/test_DB'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs/testProfitRun' % dbPath,
-                                       '%s/CurrentPositions' % dbPath])
+    dbPath = 'Pipeline/DB/test'
+    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/testProfitRun', stratName='testProfitRun')
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testProfitRun')
     P = Pull('Binance', AL.logger)
-    db = TinyDB('%s/%s/CurrentPositions/test.ujson' % (Settings.BASE_PATH, dbPath))
+    db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
     posDataInit = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
-               'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395}
+                   'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395}
     posDataMain = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
-               'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}
+                   'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}
     posDataPeriods = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 6,
-               'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}
+                      'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}
     db.insert(posDataInit)
     db.insert(posDataMain)
     db.insert(posDataPeriods)
-    with open('%s/Pipeline/tests/test_DB/Configs/testStrat.yml' % Settings.BASE_PATH) as file:
+    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
         params = yaml.load(file)
-    PR = ProfitRun(pullData=P, configParams=params, isTest=True)
-    return PR, db, CCD, posDataInit, posDataMain, posDataPeriods
+    PR = ProfitRun(configParams=params, isTest=True)
+    return PR, db, CCD, posDataInit, posDataMain, posDataPeriods, P
 
 
 def test_updatePostition():
-    PR, db, CCD, posDataInit, _, _ = before()
-    PR.updatePosition(positionData=posDataInit, db=db, testData=updatePosData)
+    PR, db, CCD, posDataInit, _, _, P = before()
+    PR.updatePosition(positionData=posDataInit, db=db, testData=updatePosData, Pull=P)
     doc = db.search(Query().assetName == 'ADABTC')[0]
     assert doc['hitPrice'] == 10.4142
     assert doc['sellPrice'] == 8.2929
@@ -41,12 +40,12 @@ def test_updatePostition():
 
 
 def test_profitRun():
-    PR, db, CCD, posDataInit, posDataMain, posDataPeriods = before()
-    assert not PR.run(positionData=posDataInit, db=db, testPrice=10, testData=updatePosData)[0]
-    assert not PR.run(positionData=posDataMain, db=db, testPrice=12, testData=updatePosData)[0]
-    assert not PR.run(positionData=posDataMain, db=db, testPrice=10)[0]
-    assert PR.run(positionData=posDataMain, db=db, testPrice=8.9)[0]
-    assert PR.run(positionData=posDataPeriods, db=db, testPrice=10)[0]
+    PR, db, CCD, posDataInit, posDataMain, posDataPeriods, P = before()
+    assert not PR.run(positionData=posDataInit, db=db, testPrice=10, testData=updatePosData, Pull=P)[0]
+    assert not PR.run(positionData=posDataMain, db=db, testPrice=12, testData=updatePosData, Pull=P)[0]
+    assert not PR.run(positionData=posDataMain, db=db, testPrice=10, Pull=P)[0]
+    assert PR.run(positionData=posDataMain, db=db, testPrice=8.9, Pull=P)[0]
+    assert PR.run(positionData=posDataPeriods, db=db, testPrice=10, Pull=P)[0]
     CCD.clean()
 
 

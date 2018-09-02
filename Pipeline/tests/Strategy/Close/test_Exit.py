@@ -7,30 +7,39 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from tinydb import TinyDB, Query
 import Settings
 import yaml
+import os
+
+
+dbPath = 'Pipeline/DB/test'
 
 
 def before():
-    dbPath = 'Pipeline/tests/test_DB'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs/testExit' % dbPath,
-                                       '%s/CurrentPositions' % dbPath])
+    dbPath = 'Pipeline/DB/test'
+    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/testExit', stratName='testExit')
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testExit')
     P = Pull('Binance', AL.logger)
-    db = TinyDB('%s/%s/CurrentPositions/test.ujson' % (Settings.BASE_PATH, dbPath))
+    db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
     posDataMain = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
                    'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}
     db.insert(posDataMain)
-    with open('%s/Pipeline/tests/test_DB/Configs/testStrat.yml' % Settings.BASE_PATH) as file:
+    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
         params = yaml.load(file)
-    PR = ProfitRun(pullData=P, configParams=params, isTest=True)
+    PR = ProfitRun(configParams=params, isTest=True)
     E = Exit(stratName='testStrat', logger=AL.logger, dbPath=dbPath, isTest=True)
-    return PR, E, db, CCD, posDataMain
+    return PR, E, db, CCD, posDataMain, P
+
+
+def after():
+    os.remove('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
 
 
 def test_runIndiv():
-    PR, E, db, CCD, posDataMain = before()
-    assert PR.run(positionData=posDataMain, testPrice=10, db=db) == E.runIndiv(positionData=posDataMain, testPrice=10, db=db)
+    PR, E, db, CCD, posDataMain, P = before()
+    assert PR.run(positionData=posDataMain, testPrice=10, db=db, Pull=P) == E.runIndiv(positionData=posDataMain,
+                                                                                       testPrice=10, db=db, Pull=P)
     CCD.clean()
+    after()
 
 
 if __name__ == '__main__':

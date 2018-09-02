@@ -7,7 +7,7 @@ class Binance(_Pull):
 
     def __init__(self, logger):
         _Pull.__init__(self, logger=logger)
-        self.EU = ExchangeUtil('Binance')
+        self.EU = ExchangeUtil()
         self.baseURL = 'https://api.binance.com'
 
     def getBTCAssets(self, justQuote=False):
@@ -20,9 +20,9 @@ class Binance(_Pull):
             self._pullData('/api/v1/klines', params={
                 'symbol': asset,
                 'limit': limit+1,
-                'interval': self.EU.candlestickInterval(interval)
+                'interval': self.EU.candlestickInterval(interval, exchange='Binance')
             }),
-            columns=self.EU.candlestickColumns()
+            columns=self.EU.candlestickColumns(exchange='Binance')
         )
         df = df.iloc[:-1] if lastReal else df.iloc[1:]
         df[['open', 'close', 'high', 'low', 'takerQuoteVol']] = \

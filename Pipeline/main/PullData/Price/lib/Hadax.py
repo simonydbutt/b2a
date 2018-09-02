@@ -7,7 +7,7 @@ class Hadax(_Pull):
 
     def __init__(self, logger):
         _Pull.__init__(self, logger=logger)
-        self.EU = ExchangeUtil('Hadax')
+        self.EU = ExchangeUtil()
         self.baseURL = 'http://api.hadax.com'
 
     def getBTCAssets(self, justQuote=False):
@@ -25,12 +25,12 @@ class Hadax(_Pull):
     def getCandles(self, asset, limit, interval, columns, lastReal):
         response = self._pullData('/market/history/kline', params={
                 'symbol': asset.lower(),
-                'period': self.EU.candlestickInterval(interval),
+                'period': self.EU.candlestickInterval(interval, exchange='Hadax'),
                 'size': limit + 1
             })
         # May need timestamp which is -> timestamp = response['ts']
         df = pd.DataFrame(
-            response['data'], columns=self.EU.candlestickColumns()
+            response['data'], columns=self.EU.candlestickColumns(exchange='Hadax')
         ).sort_values('TS', ascending=True)
         df = df.iloc[:-1] if lastReal else df.iloc[1:]
         return df[columns]

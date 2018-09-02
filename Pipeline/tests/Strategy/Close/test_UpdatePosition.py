@@ -1,16 +1,12 @@
 from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
-from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from tinydb import TinyDB
 import Settings
-
-
-dbPath = 'Pipeline/tests/test_DB/CurrentPositions'
-CCD = CreateCleanDir(filePathList=[dbPath])
+import os
 
 
 def test_update():
-    CCD.create()
-    db = TinyDB('%s/%s/testUpdate.ujson' % (Settings.BASE_PATH, dbPath))
+    dbPath = '%s/Pipeline/DB/test' % Settings.BASE_PATH
+    db = TinyDB('%s/currentPositions.ujson' % dbPath)
     positionDict={
         'currentPrice': 11,
         'openPrice': 10,
@@ -29,7 +25,7 @@ def test_update():
     assert newVal['paperSize'] == 100
     UP.update(positionDict=positionDict, currentPrice=2)
     assert db.all()[0]['paperSize'] == 20
-    CCD.clean()
+    os.remove('%s/currentPositions.ujson' % dbPath)
 
 
 if __name__ == '__main__':

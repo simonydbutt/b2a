@@ -1,8 +1,0 @@
-assetList: all
-baseAsset: BTC
-stratName: testStrat
-positionSize: {name: Basic, percent: 0.05}
-enter: {name: CheapVol, exchange: Binance, granularity: 300, periodsVolLong: 5, periodsVolShort: 3, periodsMA: 5,
-        volCoef: 1, bolStd: 2}
-exit: {name: ProfitRun, exchange: Binance, granularity: 300, stdDict: {up: 1, down: 0.5}, closePeriods: 5, maPeriods: 5}
-

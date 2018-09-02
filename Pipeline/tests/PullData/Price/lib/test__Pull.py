@@ -3,7 +3,7 @@ from Pipeline.main.PullData.Price.lib._Pull import _Pull
 from Pipeline.main.Utils.AddLogger import AddLogger
 
 
-CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_Pull'])
+CCD = CreateCleanDir(filePathList=['Pipeline/DB/test/CodeLogs'])
 
 
 class TestReqSuccess:
@@ -20,7 +20,7 @@ class TestReqOtherFailure:
 
 def test__pullData():
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_Pull', stratName='test_Pull')
+    AL = AddLogger(dirPath='Pipeline/DB/test/CodeLogs', stratName='test_Pull')
     P = _Pull(logger=AL.logger)
     assert P._pullData(endPoint='', isTest=True, testReq=TestReqSuccess) == 1
     assert P._pullData(endPoint='', isTest=True, testReq=TestReqRateLimit, testReq2=TestReqRateLimit) == 2

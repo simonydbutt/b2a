@@ -5,24 +5,31 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from tinydb import TinyDB, Query
 import Settings
 import yaml
+import os
+
+
+dbPath = 'Pipeline/DB/test'
+compPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
 
 
 def Enter():
-    dbPath = '%s/Pipeline/tests/test_DB' % Settings.BASE_PATH
-    CCD = CreateCleanDir(filePathList=['Pipeline/tests/test_DB/CodeLogs/test_CheapVol',
-                                       'Pipeline/tests/test_db/CurrentPositions'])
-    with open('%s/Configs/testStrat.yml' % dbPath) as file:
+    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    with open('%s/config.yml' % compPath) as file:
         params = yaml.load(file)
     baseCapFile = {'initialCapital': 10,'liquidCurrent': 10, 'paperCurrent': 10,'paperPnL': 0, 'percentAllocated': 10}
-    with open('%s/Capital.yml' % dbPath, 'w') as capFile:
+    with open('%s/Capital.yml' % compPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     CCD.create()
-    AL = AddLogger(dirPath='Pipeline/tests/test_DB/CodeLogs/test_CheapVol', stratName='test_CheapVol')
+    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_CheapVol')
     P = Pull('Binance', AL.logger)
-    db = TinyDB('%s/CurrentPositions/testStrat.ujson' % dbPath)
-    OT = OpenTrade(configParams=params, compPath=dbPath, Pull=P, db=db)
-    OT.open('ETHBTC')
-    return baseCapFile, db, CCD, dbPath, OT
+    db = TinyDB('%s/currentPositions.ujson' % compPath)
+    OT = OpenTrade(configParams=params, compPath=compPath, db=db)
+    OT.open(assetVals=('ETHBTC', 'Binance'), Pull=P)
+    return baseCapFile, db, CCD, compPath, OT
+
+
+def after():
+    os.remove('%s/currentPositions.ujson' % compPath)
 
 
 def test_open():
@@ -30,8 +37,9 @@ def test_open():
     entry = db.search(Query().assetName == 'ETHBTC')
     assert len(entry) == 1
     assert list(entry[0].keys()) == ['assetName', 'openPrice', 'currentPrice', 'periods',
-                                     'positionSize', 'paperSize', 'TSOpen']
+                                     'positionSize', 'paperSize', 'TSOpen', 'exchange']
     CCD.clean()
+    after()
 
 
 def test_updateBooks():
@@ -46,6 +54,7 @@ def test_updateBooks():
     with open('%s/Capital.yml' % dbPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     CCD.clean()
+    after()
 
 
 if __name__ == '__main__':

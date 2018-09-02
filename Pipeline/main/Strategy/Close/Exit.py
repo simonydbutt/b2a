@@ -17,25 +17,23 @@ class Exit:
     def __init__(self, stratName, logger, dbPath='Pipeline/DB', isTest=False):
         self.stratName = stratName
         self.compPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
-        with open('%s/Configs/%s.yml' % (self.compPath, stratName)) as stratFile:
+        with open('%s/config.yml' % self.compPath) as stratFile:
             self.configParams = yaml.load(stratFile)
-        self.fees = ExchangeUtil(exchange=self.configParams['exit']['exchange']).fees()
         self.logger = logger
-        self.Pull = Pull(exchange=self.configParams['exit']['exchange'], logger=logger)
-        self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, pullData=self.Pull,
-                                                                 isTest=isTest)
+        self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, isTest=isTest)
 
-    def runIndiv(self, positionData, testPrice, db):
-        return self.exitStrat.run(positionData, testPrice=testPrice, db=db)
+    def runIndiv(self, positionData, testPrice, db, Pull):
+        return self.exitStrat.run(positionData, testPrice=testPrice, db=db, Pull=Pull)
 
     def run(self):
         self.logger.info('Starting Exit run')
-        db = TinyDB('%s/CurrentPositions/%s.ujson' % (self.compPath, self.stratName))
+        db = TinyDB('%s/currentPositions.ujson' % self.compPath)
         U = UpdatePosition(db=db)
-        E = ExitTrade(compPath=self.compPath, db=db, stratName=self.stratName, fees=self.fees)
+        E = ExitTrade(compPath=self.compPath, db=db, stratName=self.stratName)
         for positionDict in db.all():
+            pull = Pull(logger=self.logger, exchange=positionDict['exchange'])
             self.logger.debug('Analysing open position: %s' % positionDict['assetName'])
-            isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, db=db)
+            isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, db=db, Pull=pull)
             if isExit:
                 print('ExitTrade')
                 E.exit(positionDict=positionDict, currentPrice=currentPrice)
