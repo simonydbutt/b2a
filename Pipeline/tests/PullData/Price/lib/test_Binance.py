@@ -9,12 +9,12 @@ import time
 """
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+CCD = CreateCleanDir(filePathList=['%s/test_Binance' % dbPath, '%s/test_Binance/CodeLogs' % dbPath])
 
 
 def test_connection():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Binance')
+    AL = AddLogger(db='test', stratName='test_Binance')
     PB = Binance(logger=AL.logger)
     assert PB._pullData('/api/v1/ping') == {}
     CCD.clean()
@@ -22,7 +22,7 @@ def test_connection():
 
 def test_getCandles():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Binance')
+    AL = AddLogger(db='test', stratName='test_Binance')
     PB = Binance(logger=AL.logger)
     data = PB.getCandles('ETHBTC', 5, 86400, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True)
     assert len(data) == 5

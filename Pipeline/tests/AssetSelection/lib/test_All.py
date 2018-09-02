@@ -5,12 +5,12 @@ from Pipeline.main.PullData.Price.Pull import Pull
 
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+CCD = CreateCleanDir(filePathList=['%s/test_All' % dbPath, '%s/test_All/CodeLogs' % dbPath])
 
 
 def test_getAssets():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_All').logger
+    AL = AddLogger(db='test', stratName='test_All').logger
     config = {
         'baseAsset': 'BTC',
         'exchangeList': ['Hadax', 'Binance'],

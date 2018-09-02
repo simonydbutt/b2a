@@ -3,8 +3,8 @@ import Settings
 import yaml
 
 dbPath = 'Pipeline/DB/test'
-with open('%s/%s/capital.yml' % (Settings.BASE_PATH, dbPath)) as capFile:
-    capDict = yaml.load(capFile)
+capDict = {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10,
+           'paperPnL': 0, 'percentAllocated': 0}
 with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as stratFile:
     stratDict = yaml.load(stratFile)
 

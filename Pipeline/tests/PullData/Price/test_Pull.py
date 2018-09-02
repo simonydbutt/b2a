@@ -5,12 +5,12 @@ from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+CCD = CreateCleanDir(filePathList=['%s/test_Pull' % dbPath, '%s/test_Pull/CodeLogs/' % dbPath])
 
 
 def test_BTCAssets():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Pull')
+    AL = AddLogger(db='test', stratName='test_Pull')
     PH = Hadax(logger=AL.logger)
     P = Pull(exchange='Hadax', logger=AL.logger)
     assert PH.getBTCAssets() == P.BTCAssets()
@@ -19,7 +19,7 @@ def test_BTCAssets():
 
 def test_candles():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Pull')
+    AL = AddLogger(db='test', stratName='test_Pull')
     BinanceData = Binance(logger=AL.logger).getCandles(
         asset='LTCBTC', limit=5, interval=300, columns=['TS', 'open'], lastReal=True)
     PullData = Pull(exchange='Binance', logger=AL.logger).candles(

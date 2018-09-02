@@ -6,12 +6,12 @@ import time
 
 class ExitTrade:
 
-    def __init__(self, compPath, stratName, db, capName='capital'):
+    def __init__(self, compPath, db, capName='capital'):
         self.compPath = compPath
         self.db = db
         with open('%s/%s.yml' % (self.compPath, capName)) as capFile:
             self.capDict = yaml.load(capFile)
-        self.transDB = TinyDB('%s/TransactionLogs/%s.ujson' % (compPath, stratName))
+        self.transDB = TinyDB('%s/TransactionLogs.ujson' % compPath)
 
     def exit(self, positionDict, currentPrice):
         fees = ExchangeUtil().fees(exchange=positionDict['exchange'])

@@ -6,14 +6,14 @@ from contextlib import redirect_stdout
 import io
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+CCD = CreateCleanDir(filePathList=['%s/testStrat' % dbPath, '%s/testStrat/CodeLogs' % dbPath])
 
 
 def test_fileLogging():
     CCD.create()
     consoleGrab = io.StringIO()
     with redirect_stdout(consoleGrab):
-        AL = AddLogger(dirPath='%s/CodeLogs' % dbPath,
+        AL = AddLogger(db='test',
                        stratName='testStrat', consoleLogLevel=logging.WARNING,
                        fileLogLevel=logging.ERROR)
         AL.logger.error('Test Error')

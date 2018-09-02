@@ -5,13 +5,13 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+CCD = CreateCleanDir(filePathList=['%s/test_Select' % dbPath, '%s/test_Select/CodeLogs' % dbPath])
 
 
 def test_assets():
     CCD.create()
     config = {'assetSelection': {'name': 'All', 'baseAsset': 'BTC', 'exchangeList': ['Binance']}}
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Select').logger
+    AL = AddLogger(db='test', stratName='test_Select').logger
     assert Select(config, AL).assets() == All(config['assetSelection'], AL).getAssets()
 
 

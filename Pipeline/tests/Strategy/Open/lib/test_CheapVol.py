@@ -7,14 +7,16 @@ import Settings
 import yaml
 
 dbPath = 'Pipeline/DB/test'
-CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
-with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
-    params = yaml.load(file)
+CCD = CreateCleanDir(filePathList=['%s/testCheapVol' % dbPath, '%s/testCheapVol/CodeLogs' % dbPath])
+params = {'enter': {
+    'name': 'CheapVol', 'granularity': 7200, 'periodsVolLong': 5, 'periodsVolShort': 3, 'periodsMA': 5,
+    'volCoef': 1, 'bolStd': 1
+}}
 
 
 def test_CheapVol():
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testCheapVol')
+    AL = AddLogger(db='test', stratName='testCheapVol')
     P = Pull('Binance', AL.logger)
     CV = CheapVol(params=params, isTest=True)
     # Will enter position

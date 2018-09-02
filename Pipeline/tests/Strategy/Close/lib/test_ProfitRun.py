@@ -10,9 +10,9 @@ import yaml
 
 def before():
     dbPath = 'Pipeline/DB/test'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    CCD = CreateCleanDir(filePathList=['%s/testProfitRun' % dbPath, '%s/testProfitRun/CodeLogs' % dbPath])
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testProfitRun')
+    AL = AddLogger(db='test', stratName='testProfitRun')
     P = Pull('Binance', AL.logger)
     db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
     posDataInit = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
@@ -24,8 +24,10 @@ def before():
     db.insert(posDataInit)
     db.insert(posDataMain)
     db.insert(posDataPeriods)
-    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
-        params = yaml.load(file)
+    params = {'exit': {
+        'bolStd': 2, 'granularity': 7200, 'name': ProfitRun, 'maPeriods': 5, 'closePeriods': 5,
+        'stdDict': {'up': 1, 'down': 0.5}}
+    }
     PR = ProfitRun(configParams=params, isTest=True)
     return PR, db, CCD, posDataInit, posDataMain, posDataPeriods, P
 
@@ -34,8 +36,8 @@ def test_updatePostition():
     PR, db, CCD, posDataInit, _, _, P = before()
     PR.updatePosition(positionData=posDataInit, db=db, testData=updatePosData, Pull=P)
     doc = db.search(Query().assetName == 'ADABTC')[0]
-    assert doc['hitPrice'] == 10.4142
-    assert doc['sellPrice'] == 8.2929
+    assert round(doc['hitPrice'], 4) == 10.4142
+    assert round(doc['sellPrice'], 4) == 8.2929
     CCD.clean()
 
 

@@ -11,22 +11,23 @@ import os
 
 def before():
     dbPath = 'Pipeline/DB/test'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    CCD = CreateCleanDir(filePathList=['%s/test_Enter' % dbPath, '%s/test_Enter/CodeLogs' % dbPath])
+    CCD.create()
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
         params = yaml.load(file)
-    CCD.create()
+    with open('%s/%s/test_Enter/config.yml' % (Settings.BASE_PATH, dbPath), 'w') as configFile:
+        yaml.dump(params, configFile)
     return CCD, params, dbPath
 
 
 def test_indivEntry():
     CCD, params, dbPath = before()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_Enter')
-    E = Enter(dbPath=dbPath, logger=AL.logger, isTest=True)
+    AL = AddLogger(db='test', stratName='test_Enter')
+    E = Enter(db='test', stratName='test_Enter', isTest=True)
     P = Pull('Binance', AL.logger)
     CV = CheapVol(params=params, isTest=True)
     assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', Pull=P, testData=enterData)
     CCD.clean()
-    os.remove('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
 
 
 if __name__ == '__main__':

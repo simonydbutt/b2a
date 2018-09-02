@@ -8,8 +8,14 @@ import sys
 
 class AddLogger:
 
-    def __init__(self, stratName, dirPath, fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
-        self.filePath = '%s/%s' % (Settings.BASE_PATH, dirPath)
+    """
+        *TODO: I think this is broken...
+        *Add logging config
+        https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
+    """
+
+    def __init__(self, stratName, db, fileLogLevel=logging.INFO, consoleLogLevel=logging.WARNING):
+        self.filePath = '%s/Pipeline/DB/%s/%s/CodeLogs' % (Settings.BASE_PATH, db, stratName)
         dTime = datetime.datetime.fromtimestamp(round(time.time())).isoformat()
         logFormat = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
         self.logger = logging.getLogger('')

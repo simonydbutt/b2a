@@ -13,14 +13,14 @@ compPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
 
 
 def Enter():
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    CCD = CreateCleanDir(filePathList=['%s/test_CheapVol' % dbPath, '%s/test_CheapVol/CodeLogs' % dbPath])
     with open('%s/config.yml' % compPath) as file:
         params = yaml.load(file)
     baseCapFile = {'initialCapital': 10,'liquidCurrent': 10, 'paperCurrent': 10,'paperPnL': 0, 'percentAllocated': 10}
     with open('%s/Capital.yml' % compPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='test_CheapVol')
+    AL = AddLogger(db='test', stratName='test_CheapVol')
     P = Pull('Binance', AL.logger)
     db = TinyDB('%s/currentPositions.ujson' % compPath)
     OT = OpenTrade(configParams=params, compPath=compPath, db=db)

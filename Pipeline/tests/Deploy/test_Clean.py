@@ -50,13 +50,13 @@ def test_resetStrat():
     with open('%s/capital.yml' % stratPath, 'w') as capFile:
         yaml.dump(data=cap, stream=capFile)
     db = TinyDB('%s/currentPositions.ujson' % stratPath)
+
     db.insert({'a':1})
-    for folder in ('CodeLogs', 'TransactionLogs'):
-        open('%s/%s/testLog' % (stratPath, folder), 'a').close()
+    open('%s/CodeLogs/testLog' % (stratPath), 'a').close()
     Clean('test', 'testStrat').resetStrat()
     assert len(TinyDB('%s/currentPositions.ujson' % stratPath).all()) == 0
-    for folder in ('CodeLogs', 'TransactionLogs'):
-        assert len(os.listdir('%s/%s' % (stratPath, folder))) == 0
+    assert len(TinyDB('%s/transactionLogs.ujson' % stratPath).all()) == 0
+    assert len(os.listdir('%s/Codelogs' % stratPath)) == 0
     with open('%s/capital.yml' % stratPath, 'r+') as capFile:
         cap = yaml.load(capFile)
     assert cap == {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10, 'paperPnL': 0, 'percentAllocated': 0}

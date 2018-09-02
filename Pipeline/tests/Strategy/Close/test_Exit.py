@@ -14,10 +14,9 @@ dbPath = 'Pipeline/DB/test'
 
 
 def before():
-    dbPath = 'Pipeline/DB/test'
-    CCD = CreateCleanDir(filePathList=['%s/CodeLogs' % dbPath])
+    CCD = CreateCleanDir(filePathList=['%s/testExit' % dbPath, '%s/testExit/CodeLogs' % dbPath])
     CCD.create()
-    AL = AddLogger(dirPath='%s/CodeLogs' % dbPath, stratName='testExit')
+    AL = AddLogger(db='test', stratName='testExit')
     P = Pull('Binance', AL.logger)
     db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
     posDataMain = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
@@ -25,8 +24,10 @@ def before():
     db.insert(posDataMain)
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
         params = yaml.load(file)
+    with open('%s/%s/testExit/config.yml' % (Settings.BASE_PATH, dbPath), 'w') as configFile:
+        yaml.dump(params, configFile)
     PR = ProfitRun(configParams=params, isTest=True)
-    E = Exit(stratName='testStrat', logger=AL.logger, dbPath=dbPath, isTest=True)
+    E = Exit(db='test', stratName='testExit', isTest=True)
     return PR, E, db, CCD, posDataMain, P
 
 

@@ -30,27 +30,27 @@ class Build:
     """
 
     def __init__(self, dbName, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
-                 exitParams, loggingParams={'console': logging.WARNING, 'terminal': logging.INFO}):
+                 exitParams, loggingParams={'console': logging.WARNING, 'file': logging.INFO}):
         self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, dbName, stratName)
         if os.path.exists(self.compPath):
             print('Strat already exists. Print Y to overwrite')
             if input() == 'Y':
                 self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                                 positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                                loggingParams=loggingParams, initialCapital=initialCapital)
+                                loggingParams=loggingParams, initialCapital=initialCapital, dbName=dbName)
         else:
             self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                             positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                            loggingParams=loggingParams, initialCapital=initialCapital)
+                            loggingParams=loggingParams, initialCapital=initialCapital, dbName=dbName)
 
     def buildStrat(self, stratName, assetSelectionParams, positionSizeParams,
-                   enterParams, exitParams, loggingParams, initialCapital):
+                   enterParams, exitParams, loggingParams, initialCapital, dbName):
         configDict = {
             'stratName': stratName, 'assetSelection': assetSelectionParams,
             'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
-            'logging': loggingParams
+            'logging': loggingParams, 'dbName':dbName
         }
-        for path in (self.compPath, '%s/CodeLogs' % self.compPath, '%s/TransactionLogs' % self.compPath):
+        for path in (self.compPath, '%s/CodeLogs' % self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
         with open('%s/config.yml' % self.compPath, 'w') as configFile:
             yaml.dump(configDict, configFile)
@@ -66,9 +66,10 @@ class Build:
                 capFile
             )
         TinyDB('%s/currentPositions.ujson' % self.compPath)
+        TinyDB('%s/transactionLogs.ujson' % self.compPath)
 
 
-# # Test
+# Test
 # Build(
 #     stratName='CheapVol_ProfitRun',
 #     dbName='disco',
@@ -79,24 +80,23 @@ class Build:
 #     assetSelectionParams={
 #         'name': 'All',
 #         'exchangeList': ['Binance'],
-#         'baseAsset': BTC
+#         'baseAsset': 'BTC'
 #     },
 #     enterParams={
 #         'name': 'CheapVol',
-#         'granularity': 43200,
+#         'granularity': 21600,
 #         'periodsVolLong': 100,
 #         'periodsVolShort': 5,
 #         'periodsMA': 100,
 #         'volCoef': 1.5,
-#         'bolStd': 2
+#         'bolStd': 1
 #     },
 #     exitParams={
 #         'name': 'ProfitRun',
 #         'granularity': 7200,
-#         'periodsVolLong': 50,
-#         'periodsVolShort': 5,
-#         'periodsMA': 50,
-#         'volCoef': 1,
-#         'bolStd': 2
-#     }
+#         'maPeriods': 50,
+#         'stdDict': {'up': 0.5, 'down': 1},
+#         'closePeriods': 5
+#     },
+#     loggingParams={'console': logging.DEBUG, 'file': logging.INFO}
 # )
