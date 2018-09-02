@@ -1,0 +1,10 @@
+assetSelection:
+  baseAsset: BTC
+  exchangeList: [Binance]
+  name: all
+enter: {bolStd: 2, granularity: 43200, name: CheapVol, periodsMA: 5, periodsVolLong: 5,
+  periodsVolShort: 5, volCoef: 1.5}
+exit: {bolStd: 2, granularity: 7200, name: ProfitRun, maPeriods: 5, closePeriods: 5, stdDict: {up: 1, down: 0.5}}
+logging: {console: 30, file: 20}
+positionSize: {name: Basic, percent: 0.05}
+stratName: testStrat
