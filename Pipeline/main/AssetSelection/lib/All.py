@@ -1,4 +1,5 @@
 from Pipeline.main.PullData.Price.Pull import Pull
+import numpy as np
 
 
 class All:
@@ -13,5 +14,6 @@ class All:
         for exchange in self.exchangeList:
             if self.baseAsset == 'BTC':
                 tmpList = Pull(exchange=exchange, logger=self.logger).BTCAssets()
-                assetList += [(asset, exchange) for asset in tmpList]
+                addedAssets = [val.lower() for val in np.array(assetList)[:,0]] if len(assetList) != 0 else []
+                assetList += [(asset, exchange) for asset in tmpList if asset.lower() not in addedAssets]
         return assetList
