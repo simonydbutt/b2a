@@ -21,13 +21,13 @@ def before():
                   'exchange': 'Binance'}
     db.insert(posDataMain)
     db.insert(posDataSub)
-    ET = ExitTrade(compPath='%s/%s' % (Settings.BASE_PATH, dbPath), db=db)
     initCapDict = {
         'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10,
         'paperPnL': 0, 'percentAllocated': 0
     }
-    with open('%s/Capital.yml' % compPath, 'w') as capFile:
+    with open('%s/capital.yml' % compPath, 'w') as capFile:
         yaml.dump(initCapDict, capFile)
+    ET = ExitTrade(compPath='%s/%s' % (Settings.BASE_PATH, dbPath), db=db)
     return db, posDataMain, ET, initCapDict
 
 
@@ -42,12 +42,9 @@ def after():
         'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10,
         'paperPnL': 0, 'percentAllocated': 0
     }
-    with open('%s/%s/Capital.yml' % (Settings.BASE_PATH, dbPath), 'w') as capFile:
-        yaml.dump(initCapDict, capFile)
-    for file in ('currentPositions', 'transactionLogs'):
-        if os.path.exists('%s/%s/%s.ujson' % (Settings.BASE_PATH, dbPath, file)):
-            os.remove('%s/%s/%s.ujson' % (Settings.BASE_PATH, dbPath, file))
-
+    for file in ('currentPositions.ujson', 'transactionLogs.ujson', 'capital.yml'):
+        if os.path.exists('%s/%s' % (compPath, file)):
+            os.remove('%s/%s' % (compPath, file))
 
 def test_exitTrade():
     db, posDataMain, ET, _ = before()

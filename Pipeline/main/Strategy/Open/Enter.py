@@ -12,11 +12,11 @@ import logging
 
 class Enter:
 
+
     def __init__(self, db, stratName, isTest=False):
         self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
         with open('%s/config.yml' % self.compPath) as stratFile:
             self.configParams = yaml.load(stratFile)
-        self.db = TinyDB('%s/currentPositions.ujson' % self.compPath)
         self.enterStrat = eval(self.configParams['enter']['name'])(params=self.configParams, isTest=isTest)
         self.AL = AddLogger(stratName=stratName, db=db,
                             consoleLogLevel=self.configParams['logging']['console'],
@@ -30,8 +30,9 @@ class Enter:
     def run(self):
         openList = []
         self.AL.logger.info('Starting Enter run')
-        currentPositions = [val['assetName'] for val in self.db.all()]
-        OT = OpenTrade(self.configParams, compPath=self.compPath, db=self.db)
+        db = TinyDB('%s/currentPositions.ujson' % self.compPath)
+        currentPositions = [val['assetName'] for val in db.all()]
+        OT = OpenTrade(self.configParams, compPath=self.compPath, db=db)
         assetList = self.Select.assets()
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             pull = Pull(exchange=exchange, logger=self.AL.logger)
