@@ -69,11 +69,11 @@ class Build:
         TinyDB('%s/transactionLogs.ujson' % self.compPath)
 
 
-# Test
+#Test
 # Build(
 #     stratName='CheapVol_ProfitRun',
 #     dbName='disco',
-#     initialCapital=10,
+#     initialCapital=1,
 #     positionSizeParams={
 #         'name': 'Basic',
 #         'percent': 0.05},
@@ -85,18 +85,18 @@ class Build:
 #     enterParams={
 #         'name': 'CheapVol',
 #         'granularity': 21600,
-#         'periodsVolLong': 100,
+#         'periodsVolLong': 50,
 #         'periodsVolShort': 5,
-#         'periodsMA': 100,
-#         'volCoef': 1.5,
-#         'bolStd': 1
+#         'periodsMA': 30,
+#         'volCoef': 1.2,
+#         'bolStd': 2
 #     },
 #     exitParams={
 #         'name': 'ProfitRun',
-#         'granularity': 7200,
-#         'maPeriods': 50,
-#         'stdDict': {'up': 0.5, 'down': 1},
-#         'closePeriods': 5
+#         'granularity': 1800,
+#         'maPeriods': 600,
+#         'stdDict': {'up': 1, 'down': 1.5},
+#         'closePeriods': 50
 #     },
 #     loggingParams={'console': logging.DEBUG, 'file': logging.INFO}
 # )
