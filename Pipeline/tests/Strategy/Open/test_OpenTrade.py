@@ -36,8 +36,8 @@ def test_open():
     baseCapFile, db, CCD, dbPath, OT = Enter()
     entry = db.search(Query().assetName == 'ETHBTC')
     assert len(entry) == 1
-    assert list(entry[0].keys()) == ['assetName', 'openPrice', 'currentPrice', 'periods',
-                                     'positionSize', 'paperSize', 'TSOpen', 'exchange']
+    for i in ['assetName', 'openPrice', 'currentPrice', 'periods', 'positionSize', 'paperSize', 'TSOpen', 'exchange']:
+        assert i in list(entry[0])
     CCD.clean()
     after()
 
