@@ -113,4 +113,4 @@ E = Enter('binance', A['all'], '6h', stratDict={
         'bolCoef': 1
     }
 })
-TestEntry(E, periodList=(5,10,15,20,30), verbose=False).run()
+TestEntry(E, periodList=(10, 20, 30), verbose=False).run()
