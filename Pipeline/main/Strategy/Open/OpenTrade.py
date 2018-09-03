@@ -6,8 +6,8 @@ import time
 
 class OpenTrade:
 
-    def __init__(self, configParams, compPath, db, capName='Capital'):
-        self.capPath = '%s/%s.yml' % (compPath, capName)
+    def __init__(self, configParams, compPath, db):
+        self.capPath = '%s/capital.yml' % compPath
         self.db = db
         self.configParams = configParams
         self.EU = ExchangeUtil()

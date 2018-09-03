@@ -43,5 +43,5 @@ class ExitTrade:
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent'] / self.capDict['paperCurrent'], 3)
         self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
         self.capDict['liquidCurrent'] = round(self.capDict['liquidCurrent'], 4)
-        with open('%s/Capital.yml' % self.compPath, 'w') as capFile:
+        with open('%s/capital.yml' % self.compPath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)
