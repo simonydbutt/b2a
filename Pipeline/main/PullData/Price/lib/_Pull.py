@@ -8,7 +8,9 @@ import pandas as pd
 class _Pull:
 
     """
+        *TODO: bring more into this underlying Class
         **TODO: on getAssetPrcie: add amount to getAssetPrice to get the exact price will buy at
+            - Have a limit to slidedown and lack of liquidity
         **TODO: when adding additional exchanges to same strat, normalise Volume field
     """
 
@@ -51,4 +53,4 @@ class _Pull:
         return pd.DataFrame([], columns=columns)
 
     def getAssetPrice(self, sym, dir):
-        return -1
+        return

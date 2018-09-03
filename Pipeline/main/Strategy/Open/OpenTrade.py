@@ -15,15 +15,14 @@ class OpenTrade:
             self.capDict = yaml.load(capFile)
         self.P = Position(stratConfig=configParams, capConfig=self.capDict)
 
-    def open(self, assetVals, Pull):
-        asset = assetVals[0]
-        openPrice = Pull.assetPrice(symbol=asset, dir='buy')
-        capAllocated = round(self.P.getSize(asset=asset), 6)
+    def open(self, assetVals):
+        # assetVals = (name, exchange, price)
+        capAllocated = round(self.P.getSize(asset=assetVals[0]), 6)
         posSize = capAllocated * (1 - self.EU.fees(exchange=assetVals[1]))
         openDict = {
-            'assetName': asset,
-            'openPrice': openPrice,
-            'currentPrice': openPrice,
+            'assetName': assetVals[0],
+            'openPrice': assetVals[2],
+            'currentPrice': assetVals[2],
             'periods': 0,
             'positionSize': posSize,
             'paperSize': posSize,

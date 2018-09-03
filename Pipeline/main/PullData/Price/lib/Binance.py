@@ -33,6 +33,10 @@ class Binance(_Pull):
     def getAssetPrice(self, symbol, dir='buy'):
         tickData = self._pullData('/api/v1/depth', params={'symbol': symbol, 'limit': 5})
         if tickData:
-            return float(tickData['bids' if dir == 'sell' else 'asks'][0][0])
+            if len(tickData['bids' if dir == 'sell' else 'asks']) != 0:
+                return float(tickData['bids' if dir == 'sell' else 'asks'][0][0])
+            else:
+                print('Zero liquidity')
+                return -1
         else:
             return -1
