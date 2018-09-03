@@ -24,7 +24,7 @@ def Enter():
     P = Pull('Binance', AL.logger)
     db = TinyDB('%s/currentPositions.ujson' % compPath)
     OT = OpenTrade(configParams=params, compPath=compPath, db=db)
-    OT.open(assetVals=('ETHBTC', 'Binance'), Pull=P)
+    OT.open(assetVals=('ETHBTC', 'Binance', 0.7))
     return baseCapFile, db, CCD, compPath, OT
 
 

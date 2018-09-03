@@ -12,7 +12,6 @@ import logging
 
 class Enter:
 
-
     def __init__(self, db, stratName, isTest=False):
         self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
         with open('%s/config.yml' % self.compPath) as stratFile:
@@ -37,12 +36,12 @@ class Enter:
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             pull = Pull(exchange=exchange, logger=self.AL.logger)
             self.AL.logger.info('Starting asset: %s' % asset)
-            print(asset)
             if self.enterStrat.run(asset, Pull=pull, testData=None):
-                print(1)
                 self.AL.logger.warning('Entering trade: %s' % asset)
-                openList.append(asset)
-                OT.open(assetVals=(asset, exchange), Pull=pull)
+                openPrice = pull.assetPrice(symbol=asset, dir='buy')
+                if openPrice != -1:
+                    openList.append(asset)
+                    OT.open(assetVals=(asset, exchange, openPrice))
             else:
                 self.AL.logger.info('No action for asset: %s' % asset)
             # To avoid rate limits...
