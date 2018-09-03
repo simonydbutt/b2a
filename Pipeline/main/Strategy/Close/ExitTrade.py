@@ -11,7 +11,7 @@ class ExitTrade:
         self.db = db
         with open('%s/%s.yml' % (self.compPath, capName)) as capFile:
             self.capDict = yaml.load(capFile)
-        self.transDB = TinyDB('%s/TransactionLogs.ujson' % compPath)
+        self.transDB = TinyDB('%s/transactionLogs.ujson' % compPath)
 
     def exit(self, positionDict, currentPrice):
         fees = ExchangeUtil().fees(exchange=positionDict['exchange'])
