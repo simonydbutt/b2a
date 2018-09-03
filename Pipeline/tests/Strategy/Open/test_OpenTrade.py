@@ -17,7 +17,7 @@ def Enter():
     with open('%s/config.yml' % compPath) as file:
         params = yaml.load(file)
     baseCapFile = {'initialCapital': 10,'liquidCurrent': 10, 'paperCurrent': 10,'paperPnL': 0, 'percentAllocated': 10}
-    with open('%s/Capital.yml' % compPath, 'w') as capFile:
+    with open('%s/capital.yml' % compPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     CCD.create()
     AL = AddLogger(db='test', stratName='test_CheapVol')
@@ -29,7 +29,9 @@ def Enter():
 
 
 def after():
-    os.remove('%s/currentPositions.ujson' % compPath)
+    for file in ('currentPositions.ujson', 'capital.yml'):
+        if os.path.exists('%s/%s' % (compPath, file)):
+            os.remove('%s/%s' % (compPath, file))
 
 
 def test_open():
@@ -45,13 +47,13 @@ def test_open():
 def test_updateBooks():
     baseCapFile, db, CCD, dbPath, OT = Enter()
     OT.updateBooks()
-    with open('%s/Capital.yml' % dbPath) as capFile:
+    with open('%s/capital.yml' % dbPath) as capFile:
         currentCap = yaml.load(capFile)
     assert currentCap['paperCurrent'] == 10 * (1 - 0.05*0.001)
     assert currentCap['liquidCurrent'] == 9.5
     assert currentCap['percentAllocated'] == 0.05
     assert currentCap['paperPnL'] == 1
-    with open('%s/Capital.yml' % dbPath, 'w') as capFile:
+    with open('%s/capital.yml' % dbPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     CCD.clean()
     after()
