@@ -8,21 +8,21 @@ import Settings
 class EmailUtil:
 
     def __init__(self, db=None):
-        self.server = smtplib.SMTP('smtp.gmail.com', 587)
-        self.server.starttls()
-        self.server.login(
-            user=Settings.EMAIL['USER'],
-            password=Settings.EMAIL['PASSWORD']
-        )
         self.db = db
 
     def _sendEmail(self, subject, content):
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(
+            user=Settings.EMAIL['USER'],
+            password=Settings.EMAIL['PASSWORD']
+        )
         msg = EmailMessage()
         msg['From'] = Settings.EMAIL['USER']
         msg['To'] = Settings.EMAIL['SEND_USER']
         msg['Subject'] = subject
         msg.set_content(content)
-        self.server.send_message(msg=msg, from_addr=Settings.EMAIL['USER'], to_addrs=Settings.EMAIL['SEND_USER'])
+        server.send_message(msg=msg, from_addr=Settings.EMAIL['USER'], to_addrs=Settings.EMAIL['SEND_USER'])
 
     def errorExit(self, file, funct, message):
         self._sendEmail(
