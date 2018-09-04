@@ -30,25 +30,25 @@ class Build:
     """
 
     def __init__(self, dbName, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
-                 exitParams, loggingParams={'console': logging.WARNING, 'file': logging.INFO}):
+                 exitParams, schedule, loggingParams={'console': logging.WARNING, 'file': logging.INFO}):
         self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, dbName, stratName)
         if os.path.exists(self.compPath):
             print('Strat already exists. Print Y to overwrite')
             if input() == 'Y':
-                self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
+                self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams, dbName=dbName,
                                 positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                                loggingParams=loggingParams, initialCapital=initialCapital, dbName=dbName)
+                                loggingParams=loggingParams, initialCapital=initialCapital, schedule=schedule)
         else:
-            self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
+            self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams, dbName=dbName,
                             positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                            loggingParams=loggingParams, initialCapital=initialCapital, dbName=dbName)
+                            loggingParams=loggingParams, initialCapital=initialCapital, schedule=schedule)
 
-    def buildStrat(self, stratName, assetSelectionParams, positionSizeParams,
-                   enterParams, exitParams, loggingParams, initialCapital, dbName):
+    def buildStrat(self, stratName, assetSelectionParams, dbName, positionSizeParams,
+                   enterParams, exitParams, loggingParams, initialCapital, schedule):
         configDict = {
             'stratName': stratName, 'assetSelection': assetSelectionParams,
             'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
-            'logging': loggingParams, 'dbName':dbName
+            'logging': loggingParams, 'dbName': dbName, 'schedule': schedule
         }
         for path in (self.compPath, '%s/CodeLogs' % self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
@@ -67,36 +67,3 @@ class Build:
             )
         TinyDB('%s/currentPositions.ujson' % self.compPath)
         TinyDB('%s/transactionLogs.ujson' % self.compPath)
-
-
-#Test
-# Build(
-#     stratName='CheapVol_ProfitRun',
-#     dbName='disco',
-#     initialCapital=1,
-#     positionSizeParams={
-#         'name': 'Basic',
-#         'percent': 0.05},
-#     assetSelectionParams={
-#         'name': 'All',
-#         'exchangeList': ['Binance'],
-#         'baseAsset': 'BTC'
-#     },
-#     enterParams={
-#         'name': 'CheapVol',
-#         'granularity': 21600,
-#         'periodsVolLong': 50,
-#         'periodsVolShort': 5,
-#         'periodsMA': 30,
-#         'volCoef': 1.2,
-#         'bolStd': 2
-#     },
-#     exitParams={
-#         'name': 'ProfitRun',
-#         'granularity': 1800,
-#         'maPeriods': 600,
-#         'stdDict': {'up': 1, 'down': 1.5},
-#         'closePeriods': 50
-#     },
-#     loggingParams={'console': logging.DEBUG, 'file': logging.INFO}
-# )
