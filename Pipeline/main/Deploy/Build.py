@@ -50,7 +50,7 @@ class Build:
             'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
             'logging': loggingParams, 'dbName': dbName, 'schedule': schedule
         }
-        for path in (self.compPath, '%s/CodeLogs' % self.compPath, '%s/Pipeline/DB/%s' % (Settings.BASE_PATH, dbName)):
+        for path in ('%s/Pipeline/DB/%s' % (Settings.BASE_PATH, dbName), self.compPath, '%s/CodeLogs' % self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
         with open('%s/config.yml' % self.compPath, 'w') as configFile:
             yaml.dump(configDict, configFile)
