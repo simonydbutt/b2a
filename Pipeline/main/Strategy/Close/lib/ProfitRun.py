@@ -23,8 +23,7 @@ class ProfitRun:
 
     def updatePosition(self, positionData, db, Pull, testData=None):
         data = Pull.candles(asset=positionData['assetName'], limit=self.configParams['maPeriods'], lastReal=True,
-                                 interval=self.configParams['granularity'], columns=['close']) if \
-            not self.isTest else testData
+                            interval=self.configParams['granularity'], columns=['close']) if not self.isTest else testData
         ma, std = np.mean(data['close']), np.std(data['close'])
         db.update(
             {
@@ -36,13 +35,15 @@ class ProfitRun:
     def run(self, positionData, db, Pull, testPrice=None, testData=None):
         price = Pull.assetPrice(positionData['assetName']) if not self.isTest else testPrice
         if 'hitPrice' not in positionData.keys():
-            self.updatePosition(positionData=positionData, db=db, Pull=Pull, testData=None if not self.isTest else testData)
+            self.updatePosition(positionData=positionData, db=db, Pull=Pull,
+                                testData=None if not self.isTest else testData)
             return False, price
         else:
             if positionData['periods'] > self.configParams['closePeriods']:
                 return True, price
             elif price > positionData['hitPrice']:
-                self.updatePosition(positionData=positionData, db=db, Pull=Pull, testData=None if not self.isTest else testData)
+                self.updatePosition(positionData=positionData, db=db, Pull=Pull,
+                                    testData=None if not self.isTest else testData)
                 return False, price
             elif price < positionData['sellPrice']:
                 return True, price

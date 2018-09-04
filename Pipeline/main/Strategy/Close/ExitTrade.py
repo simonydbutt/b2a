@@ -6,10 +6,10 @@ import time
 
 class ExitTrade:
 
-    def __init__(self, compPath, db, capName='capital'):
+    def __init__(self, compPath, db):
         self.compPath = compPath
         self.db = db
-        with open('%s/%s.yml' % (self.compPath, capName)) as capFile:
+        with open('%s/capital.yml' % self.compPath) as capFile:
             self.capDict = yaml.load(capFile)
         self.transDB = TinyDB('%s/transactionLogs.ujson' % compPath)
 
@@ -45,3 +45,4 @@ class ExitTrade:
         self.capDict['liquidCurrent'] = round(self.capDict['liquidCurrent'], 4)
         with open('%s/capital.yml' % self.compPath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)
+        self.db.close()
