@@ -19,9 +19,8 @@ class Exit:
         self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
         with open('%s/config.yml' % self.compPath) as stratFile:
             self.configParams = yaml.load(stratFile)
-        self.AL = AddLogger(db=db, stratName=stratName,
-                                fileLogLevel=self.configParams['logging']['file'],
-                                consoleLogLevel=self.configParams['logging']['console'])
+        self.AL = AddLogger(db=db, stratName=stratName, fileLogLevel=self.configParams['logging']['file'],
+                            consoleLogLevel=self.configParams['logging']['console'])
         self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, isTest=isTest)
 
     def runIndiv(self, positionData, testPrice, db, Pull):

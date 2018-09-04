@@ -7,8 +7,9 @@ import Settings
 
 class EmailUtil:
 
-    def __init__(self, db=None):
+    def __init__(self, db=None, strat=None):
         self.db = db
+        self.strat = strat
 
     def _sendEmail(self, subject, content):
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -34,25 +35,14 @@ class EmailUtil:
         )
 
     def statsMessage(self):
-        stats = StatsUpdate(dbPath='Pipeline/DB/%s' % self.db).compStats()
-        tStats = stats['total']
-        msg = '-------------------------  Portfolio -------------------------\n\n' \
-              'Initial Capital: %s\nLiquid Current: %s\n' \
-              'Paper Current: %s\nPaper PnL: %s%%\n' \
-              'Percent Allocated: %s%%\nTrades Open: %s\n\n\n' \
-              '------------------------  Strategies  -------------------------\n\n' \
-              % (tStats['initialCapital'], tStats['liquidCurrent'], tStats['paperCurrent'],
-                 tStats['paperPnL'], tStats['percentAllocated'], tStats['numberOpen'])
-        for strat in [val for val in stats.keys() if val != 'total']:
-            iStats = stats[strat]
-            msg += 'Strategy: %s\n' \
-                   '\tInitial Capital: %s\n\tLiquid Current: %s\n' \
-                   '\tPaper Current: %s\n\tPaper PnL: %s%%\n' \
-                   '\tPercent Allocated: %s%%\t\nTrades Open: %s\n' \
-                   '\tNumber Transactions: %s\t\nPaper Avg PnL: %s\n' \
-                   '\tOpen List: %s\n\n' % \
-                   (strat, iStats['initialCapital'], iStats['liquidCurrent'], iStats['paperCurrent'],
-                    iStats['paperPnL'], iStats['percentAllocated'], iStats['numberOpen'],
-                    iStats['numberTransactions'], iStats['paperAvgPnL'], iStats['openList'])
-        self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-                        content=msg)
+        stats = StatsUpdate(dbPath='Pipeline/DB/%s' % self.db).compStats()[self.strat]
+        msg = '-------------------------  %s -------------------------\n\n' \
+              '\tInitial Capital: %s\n\tLiquid Current: %s\n' \
+              '\tPaper Current: %s\n\tPaper PnL: %s%%\n' \
+              '\tPercent Allocated: %s%%\t\nTrades Open: %s\n' \
+              '\tNumber Transactions: %s\t\nPaper Avg PnL: %s\n' \
+              '\tOpen List: %s\n\n' % \
+              (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'],
+               stats['paperPnL'], 100*stats['percentAllocated'], stats['numberOpen'],
+               stats['numberTransactions'], stats['paperAvgPnL'], stats['openList'])
+        self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'), content=msg)
