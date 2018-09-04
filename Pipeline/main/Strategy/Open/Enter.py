@@ -48,7 +48,7 @@ class Enter:
             # **TODO: look into nomics api
             time.sleep(1)
         OT.updateBooks()
-        db.close()
+        adb.close()
         self.AL.logger.info('Ending Enter run')
         self.AL.logger.info('%s assets analysed' % len(assetList))
         self.AL.logger.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')

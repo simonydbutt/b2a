@@ -6,6 +6,10 @@ import os
 
 class StatsUpdate:
 
+    """
+        *TODO: create some semblance of normality with stats format...
+    """
+
     def __init__(self, dbPath):
         self.dbPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
 
