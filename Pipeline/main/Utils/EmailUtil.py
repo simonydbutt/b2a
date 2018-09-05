@@ -1,3 +1,4 @@
+from Pipeline.main.Monitor.MarketDetails import MarketDetails
 from Pipeline.main.Monitor.StatsUpdate import StatsUpdate
 from email.message import EmailMessage
 from datetime import datetime
@@ -7,9 +8,10 @@ import Settings
 
 class EmailUtil:
 
-    def __init__(self, db=None, strat=None):
+    def __init__(self, db=None, strat=None, isTick=False):
         self.db = db
         self.strat = strat
+        self.isTick = isTick
 
     def _sendEmail(self, subject, content):
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -37,12 +39,20 @@ class EmailUtil:
     def statsMessage(self):
         stats = StatsUpdate(dbPath='Pipeline/DB/%s' % self.db).compStats()[self.strat]
         msg = '-------------------------  %s -------------------------\n\n' \
-              '\tInitial Capital: %s\n\tLiquid Current: %s\n' \
-              '\tPaper Current: %s\n\tPaper PnL: %s%%\n' \
-              '\tPercent Allocated: %s%%\t\nTrades Open: %s\n' \
-              '\tNumber Transactions: %s\t\nPaper Avg PnL: %s\n' \
-              '\tOpen List: %s\n\n' % \
+              'Initial Capital: %s\nLiquid Current: %s\n' \
+              'Paper Current: %s\nPaper PnL: %s%%\n' \
+              'Percent Allocated: %s%%\nTrades Open: %s\n' \
+              'Number Transactions: %s\nPaper Avg PnL: %s\n\n' % \
               (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'],
                stats['paperPnL'], 100*stats['percentAllocated'], stats['numberOpen'],
-               stats['numberTransactions'], stats['paperAvgPnL'], stats['openList'])
+               stats['numberTransactions'], stats['paperAvgPnL'])
+        if len(stats['openList']) != 0:
+            msg += 'Open Positions: %s' % ''.join(stats['openList'])
+        if self.isTick:
+            msg += '-------------------------  Market Details  -------------------------\n\n'
+            tickDict = MarketDetails().multiTicks((100, 1000))
+            msg += 'Tick Data\n'
+            for i in tickDict.keys():
+                msg += '- %s Coins\n1h:  %s\t\t24h:  %s\t\t1w:  %s\n' % \
+                       (i, tickDict[i]['short'], tickDict[i]['mid'], tickDict[i]['long'])
         self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'), content=msg)

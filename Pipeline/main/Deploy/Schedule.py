@@ -26,7 +26,7 @@ class Schedule:
         self.Enter = Enter(db=db, stratName=strat)
         self.Exit = Exit(db=db, stratName=strat)
         self.RunTests = RunPipelineTests
-        self.emailNotifications = EmailUtil(db=self.config['dbName'], strat=strat)
+        self.emailNotifications = EmailUtil(db=self.config['dbName'], strat=strat, isTick=True)
         self.periodDict = self._compDict(periodDict)
 
     def _compDict(self, periodDict):
