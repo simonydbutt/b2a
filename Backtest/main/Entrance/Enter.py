@@ -30,9 +30,9 @@ class Enter:
             enterAtDict[asset] = list(enterAtList)
         return enterAtDict
 
-
+#
 # T = TimeUtil()
-# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='2h',
+# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='6h',
 #           stratDict={'BullHammer': {}})
 # enterDict = E.run()
 # print(enterDict)

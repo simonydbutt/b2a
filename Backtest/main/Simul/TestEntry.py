@@ -105,11 +105,11 @@ print(A['all'])
 
 E = Enter('binance', A['all'], '6h', stratDict={
     'IsFeasible': {
-        'numPeriodsVolLong': 50,
+        'numPeriodsVolLong': 100,
         'numPeriodsVolShort': 5,
-        'volCoef': 1.2,
-        'numPeriodsMA': 30,
-        'numStd': 2,
+        'volCoef': 1.5,
+        'numPeriodsMA': 100,
+        'numStd': 1,
         'bolCoef': 1
     }
 })
