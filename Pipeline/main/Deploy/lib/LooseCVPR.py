@@ -18,18 +18,18 @@ stratParams = {
     'enterParams': {
         'name': 'CheapVol',
         'granularity': 21600,
-        'periodsVolLong': 100,
+        'periodsVolLong': 50,
         'periodsVolShort': 5,
-        'periodsMA': 100,
-        'volCoef': 1,
-        'bolStd': 1
+        'periodsMA': 50,
+        'volCoef': 1.5,
+        'bolStd': 1.5
     },
     'exitParams': {
         'name': 'ProfitRun',
         'granularity': 21600,
         'maPeriods': 50,
         'stdDict': {'up': 0.25, 'down': 1},
-        'closePeriods': 1200
+        'closePeriods': 500
     },
     'loggingParams': {
         'console': logging.DEBUG,

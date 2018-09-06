@@ -62,13 +62,11 @@ class TestStrat:
                       'Max Loss\t |\t%.4f%%\n'
                       'Sharpe Ratio |\t%.2f\n'
                       'Win/Loss\t |\t%.f%%\n'
-                      'Cum. P&L 5%% |\t%.2f\n'
                     % (
                         float(np.nanmean(results)),
                         float(np.nanmax(results)), float(np.nanmin(results)),
                         float(np.nanmean(results)/np.nanstd(results)) if len(results) != 1 else np.NaN,
-                        len([_ for _ in results if _ > 0])*100 / len(results),
-                        float(1 + np.mean(results)/100)**len(results)*float(np.mean(results)/100)
+                        len([_ for _ in results if _ > 0])*100 / len(results)
                         ))
                 print('---------------------------------')
                 print('Mean Periods |\t%.2f\n'
@@ -92,12 +90,11 @@ A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
 print(A['all'])
 E = Enter('binance', A['all'], '6h', stratDict={
     'IsFeasible': {
-        'numPeriodsVolLong': 100,
-        'numPeriodsVolShort': 5,
-        'volCoef': 1.5,
-        'numPeriodsMA': 100,
-        'numStd': 1,
-        'bolCoef': 1
+        'periodsVolLong': 50,
+        'periodsVolShort': 5,
+        'numPeriodsMA': 50,
+        'volCoef': 1.3,
+        'numStd': 1.6
     }
 })
 

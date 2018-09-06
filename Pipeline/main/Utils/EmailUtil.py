@@ -42,17 +42,17 @@ class EmailUtil:
               'Initial Capital: %s\nLiquid Current: %s\n' \
               'Paper Current: %s\nPaper PnL: %s%%\n' \
               'Percent Allocated: %s%%\nTrades Open: %s\n' \
-              'Number Transactions: %s\nPaper Avg PnL: %s\n\n' % \
+              'Number Transactions: %s\nPaper Avg PnL: %s\n' % \
               (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'],
                stats['paperPnL'], 100*stats['percentAllocated'], stats['numberOpen'],
                stats['numberTransactions'], stats['paperAvgPnL'])
         if len(stats['openList']) != 0:
-            msg += 'Open Positions: %s' % ''.join(stats['openList'])
+            msg += 'Open Positions: %s' % '  '.join(stats['openList'])
         if self.isTick:
-            msg += '-------------------------  Market Details  -------------------------\n\n'
+            msg += '\n\n-------------------------  Market Details  -------------------------\n\n'
             tickDict = MarketDetails().multiTicks((100, 1000))
             msg += 'Tick Data\n'
             for i in tickDict.keys():
-                msg += '- %s Coins\n1h:  %s\t\t24h:  %s\t\t1w:  %s\n' % \
+                msg += '- %s Coins\n1h:  %s\n24h:  %s\n1w:  %s\n' % \
                        (i, tickDict[i]['short'], tickDict[i]['mid'], tickDict[i]['long'])
         self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'), content=msg)
