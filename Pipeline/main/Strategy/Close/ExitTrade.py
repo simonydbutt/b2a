@@ -46,3 +46,4 @@ class ExitTrade:
         with open('%s/capital.yml' % self.compPath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)
         self.db.close()
+        self.transDB.close()
