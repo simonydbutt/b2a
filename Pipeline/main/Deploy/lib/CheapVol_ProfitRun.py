@@ -26,10 +26,11 @@ stratParams = {
     },
     'exitParams': {
         'name': 'ProfitRun',
-        'granularity': 1800,
-        'maPeriods': 600,
-        'stdDict': {'up': 1, 'down': 1.5},
-        'closePeriods': 50
+        'granularity': 21600,
+        'maPeriods': 90,
+        'stdDict': {'up': 0.25, 'down': 1.5},
+        'closePeriods': 1080
+
     },
     'loggingParams': {
         'console': logging.DEBUG,
@@ -42,7 +43,7 @@ stratParams = {
         },  # 1 hour ahead
         'exit': {'minute': '10, 40'},
         'email': {
-            'hour': '5, 13, 21',
+            'hour': '5, 13, 18, 21',
             'minute': '50'
         }
     }
