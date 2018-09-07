@@ -28,14 +28,14 @@ class Enter:
 
     def run(self):
         openList = []
-        self.AL.logger.info('Starting Enter run')
+        print('Starting Enter run')
         db = TinyDB('%s/currentPositions.ujson' % self.compPath)
         currentPositions = [val['assetName'] for val in db.all()]
         OT = OpenTrade(self.configParams, compPath=self.compPath, db=db)
         assetList = self.Select.assets()
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             pull = Pull(exchange=exchange, logger=self.AL.logger)
-            self.AL.logger.info('Starting asset: %s' % asset)
+            print('Starting asset: %s' % asset)
             if self.enterStrat.run(asset, Pull=pull, testData=None):
                 self.AL.logger.warning('Entering trade: %s' % asset)
                 openPrice = pull.assetPrice(symbol=asset, dir='buy')
@@ -43,15 +43,15 @@ class Enter:
                     openList.append(asset)
                     OT.open(assetVals=(asset, exchange, openPrice))
             else:
-                self.AL.logger.info('No action for asset: %s' % asset)
+                print('No action for asset: %s' % asset)
             # To avoid rate limits...
             # **TODO: look into nomics api
             time.sleep(1)
         OT.updateBooks()
         db.close()
-        self.AL.logger.info('Ending Enter run')
-        self.AL.logger.info('%s assets analysed' % len(assetList))
-        self.AL.logger.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
+        print('Ending Enter run')
+        print('%s assets analysed' % len(assetList))
+        print('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
 
 
 # Enter(db='disco', stratName='CheapVol_ProfitRun').run()

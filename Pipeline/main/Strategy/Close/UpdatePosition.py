@@ -10,7 +10,7 @@ class UpdatePosition:
         self.db.update(
             {
                 'currentPrice': currentPrice,
-                'paperSize': (currentPrice/positionDict['openPrice']) * positionDict['positionSize'],
+                'paperSize': round((currentPrice/positionDict['openPrice']) * positionDict['positionSize'],8),
                 'periods': positionDict['periods'] + 1
             }, Query().assetName == positionDict['assetName']
         )

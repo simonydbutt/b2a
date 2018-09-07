@@ -7,6 +7,7 @@ from Pipeline.main.Utils.AddLogger import AddLogger
 from tinydb import TinyDB
 import Settings
 import yaml
+import datetime
 
 
 class Exit:
@@ -27,21 +28,22 @@ class Exit:
         return self.exitStrat.run(positionData, testPrice=testPrice, db=db, Pull=Pull)
 
     def run(self):
-        self.AL.logger.info('Starting Exit run')
+        print('Starting Exit run: %s' % datetime.datetime.now())
         db = TinyDB('%s/currentPositions.ujson' % self.compPath)
         U = UpdatePosition(db=db)
         E = ExitTrade(compPath=self.compPath, db=db)
         for positionDict in db.all():
             pull = Pull(logger=self.AL.logger, exchange=positionDict['exchange'])
-            self.AL.logger.debug('Analysing open position: %s' % positionDict['assetName'])
+            print('Analysing open position: %s' % positionDict['assetName'])
             isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, db=db, Pull=pull)
             if isExit:
+                print('Exiting positon')
                 E.exit(positionDict=positionDict, currentPrice=currentPrice)
             else:
                 U.update(positionDict=positionDict, currentPrice=currentPrice)
         E.updateBooks()
         db.close()
-        self.AL.logger.info('Ending Exit Run')
+        print('Ending Exit Run' if len(db.all()) != 0 else 'No assets to analyse')
 
 
 import logging

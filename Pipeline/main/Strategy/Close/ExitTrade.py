@@ -21,14 +21,16 @@ class ExitTrade:
         self.transDB.insert(
             {
                 'assetName': positionDict['assetName'],
-                'openPrice': positionDict['openPrice'],
-                'closePrice': currentPrice,
-                'percentPnL': currentPrice/positionDict['openPrice'] - 1,
+                'openPrice': round(positionDict['openPrice'], 8),
+                'hitPrice': round(positionDict['hitPrice'], 8),
+                'sellPrice': round(positionDict['sellPrice'], 8),
+                'closePrice': round(currentPrice, 8),
+                'percentPnL': round(currentPrice/positionDict['openPrice'] - 1, 6),
                 'TSOpen': positionDict['TSOpen'],
                 'TSClose': round(time.time()),
                 'periods': positionDict['periods'] + 1,
                 'positionSize': positionDict['positionSize'],
-                'realPnL': realPnL
+                'realPnL': round(realPnL, 8)
             }
         )
         self.capDict['liquidCurrent'] += exitPositionSize
