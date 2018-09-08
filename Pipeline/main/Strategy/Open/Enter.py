@@ -36,17 +36,12 @@ class Enter:
         assetList = self.Select.assets()
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             pull = Pull(exchange=exchange, logger=self.AL.logger)
-            print('Starting asset: %s' % asset)
             if self.enterStrat.run(asset, Pull=pull, testData=None):
                 self.AL.logger.warning('Entering trade: %s' % asset)
                 openPrice = pull.assetPrice(symbol=asset, dir='buy')
                 if openPrice != -1:
                     openList.append(asset)
                     OT.open(assetVals=(asset, exchange, openPrice))
-            else:
-                print('No action for asset: %s' % asset)
-            # To avoid rate limits...
-            # **TODO: look into nomics api
             time.sleep(1)
         OT.updateBooks()
         db.close()
