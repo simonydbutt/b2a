@@ -27,8 +27,8 @@ class ProfitRun:
         ma, std = np.mean(data['close']), np.std(data['close'])
         db.update(
             {
-                'hitPrice': np.round(ma + self.configParams['stdDict']['up']*std, 8),
-                'sellPrice': np.round(ma - self.configParams['stdDict']['down']*std, 8)
+                'hitPrice': np.round(positionData['currentPrice'] + self.configParams['stdDict']['up']*std, 8),
+                'sellPrice': np.round(positionData['currentPrice'] - self.configParams['stdDict']['down']*std, 8)
             }, Query().assetName == positionData['assetName']
         )
 

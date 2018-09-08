@@ -15,7 +15,7 @@ def before():
     AL = AddLogger(db='test', stratName='testProfitRun')
     P = Pull('Binance', AL.logger)
     db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
-    posDataInit = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
+    posDataInit = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 9, 'periods': 0,
                    'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395}
     posDataMain = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.0000158, 'periods': 0,
                    'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395, 'hitPrice': 11, 'sellPrice': 9}

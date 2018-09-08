@@ -42,8 +42,8 @@ class Exit:
             else:
                 U.update(positionDict=positionDict, currentPrice=currentPrice)
         E.updateBooks()
-        db.close()
         print('Ending Exit Run' if len(db.all()) != 0 else 'No assets to analyse')
+        db.close()
 
 
 import logging
