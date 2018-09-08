@@ -8,6 +8,7 @@ from tinydb import TinyDB
 import Settings
 import yaml
 import datetime
+import time
 
 
 class Exit:
@@ -41,9 +42,8 @@ class Exit:
                 E.exit(positionDict=positionDict, currentPrice=currentPrice)
             else:
                 U.update(positionDict=positionDict, currentPrice=currentPrice)
-        E.updateBooks()
         print('Ending Exit Run' if len(db.all()) != 0 else 'No assets to analyse')
-        db.close()
+        E.updateBooks()
 
 
 import logging
