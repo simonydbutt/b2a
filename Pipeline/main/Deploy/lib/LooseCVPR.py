@@ -37,12 +37,12 @@ stratParams = {
     },
     'schedule': {
         'enter': {
-            'hour': '5, 19',
+            'hour': '5, 11, 17, 23',
             'minute': '6'
         },  # 1 hour ahead
         'exit': {'minute': '10, 40'},
         'email': {
-            'hour': '5, 13, 21',
+            'hour': '5, 13, 20',
             'minute': '50'
         }
     }
