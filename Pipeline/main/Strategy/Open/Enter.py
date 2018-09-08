@@ -37,7 +37,7 @@ class Enter:
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             pull = Pull(exchange=exchange, logger=self.AL.logger)
             if self.enterStrat.run(asset, Pull=pull, testData=None):
-                self.AL.logger.warning('Entering trade: %s' % asset)
+                print('Entering trade: %s' % asset)
                 openPrice = pull.assetPrice(symbol=asset, dir='buy')
                 if openPrice != -1:
                     openList.append(asset)
