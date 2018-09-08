@@ -8,6 +8,7 @@ import time
 import Settings
 import yaml
 import logging
+from datetime import datetime
 
 
 class Enter:
@@ -28,7 +29,7 @@ class Enter:
 
     def run(self):
         openList = []
-        print('Starting Enter run')
+        print('Starting Enter run: %s' % datetime.now())
         db = TinyDB('%s/currentPositions.ujson' % self.compPath)
         currentPositions = [val['assetName'] for val in db.all()]
         OT = OpenTrade(self.configParams, compPath=self.compPath, db=db)
