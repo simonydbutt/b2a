@@ -12,7 +12,7 @@ def test_assets():
     CCD.create()
     config = {'assetSelection': {'name': 'All', 'baseAsset': 'BTC', 'exchangeList': ['Binance']}}
     AL = AddLogger(db='test', stratName='test_Select').logger
-    assert Select(config, AL).assets() == All(config['assetSelection'], AL).getAssets()
+    assert Select(config, AL).assets() == All(config, AL).getAssets()
     CCD.clean()
 
 

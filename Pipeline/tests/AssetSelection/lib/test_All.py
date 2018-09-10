@@ -11,11 +11,7 @@ CCD = CreateCleanDir(filePathList=['%s/test_All' % dbPath, '%s/test_All/CodeLogs
 def test_getAssets():
     CCD.create()
     AL = AddLogger(db='test', stratName='test_All').logger
-    config = {
-        'baseAsset': 'BTC',
-        'exchangeList': ['Hadax', 'Binance'],
-        'name': 'All'
-    }
+    config = {'assetSelection': { 'baseAsset': 'BTC', 'exchangeList': ['Hadax', 'Binance'], 'name': 'All'}}
     PH = Pull('Hadax', AL).BTCAssets()
     pullVals = [(val, 'Hadax') for val in PH] + [(val, 'Binance') for val in Pull('Binance', AL).BTCAssets()
                                                  if val not in PH]

@@ -5,8 +5,8 @@ import numpy as np
 class All:
 
     def __init__(self, config, logger):
-        self.exchangeList = config['exchangeList']
-        self.baseAsset = config['baseAsset']
+        self.exchangeList = config['assetSelection']['exchangeList']
+        self.baseAsset = config['assetSelection']['baseAsset']
         self.logger = logger
 
     def getAssets(self):

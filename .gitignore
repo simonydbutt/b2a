@@ -16,3 +16,4 @@ Settings.py
 Pipeline/tests/testsDB/CodeLogs/*
 *.log
 .DS_Store
+*/_db/*
