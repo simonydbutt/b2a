@@ -1,18 +1,24 @@
 from Pipeline.main.PullData.Price.lib import *
+import logging
 
 
 class Pull:
 
-    def __init__(self, exchange, logger):
+    def __init__(self, exchange):
         self.exchange = exchange
-        self.logger = logger
 
     def BTCAssets(self, justQuote=False):
-        return eval(self.exchange)(logger=self.logger).getBTCAssets(justQuote=justQuote)
+        logging.debug('Starting Pull.BTCAssets')
+        logging.debug('Variable: justQuote: %s' % justQuote)
+        return eval(self.exchange)().getBTCAssets(justQuote=justQuote)
 
     def candles(self, asset, limit, interval, columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True):
-        return eval(self.exchange)(logger=self.logger).getCandles(asset=asset, limit=limit, interval=interval,
-                                                                  columns=columns, lastReal=lastReal)
+        logging.debug('Starting Pull.candles')
+        logging.debug('Variables. Asset: %s, limit: %s, interval: %s, columns: %s, lastReal: %s' %
+                      (asset, limit, interval, columns, lastReal))
+        return eval(self.exchange)().getCandles(asset=asset, limit=limit, interval=interval, columns=columns, lastReal=lastReal)
 
-    def assetPrice(self, symbol, dir='buy'):
-        return eval(self.exchange)(logger=self.logger).getAssetPrice(symbol, dir)
+    def assetPrice(self, asset, dir='buy'):
+        logging.debug('Starting Pull.assetPrice')
+        logging.debug('Variables. Asset: %s, dir: %s' % (asset, dir))
+        return eval(self.exchange)().getAssetPrice(asset, dir)

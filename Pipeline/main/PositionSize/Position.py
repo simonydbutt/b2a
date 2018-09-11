@@ -10,5 +10,5 @@ class Position:
         self.capConfig = capConfig
 
     def getSize(self, asset=None):
-        return eval(self.stratConfig['positionSize']['name'])(stratParams=self.stratConfig['positionSize'],
-                                                              capParams=self.capConfig).get(asset=asset)
+        return round(eval(self.stratConfig['positionSize']['name'])(stratParams=self.stratConfig['positionSize'],
+                                                              capParams=self.capConfig).get(asset=asset), 8)

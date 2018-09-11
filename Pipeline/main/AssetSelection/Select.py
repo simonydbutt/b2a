@@ -1,11 +1,12 @@
 from Pipeline.main.AssetSelection.lib import *
+import logging
 
 
 class Select:
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.config = config
-        self.logger = logger
 
     def assets(self):
-        return eval(self.config['assetSelection']['name'])(config=self.config, logger=self.logger).getAssets()
+        logging.debug('Starting Select.assets')
+        return eval(self.config['assetSelection']['name'])(config=self.config).getAssets()
