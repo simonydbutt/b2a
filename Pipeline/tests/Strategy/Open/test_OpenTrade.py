@@ -54,6 +54,7 @@ def test_updateBooks():
     assert currentCap['liquidCurrent'] == 9.5
     assert currentCap['percentAllocated'] == 0.05
     assert currentCap['paperPnL'] == 1
+    after()
 
 
 if __name__ == '__main__':

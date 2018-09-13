@@ -1,5 +1,6 @@
-from tinydb import Query
+from pymongo import MongoClient
 import numpy as np
+import yaml
 
 
 class ProfitRun:
@@ -17,35 +18,34 @@ class ProfitRun:
             - closePeriods
     """
 
-    def __init__(self, configParams, isTest=False):
+    def __init__(self, stratName, isTest=False):
         self.isTest = isTest
-        self.configParams = configParams['exit']
+        with open('%s/Pipeline/resources/%s/config.yml', 'w') as configFile:
+            self.configParams = yaml.load(configFile)['exit']
+        self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
 
-    def updatePosition(self, positionData, db, Pull, testData=None):
+    def updatePosition(self, positionData, Pull, testData=None):
         data = Pull.candles(asset=positionData['assetName'], limit=self.configParams['maPeriods'], lastReal=True,
                             interval=self.configParams['granularity'], columns=['close']) if not self.isTest else testData
         ma, std = np.mean(data['close']), np.std(data['close'])
-        db.update(
-            {
-                'hitPrice': np.round(positionData['currentPrice'] + self.configParams['stdDict']['up']*std, 8),
-                'sellPrice': np.round(positionData['currentPrice'] - self.configParams['stdDict']['down']*std, 8)
-            }, Query().assetName == positionData['assetName']
-        )
+        positionData['hitPrice'] = np.round(positionData['currentPrice'] + self.configParams['stdDict']['up']*std, 8),
+        positionData['sellPrice'] = np.round(positionData['currentPrice'] - self.configParams['stdDict']['down']*std, 8)
+        self.col.find_one_and_replace({'assetName': positionData['assetName']}, positionData)
 
     def run(self, positionData, db, Pull, testPrice=None, testData=None):
         price = Pull.assetPrice(positionData['assetName']) if not self.isTest else testPrice
         if 'hitPrice' not in positionData.keys():
-            self.updatePosition(positionData=positionData, db=db, Pull=Pull,
-                                testData=None if not self.isTest else testData)
+            self.updatePosition(positionData=positionData, Pull=Pull, testData=None if not self.isTest else testData)
             return False, price
         else:
             if positionData['periods'] > self.configParams['closePeriods']:
                 return True, price
             elif price > positionData['hitPrice']:
-                self.updatePosition(positionData=positionData, db=db, Pull=Pull,
-                                    testData=None if not self.isTest else testData)
+                self.updatePosition(positionData=positionData, Pull=Pull, testData=None if not self.isTest else testData)
                 return False, price
             elif price < positionData['sellPrice']:
                 return True, price
             else:
                 return False, price
+
+# *TODO: logging

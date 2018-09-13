@@ -6,14 +6,12 @@ from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from tinydb import TinyDB, Query
 import Settings
 import yaml
+# *TODO tomorrow finish this!
 
 
 def before():
     dbPath = 'Pipeline/DB/test'
-    CCD = CreateCleanDir(filePathList=['%s/testProfitRun' % dbPath, '%s/testProfitRun/CodeLogs' % dbPath])
-    CCD.create()
-    AL = AddLogger(db='test', stratName='testProfitRun')
-    P = Pull('Binance', AL.logger)
+    P = Pull('Binance')
     db = TinyDB('%s/%s/currentPositions.ujson' % (Settings.BASE_PATH, dbPath))
     posDataInit = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 9, 'periods': 0,
                    'positionSize': 0.4995, 'paperSize': 0.4995, 'TSOpen': 1534711395}
