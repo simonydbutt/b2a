@@ -11,7 +11,7 @@ params = {'enter': {
 
 
 def test_CheapVol():
-    P = Pull('Binance')
+    P = Pull()
     CV = CheapVol(params=params, isTest=True)
     # Will enter position
     assert CV.run(asset='LTCBTC', testData=enterData, Pull=P)

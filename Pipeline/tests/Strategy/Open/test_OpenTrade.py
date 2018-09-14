@@ -26,6 +26,7 @@ def before():
     with open('%s/capital.yml' % compPath, 'w') as capFile:
         yaml.dump(baseCapFile, capFile)
     OT = OpenTrade(stratName='testOPStrat')
+    OT.initRun()
     OT.open(assetVals=('ETHBTC', 'Binance', 0.7))
     return baseCapFile, compPath, OT
 

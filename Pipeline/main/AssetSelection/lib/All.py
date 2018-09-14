@@ -6,6 +6,7 @@ import logging
 class All:
 
     def __init__(self, config):
+        logging.debug('Initialising All()')
         self.exchangeList = config['assetSelection']['exchangeList']
         self.baseAsset = config['assetSelection']['baseAsset']
 
@@ -17,7 +18,7 @@ class All:
         for exchange in self.exchangeList:
             logging.debug('Starting exchange: %s' % exchange)
             if self.baseAsset == 'BTC':
-                tmpList = Pull(exchange=exchange).BTCAssets()
+                tmpList = Pull().BTCAssets(exchange=exchange)
                 addedAssets = [val.lower() for val in np.array(assetList)[:,0]] if len(assetList) != 0 else []
                 assetList += [(asset, exchange) for asset in tmpList if asset.lower() not in addedAssets]
         logging.debug('Ending All.getAssets')

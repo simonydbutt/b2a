@@ -13,6 +13,7 @@ from datetime import datetime
 class Enter:
 
     def __init__(self, stratName, isTest=False):
+        logging.debug('Initialising Enter()')
         self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         with open('%s/config.yml' % self.compPath) as stratFile:
             self.configParams = yaml.load(stratFile)
@@ -26,8 +27,8 @@ class Enter:
         return self.enterStrat.run(asset, Pull=Pull, testData=testData)
 
     def run(self):
+        logging.info('Starting Enter.run: %s' % datetime.now())
         openList = []
-        logging.info('Starting Enter run: %s' % datetime.now())
         currentPositions = [val['assetName'] for val in list(self.db['currentPositions'].find({}, {'assetName': 1}))]
         assetList = self.Select.assets()
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:

@@ -1,32 +1,34 @@
 from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
-from tinydb import TinyDB
+from pymongo import MongoClient
 import Settings
-import os
+import logging
 
 
 def test_update():
-    dbPath = '%s/Pipeline/DB/test' % Settings.BASE_PATH
-    db = TinyDB('%s/currentPositions.ujson' % dbPath)
+    client = MongoClient('localhost', 27017)
+    client.drop_database('testUpdatePos')
+    col = client['testUpdatePos']['currentPositions']
+    UP = UpdatePosition(stratName='testUpdatePos')
     positionDict={
         'currentPrice': 11,
         'openPrice': 10,
         'assetName': 'LTCBTC',
         'paperSize': 110,
         'periods': 2,
-        'positionSize': 100
+        'positionSize': 100,
     }
-    db.insert(positionDict)
-    UP = UpdatePosition(db=db)
+    col.insert_one(positionDict)
     UP.update(positionDict=positionDict, currentPrice=10)
-    assert len(db.all()) == 1
-    newVal = db.all()[0]
+    assert col.count() == 1
+    newVal = col.find_one()
     assert newVal['periods'] == 3
     assert newVal['currentPrice'] == 10
     assert newVal['paperSize'] == 100
     UP.update(positionDict=positionDict, currentPrice=2)
-    assert db.all()[0]['paperSize'] == 20
-    os.remove('%s/currentPositions.ujson' % dbPath)
+    assert col.find_one()['paperSize'] == 20
+    client.drop_database('testUpdatePos')
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     test_update()

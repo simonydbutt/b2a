@@ -33,7 +33,7 @@ def before():
 def test_indivEntry():
     CCD, params= before()
     E = Enter(stratName='testEnterStrat', isTest=True)
-    P = Pull('Binance')
+    P = Pull()
     CV = CheapVol(params=params, isTest=True)
     assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', Pull=P, testData=enterData)
     CCD.clean()

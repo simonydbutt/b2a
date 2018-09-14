@@ -10,14 +10,18 @@ import time
 class OpenTrade:
 
     def __init__(self, stratName):
+        logging.debug('Initialising OpenTrade()')
         self.resourcePath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         self.db = MongoClient('localhost', 27017)[stratName]
         self.EU = ExchangeUtil()
         with open('%s/config.yml' % self.resourcePath) as configFile:
             configParams = yaml.load(configFile)
+        self.P = Position(stratName)
+        self.capDict = None
+
+    def initRun(self):
         with open('%s/capital.yml' % self.resourcePath) as capFile:
             self.capDict = yaml.load(capFile)
-        self.P = Position(stratConfig=configParams, capConfig=self.capDict)
 
     def open(self, assetVals):
         logging.debug('Starting OpenTrade.open')

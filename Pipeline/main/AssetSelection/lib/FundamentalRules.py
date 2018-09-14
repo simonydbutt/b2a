@@ -6,6 +6,7 @@ class FundamentalRules:
 
     """
         The getAssets function loads a db (assetSelect.ujson) which contains the assets selected in FR.analyse
+         *TODO logging
 
     """
 

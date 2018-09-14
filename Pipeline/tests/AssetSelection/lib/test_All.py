@@ -5,8 +5,8 @@ import logging
 
 def test_getAssets():
     config = {'assetSelection': { 'baseAsset': 'BTC', 'exchangeList': ['Hadax', 'Binance'], 'name': 'All'}}
-    PH = Pull('Hadax').BTCAssets()
-    pullVals = [(val, 'Hadax') for val in PH] + [(val, 'Binance') for val in Pull('Binance').BTCAssets()
+    PH = Pull().BTCAssets('Hadax')
+    pullVals = [(val, 'Hadax') for val in PH] + [(val, 'Binance') for val in Pull().BTCAssets('Binance')
                                                  if val not in PH]
     allVals = All(config).getAssets()
     assert allVals == pullVals
