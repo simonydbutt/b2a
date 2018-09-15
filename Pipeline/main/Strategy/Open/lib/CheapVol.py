@@ -25,12 +25,12 @@ class CheapVol:
         with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, stratName)) as configFile:
             self.enterParams = yaml.load(configFile)['enter']
 
-    def run(self, asset, Pull, testData=None):
+    def run(self, asset, exchange, Pull, testData=None):
         logging.debug('Starting CheapVol.run')
         maxPeriods = max(self.enterParams['periodsVolLong'], self.enterParams['periodsMA'])
         logging.debug('max periods: %s' % maxPeriods)
         df = Pull.candles(asset=asset, interval=self.enterParams['granularity'], limit=maxPeriods,
-                          columns=['close', 'takerQuoteVol'], lastReal=True) if not self.isTest else testData
+                          columns=['close', 'takerQuoteVol'], lastReal=True, exchange=exchange) if not self.isTest else testData
 
         if len(df) == maxPeriods:
             row = df.iloc[-1]

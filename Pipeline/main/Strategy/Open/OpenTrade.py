@@ -44,6 +44,7 @@ class OpenTrade:
 
     def updateBooks(self):
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
+        print(self.capDict['initialCapital'])
         self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
         with open('%s/capital.yml' % self.resourcePath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)

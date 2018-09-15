@@ -4,7 +4,6 @@ import logging
 
 stratParams = {
     'stratName': 'LooseCVPR',
-    'db': 'sandbox',
     'initialCapital': 1,
     'positionSizeParams': {
         'name': 'Basic',
@@ -31,10 +30,6 @@ stratParams = {
         'stdDict': {'up': 0.25, 'down': 1},
         'closePeriods': 500
     },
-    'loggingParams': {
-        'console': logging.DEBUG,
-        'file': logging.INFO
-    },
     'schedule': {
         'enter': {
             'hour': '5, 11, 17, 23',
@@ -49,4 +44,5 @@ stratParams = {
 }
 
 
+logging.basicConfig(level=logging.INFO)
 Run(stratParams=stratParams)
