@@ -2,7 +2,7 @@
 
 # b2a
 
-Automated cryptotrading platform with functionality to backtest price action strategy ideas and implement them to an automated pipeline using the respective Backtest & Pipeline frameworks
+Automated cryptotrading platform with functionality to backtest price action strategies and implement them to an automated pipeline using the respective Backtest & Pipeline frameworks
 
 ## Getting Started
 
