@@ -1,23 +1,21 @@
-from tinydb import TinyDB
-import Settings
+from pymongo import MongoClient
+import logging
 
 
 class FundamentalRules:
 
     """
         The getAssets function loads a db (assetSelect.ujson) which contains the assets selected in FR.analyse
-         *TODO logging
 
     """
 
-    def __init__(self, config, logger):
-        self.logger = logger
-        self.config = config
-        self.assetDB = TinyDB('%s/Pipeline/DB/%s/%s/assetSelect.ujson' \
-                              % (Settings.BASE_PATH, self.config['dbName'], self.config['stratName']))
+    def __init__(self, stratName):
+        logging.debug('Initialising FundatmentalRules()')
+        self.assetCol = MongoClient('localhost', 27017)[stratName]['viableAssets']
 
     def getAssets(self):
-        return [(val['asset'], val['exchange']) for val in self.assetDB.all()]
+        return [(val['asset'], val['exchange']) for val in list(self.assetCol.find())]
 
     def analyse(self):
+        # **Todo create viableAssets collection
         pass

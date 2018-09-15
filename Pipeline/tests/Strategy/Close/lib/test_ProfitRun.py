@@ -50,7 +50,7 @@ def test_updatePostition():
     doc = col.find_one({'assetName': 'ADABTC'})
     assert round(doc['hitPrice'], 4) == 10.4142
     assert round(doc['sellPrice'], 4) == 8.2929
-    CCD.clean()
+    after()
 
 
 def test_profitRun():
@@ -65,7 +65,7 @@ def test_profitRun():
     assert PR.run(positionData=posDict['main'], testPrice=8.9, Pull=P)[0]
     # close as periods out
     assert PR.run(positionData=posDict['periods'], testPrice=10, Pull=P)[0]
-    CCD.clean()
+    after()
 
 
 if __name__ == '__main__':

@@ -1,9 +1,7 @@
 from Pipeline.main.Strategy.Close.lib import *
 from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
 from Pipeline.main.Strategy.Close.ExitTrade import ExitTrade
-from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
 from Pipeline.main.PullData.Price.Pull import Pull
-from Pipeline.main.Utils.AddLogger import AddLogger
 from pymongo import MongoClient
 import Settings
 import yaml
@@ -16,12 +14,11 @@ class Exit:
 
     """
 
-    def __init__(self, db, stratName, isTest=False):
+    def __init__(self, stratName, isTest=False):
         logging.debug('Initializing Exit()')
-        self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
-        with open('%s/config.yml' % self.compPath) as stratFile:
-            self.configParams = yaml.load(stratFile)
-        self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, isTest=isTest)
+        with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, stratName)) as stratFile:
+            self.config = yaml.load(stratFile)
+        self.exitStrat = eval(self.config['exit']['name'])(stratName=stratName, isTest=isTest)
         self.col = MongoClient('localhost', 27017)['stratName']['currentPositions']
         self.pull = Pull()
         self.updatePosition = UpdatePosition(stratName)

@@ -32,7 +32,7 @@ def before():
 
 
 def after():
-    client.drop_database('testOpenPosStrat')
+    client.drop_database('testOPStrat')
     CCD.clean()
 
 
