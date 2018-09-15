@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/simonydbutt/b2a.svg?branch=master)](https://travis-ci.org/simonydbutt/b2a)
 
-# B2A
+# b2a
 
 Automated cryptotrading platform with functionality to backtest price action strategy ideas and implement them to an automated pipeline using the respective Backtest & Pipeline frameworks
 
