@@ -1,5 +1,6 @@
-from tinydb import TinyDB
+from pymongo import MongoClient
 import Settings
+import logging
 import yaml
 import os
 
@@ -10,28 +11,33 @@ class StatsUpdate:
         *TODO: create some semblance of normality with stats format...
     """
 
-    def __init__(self, dbPath):
-        self.dbPath = '%s/%s' % (Settings.BASE_PATH, dbPath)
+    def __init__(self):
+        logging.debug('Initialising StatsUpdate()')
+        self.client = MongoClient('localhost', 27017)
 
     def indivStats(self, stratName):
-        stratPath = '%s/%s' % (self.dbPath, stratName)
-        with open('%s/capital.yml' % stratPath) as capFile:
+        logging.debug('Starting StatsUpdate.indivStats')
+        with open('%s/Pipeline/resources/%s/capital.yml' % (Settings.BASE_PATH, stratName)) as capFile:
             stats = yaml.load(capFile)
-        currentDb = TinyDB('%s/currentPositions.ujson' % stratPath).all()
-        transDb = TinyDB('%s/transactionLogs.ujson' % stratPath).all()
-        stats['numberOpen'] = len(currentDb)
-        stats['openList'] = [val['assetName'] for val in currentDb]
-        stats['numberTransactions'] = len(transDb)
+        currentCol = self.client[stratName]['currentPositions']
+        transCol = self.client[stratName]['transactionLogs']
+        stats['numberOpen'] = currentCol.count()
+        stats['openList'] = [val['assetName'] for val in list(currentCol.find())]
+        stats['numberTransactions'] = transCol.count()
         stats['paperAvgPnL'] = round(stats['paperPnL'] / (stats['numberOpen'] + stats['numberTransactions']), 4) if \
             stats['numberOpen'] + stats['numberTransactions'] != 0 else 0
+        logging.debug('Ending indivStats')
         return stats
 
     def _queryDict(self, statsDict, param):
+        logging.debug('Starting StatsUpdate._queryDict')
         return sum([statsDict[val][param] for val in statsDict.keys()])
 
-    def compStats(self):
+    def compStats(self, isTest=None):
+        logging.debug('Starting StatsUpdate.compStats')
         statsDict = {}
-        for stratName in os.listdir(self.dbPath):
+        stratList = os.listdir('%s/Pipeline/resources' % Settings.BASE_PATH) if not isTest else isTest
+        for stratName in stratList:
             statsDict[stratName] = self.indivStats(stratName)
         totalStats = {
             'numberOpen': self._queryDict(statsDict, 'numberOpen'),
@@ -42,4 +48,5 @@ class StatsUpdate:
         totalStats['paperPnL'] = round(100*(totalStats['paperCurrent'] / totalStats['initialCapital'] - 1), 4)
         totalStats['percentAllocated'] = 100*round(1 - totalStats['liquidCurrent'] / totalStats['paperCurrent'], 2)
         statsDict['total'] = totalStats
+        logging.debug('Ending compStats')
         return statsDict

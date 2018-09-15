@@ -8,8 +8,7 @@ import Settings
 
 class EmailUtil:
 
-    def __init__(self, db=None, strat=None, isTick=False):
-        self.db = db
+    def __init__(self, strat=None, isTick=False):
         self.strat = strat
         self.isTick = isTick
 
@@ -37,7 +36,7 @@ class EmailUtil:
         )
 
     def statsMessage(self):
-        stats = StatsUpdate(dbPath='Pipeline/DB/%s' % self.db).compStats()[self.strat]
+        stats = StatsUpdate().compStats()[self.strat]
         msg = '-------------------------  %s -------------------------\n\n' \
               'Initial Capital: %s\nLiquid Current: %s\n' \
               'Paper Current: %s\nPaper PnL: %s%%\n' \

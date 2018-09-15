@@ -1,5 +1,6 @@
-from tinydb import TinyDB
+from pymongo import MongoClient
 import Settings
+import logging
 import shutil
 import yaml
 import os
@@ -7,13 +8,22 @@ import os
 
 class Clean:
 
-    def __init__(self, db, stratName, archivePath=False):
-        self.path = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
+    def __init__(self, stratName):
+        logging.debug('Initialising Clean()')
+        self.path = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
+        self.stratName = stratName
+        self.client = MongoClient('localhost', 27017)
 
     def cleanStrat(self):
+        logging.debug('Starting Clean.cleanStrat')
+        self.client.drop_database(self.stratName)
         shutil.rmtree(self.path)
 
+        logging.debug('Ending Clean.CleanStrat')
+
     def resetStrat(self):
+        logging.debug('Starting Clean.resetStrat')
+        self.client.drop_database(self.stratName)
         with open('%s/capital.yml' % self.path, 'r') as capFile:
             initCap = yaml.load(capFile)['initialCapital']
         with open('%s/capital.yml' % self.path, 'w') as capFile:
@@ -23,13 +33,4 @@ class Clean:
                 stream=capFile
             )
             capFile.close()
-        shutil.rmtree('%s/CodeLogs' % self.path)
-        os.remove('%s/currentPositions.ujson' % self.path)
-        os.remove('%s/transactionLogs.ujson' % self.path)
-        os.mkdir('%s/CodeLogs' % self.path)
-        TinyDB('%s/currentPositions.ujson' % self.path)
-        TinyDB('%s/transactionLogs.ujson' % self.path)
-
-
-
-# Clean(db='disco', stratName='CheapVol_ProfitRun').resetStrat()
+        logging.debug('Ending Clean.resetStrat')

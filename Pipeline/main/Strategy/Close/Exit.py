@@ -1,14 +1,11 @@
 from Pipeline.main.Strategy.Close.lib import *
 from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
 from Pipeline.main.Strategy.Close.ExitTrade import ExitTrade
-from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
 from Pipeline.main.PullData.Price.Pull import Pull
-from Pipeline.main.Utils.AddLogger import AddLogger
-from tinydb import TinyDB
+from pymongo import MongoClient
 import Settings
 import yaml
 import datetime
-import time
 
 
 class Exit:
@@ -17,33 +14,34 @@ class Exit:
 
     """
 
-    def __init__(self, db, stratName, isTest=False):
-        self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, db, stratName)
-        with open('%s/config.yml' % self.compPath) as stratFile:
-            self.configParams = yaml.load(stratFile)
-        self.AL = AddLogger(db=db, stratName=stratName, fileLogLevel=self.configParams['logging']['file'],
-                            consoleLogLevel=self.configParams['logging']['console'])
-        self.exitStrat = eval(self.configParams['exit']['name'])(configParams=self.configParams, isTest=isTest)
+    def __init__(self, stratName, isTest=False):
+        logging.debug('Initializing Exit()')
+        with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, stratName)) as stratFile:
+            self.config = yaml.load(stratFile)
+        self.exitStrat = eval(self.config['exit']['name'])(stratName=stratName, isTest=isTest)
+        self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
+        self.pull = Pull()
+        self.updatePosition = UpdatePosition(stratName)
+        self.exitTrade = ExitTrade(stratName)
 
-    def runIndiv(self, positionData, testPrice, db, Pull):
-        return self.exitStrat.run(positionData, testPrice=testPrice, db=db, Pull=Pull)
+    def runIndiv(self, positionData, testPrice, Pull):
+        return self.exitStrat.run(positionData, testPrice=testPrice, Pull=Pull)
 
     def run(self):
-        print('Starting Exit run: %s' % datetime.datetime.now())
-        db = TinyDB('%s/currentPositions.ujson' % self.compPath)
-        U = UpdatePosition(db=db)
-        E = ExitTrade(compPath=self.compPath, db=db)
-        for positionDict in db.all():
-            pull = Pull(logger=self.AL.logger, exchange=positionDict['exchange'])
-            print('Analysing open position: %s' % positionDict['assetName'])
-            isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, db=db, Pull=pull)
+        logging.info('Starting Exit Run: %s' % datetime.datetime.now())
+        currentPositions = list(self.col.find())
+        logging.info('Open positions: %s' % [val['assetName'] for val in currentPositions])
+        self.exitTrade.initBooks()
+        for positionDict in currentPositions:
+            logging.debug('Analysing open position: %s' % positionDict['assetName'])
+            isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, Pull=self.pull)
             if isExit:
-                print('Exiting positon')
-                E.exit(positionDict=positionDict, currentPrice=currentPrice)
+                logging.info('Exiting positon: %s' % positionDict['assetName'])
+                self.exitStrat.exit(positionDict=positionDict, currentPrice=currentPrice)
             else:
-                U.update(positionDict=positionDict, currentPrice=currentPrice)
-        print('Ending Exit Run' if len(db.all()) != 0 else 'No assets to analyse')
-        E.updateBooks()
+                self.updatePosition.update(positionDict=positionDict, currentPrice=currentPrice)
+        logging.info('Ending Exit Run' if len(currentPositions) != 0 else 'No assets to analyse')
+        self.exitTrade.closeOutBooks()
 
 
 import logging

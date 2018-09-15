@@ -1,4 +1,3 @@
-from tinydb import TinyDB
 import Settings
 import logging
 import yaml
@@ -29,41 +28,40 @@ class Build:
         * Indiv requirements are noted at top of class
     """
 
-    def __init__(self, dbName, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
-                 exitParams, schedule, loggingParams={'console': logging.WARNING, 'file': logging.INFO}):
-        self.compPath = '%s/Pipeline/DB/%s/%s' % (Settings.BASE_PATH, dbName, stratName)
+    def __init__(self, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
+                 exitParams, schedule):
+        logging.debug('Initialising Build(): %s' % stratName)
+        self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
+        logging.debug('compPath: %s' % self.compPath)
         if os.path.exists(self.compPath):
             print('Strat already exists. Print Y to overwrite')
             if input() == 'Y':
-                self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams, dbName=dbName,
+                logging.warning('Rewriting strategy')
+                self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                                 positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                                loggingParams=loggingParams, initialCapital=initialCapital, schedule=schedule)
+                                initialCapital=initialCapital, schedule=schedule)
+            else:
+                logging.warning('No action to be taken')
         else:
-            self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams, dbName=dbName,
+            self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                             positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                            loggingParams=loggingParams, initialCapital=initialCapital, schedule=schedule)
+                            initialCapital=initialCapital, schedule=schedule)
 
-    def buildStrat(self, stratName, assetSelectionParams, dbName, positionSizeParams,
-                   enterParams, exitParams, loggingParams, initialCapital, schedule):
+    def buildStrat(self, stratName, assetSelectionParams, positionSizeParams,
+                   enterParams, exitParams, initialCapital, schedule):
         configDict = {
             'stratName': stratName, 'assetSelection': assetSelectionParams,
             'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
-            'logging': loggingParams, 'dbName': dbName, 'schedule': schedule
+            'schedule': schedule
         }
-        for path in ('%s/Pipeline/DB/%s' % (Settings.BASE_PATH, dbName), self.compPath, '%s/CodeLogs' % self.compPath):
+        for path in ('%s/Pipeline/resources' % Settings.BASE_PATH, self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
         with open('%s/config.yml' % self.compPath, 'w') as configFile:
             yaml.dump(configDict, configFile)
         with open('%s/capital.yml' % self.compPath, 'w') as capFile:
-            yaml.dump(
-                {
-                    'initialCapital': initialCapital,
-                    'liquidCurrent': initialCapital,
-                    'paperCurrent': initialCapital,
-                    'paperPnL': 0,
+            yaml.dump({
+                    'initialCapital': initialCapital, 'liquidCurrent': initialCapital,
+                    'paperCurrent': initialCapital, 'paperPnL': 0,
                     'percentAllocated': 0
-                },
-                capFile
-            )
-        TinyDB('%s/currentPositions.ujson' % self.compPath)
-        TinyDB('%s/transactionLogs.ujson' % self.compPath)
+                }, capFile)
+        logging.info('Build Complete')

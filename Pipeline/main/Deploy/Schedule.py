@@ -16,17 +16,13 @@ class Schedule:
         **TODO: create schedule function from gran to schedule
     """
 
-    def __init__(self, db, strat, periodDict):
-        self.stratPath = 'Pipeline/DB/%s/%s' % (db, strat)
-        with open('%s/%s/config.yml' % (Settings.BASE_PATH, self.stratPath)) as configFile:
+    def __init__(self, strat, periodDict):
+        with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, strat)) as configFile:
             self.config = yaml.load(configFile)
-        self.logger = AddLogger(stratName=strat, db=db,
-                                fileLogLevel=self.config['logging']['file'],
-                                consoleLogLevel=self.config['logging']['console']).logger
-        self.Enter = Enter(db=db, stratName=strat)
-        self.Exit = Exit(db=db, stratName=strat)
+        self.Enter = Enter(stratName=strat)
+        self.Exit = Exit(stratName=strat)
         self.RunTests = RunPipelineTests
-        self.emailNotifications = EmailUtil(db=self.config['dbName'], strat=strat, isTick=True)
+        self.emailNotifications = EmailUtil(strat=strat, isTick=True)
         self.periodDict = self._compDict(periodDict)
 
     def _compDict(self, periodDict):

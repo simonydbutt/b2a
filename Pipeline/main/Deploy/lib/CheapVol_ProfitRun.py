@@ -4,7 +4,6 @@ import logging
 
 stratParams = {
     'stratName': 'CheapVol_ProfitRun',
-    'db': 'sandbox',
     'initialCapital': 1,
     'positionSizeParams': {
         'name': 'Basic',
@@ -31,10 +30,6 @@ stratParams = {
         'stdDict': {'up': 0.25, 'down': 1.5},
         'closePeriods': 1080
 
-    },
-    'loggingParams': {
-        'console': logging.DEBUG,
-        'file': logging.INFO
     },
     'schedule': {
         'enter': {

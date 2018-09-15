@@ -2,33 +2,43 @@ from Pipeline.main.Strategy.Open.Enter import Enter
 from Pipeline.main.Strategy.Open.lib.CheapVol import CheapVol
 from Pipeline.main.PullData.Price.Pull import Pull
 from Pipeline.tests.Strategy.Open.lib.CheapVolTestData import enterData
-from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
+import logging
 import Settings
 import yaml
-import os
+
+"""
+    *TODO properly test this one --> test_run!!!!!!!
+"""
 
 
 def before():
-    dbPath = 'Pipeline/DB/test'
-    CCD = CreateCleanDir(filePathList=['%s/test_Enter' % dbPath, '%s/test_Enter/CodeLogs' % dbPath])
+    dbPath = 'Pipeline/resources/testEnterStrat'
+    CCD = CreateCleanDir(filePathList=[dbPath])
     CCD.create()
-    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath)) as file:
-        params = yaml.load(file)
-    with open('%s/%s/test_Enter/config.yml' % (Settings.BASE_PATH, dbPath), 'w') as configFile:
-        yaml.dump(params, configFile)
-    return CCD, params, dbPath
+    configParams = {
+        'enter': {'bolStd': 2, 'granularity': 43200, 'name': 'CheapVol', 'periodsMA': 5, 'periodsVolLong': 5,
+                  'periodsVolShort': 5, 'volCoef': 1.5},
+        'stratName': 'testStrat',
+        'logging': {'console': 10, 'file': 20}
+    }
+    with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath), 'w') as configFile:
+        yaml.dump(configParams, configFile)
+    capitalParams = {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10, 'paperPnL': 0, 'percentAllocated': 10}
+    with open('%s/%s/capital.yml' % (Settings.BASE_PATH, dbPath), 'w') as capFile:
+        yaml.dump(capitalParams, capFile)
+    return CCD, configParams
 
 
 def test_indivEntry():
-    CCD, params, dbPath = before()
-    AL = AddLogger(db='test', stratName='test_Enter')
-    E = Enter(db='test', stratName='test_Enter', isTest=True)
-    P = Pull('Binance', AL.logger)
-    CV = CheapVol(params=params, isTest=True)
-    assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', Pull=P, testData=enterData)
+    CCD, params= before()
+    E = Enter(stratName='testEnterStrat', isTest=True)
+    P = Pull()
+    CV = CheapVol(stratName='testEnterStrat', isTest=True)
+    assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', exchange='Binance', Pull=P, testData=enterData)
     CCD.clean()
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     test_indivEntry()

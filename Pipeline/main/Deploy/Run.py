@@ -14,13 +14,13 @@ class Run:
         args = parser.parse_args()
         if args.build:
             Build(
-                stratName=stratParams['stratName'], dbName=stratParams['db'],
+                stratName=stratParams['stratName'],
                 initialCapital=stratParams['initialCapital'], positionSizeParams=stratParams['positionSizeParams'],
                 assetSelectionParams=stratParams['assetSelectionParams'], enterParams=stratParams['enterParams'],
-                exitParams=stratParams['exitParams'], loggingParams=stratParams['loggingParams'],
+                exitParams=stratParams['exitParams'],
                 schedule=stratParams['schedule']
             )
         elif args.clean:
-            Clean(db=stratParams['db'], stratName=stratParams['stratName'])
+            Clean(stratName=stratParams['stratName'])
         if args.run:
-            Schedule(db=stratParams['db'], strat=stratParams['stratName'], periodDict=stratParams['schedule']).run()
+            Schedule(strat=stratParams['stratName'], periodDict=stratParams['schedule']).run()

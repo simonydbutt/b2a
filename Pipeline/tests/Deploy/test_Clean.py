@@ -1,65 +1,57 @@
 from Pipeline.main.Deploy.Clean import Clean
 from Pipeline.main.Deploy.Build import Build
-from tinydb import TinyDB
+from pymongo import MongoClient
 import Settings
 import shutil
-import time
 import yaml
 import os
 
 
-path = '%s/Pipeline/DB/test' % Settings.BASE_PATH
-stratPath = '%s/testStrat' % path
-archivePath = '%s/archive' % path
+path = '%s/Pipeline/resources/testClean' % Settings.BASE_PATH
+client = MongoClient('localhost', 27017)
+currentCol = client['testClean']['currentPositions']
+transCol = client['testClean']['transactionLogs']
 
 
 def before():
-    if os.path.exists(stratPath):
-        shutil.rmtree(stratPath)
-    if os.path.exists(archivePath):
-        shutil.rmtree(archivePath)
-    Build(stratName='testStrat', dbName='test', initialCapital=10, positionSizeParams={'name': 'Basic', 'percent': 0.05},
+    after()
+    Build(stratName='testClean', initialCapital=10, positionSizeParams={'name': 'Basic', 'percent': 0.05},
           assetSelectionParams={'name': 'all', 'exchangeList': ['Binance'], 'baseAsset': 'BTC'},
           enterParams={'name': 'CheapVol', 'granularity': 43200, 'periodsVolLong': 100, 'periodsVolShort': 5,
                        'periodsMA': 100, 'volCoef': 1.5, 'bolStd': 2},
           exitParams={'name': 'ProfitRun', 'granularity': 7200, 'periodsVolLong': 50, 'periodsVolShort': 5,
                       'periodsMA': 50, 'volCoef': 1, 'bolStd': 2}, schedule={})
-    if not os.path.exists(archivePath):
-        os.mkdir(archivePath)
 
 
 def after():
-    if os.path.exists(stratPath):
-        shutil.rmtree(stratPath)
-    if os.path.exists(archivePath):
-        shutil.rmtree(archivePath)
+    if os.path.exists(path):
+        shutil.rmtree(path)
 
 
 def test_cleanStrat():
     before()
-    Clean(db='test', stratName='testStrat').cleanStrat()
-    assert not os.path.exists(stratPath)
+    Clean(stratName='testClean').cleanStrat()
+    assert not os.path.exists(path)
+    assert 'testClean' not in client.database_names()
     after()
 
 
 def test_resetStrat():
     before()
-    with open('%s/capital.yml' % stratPath) as capFile:
+    with open('%s/capital.yml' % path) as capFile:
         cap = yaml.load(capFile)
         cap['liquidCurrent'] = 0
-    with open('%s/capital.yml' % stratPath, 'w') as capFile:
+    with open('%s/capital.yml' % path, 'w') as capFile:
         yaml.dump(data=cap, stream=capFile)
-    db = TinyDB('%s/currentPositions.ujson' % stratPath)
-
-    db.insert({'a':1})
-    open('%s/CodeLogs/testLog' % (stratPath), 'a').close()
-    Clean('test', 'testStrat').resetStrat()
-    assert len(TinyDB('%s/currentPositions.ujson' % stratPath).all()) == 0
-    assert len(TinyDB('%s/transactionLogs.ujson' % stratPath).all()) == 0
-    with open('%s/capital.yml' % stratPath, 'r+') as capFile:
+    currentCol.insert_one({'a': 1})
+    transCol.insert_many([{'a': 1, 'b': 2}])
+    Clean(stratName='testClean').resetStrat()
+    assert currentCol.count() == 0
+    assert transCol.count() == 0
+    with open('%s/capital.yml' % path, 'r+') as capFile:
         cap = yaml.load(capFile)
     assert cap == {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10, 'paperPnL': 0, 'percentAllocated': 0}
-    #after()
+    after()
 
 
 if __name__ == '__main__':
