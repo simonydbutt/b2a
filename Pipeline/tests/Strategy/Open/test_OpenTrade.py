@@ -45,6 +45,12 @@ def test_open():
     after()
 
 
+def test_getPrice():
+    baseCapFile, dbPath, OT = before()
+    fills = [{'price': '10', 'qty': '4'}, {'price': '5', 'qty': '6'}]
+    assert OT._getPrice(fills) == 7
+
+
 def test_updateBooks():
     baseCapFile, dbPath, OT = before()
     OT.updateBooks()
@@ -59,5 +65,6 @@ def test_updateBooks():
 
 
 if __name__ == '__main__':
+    test_getPrice()
     test_updateBooks()
     test_open()

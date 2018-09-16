@@ -1,7 +1,13 @@
 from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
 from Pipeline.main.PullData.Price.lib._Pull import _Pull
-import logging
 import pandas as pd
+import Settings
+import logging
+import hashlib
+import requests
+import json
+import hmac
+import time
 
 
 class Binance(_Pull):
@@ -47,3 +53,13 @@ class Binance(_Pull):
         else:
             logging.warning('_pullData errored out, returning error code: -1')
             return -1
+
+    def makeTrade(self, asset, quantity, dir):
+        t = round(time.time() * 1000)
+        paramString = 'symbol=%s&timestamp=%s&side=%s&type=MARKET&quantity=%s' % (asset, t, dir.upper(), quantity)
+        sig = hmac.new(msg=paramString.encode('utf-8'), key=Settings.TRADE['sec'].encode('utf-8'),
+                       digestmod=hashlib.sha256).hexdigest()
+        req = requests.post('%s/api/v3/order?%s' % (self.baseURL, paramString),
+                            headers={'X-MBX-APIKEY': Settings.TRADE['apiKey']},
+                            params={'signature': sig})
+        return json.loads(req.content.decode('utf-8'))

@@ -1,4 +1,4 @@
-from pymongo import MongoClient, DESCENDING
+from pymongo import MongoClient, DESCENDING, ASCENDING
 import numpy as np
 
 
@@ -25,7 +25,7 @@ class AssetBrackets:
                 float(val[self.measure]) for val in
                 list(self.baseDB[asset].find(
                     {},{self.measure: 1, '_id': 0}
-                ).sort('TS', DESCENDING).limit(10))])
+                ).sort('TS', ASCENDING).limit(10))])
             for asset in [col for col in self.baseDB.collection_names() if '_1d' in col and 'USDT' not in col]
         }
 

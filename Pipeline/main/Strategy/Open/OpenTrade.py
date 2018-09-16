@@ -1,5 +1,6 @@
 from Pipeline.main.PositionSize.Position import Position
 from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
+from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
 import logging
 import Settings
@@ -14,37 +15,54 @@ class OpenTrade:
         self.resourcePath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         self.db = MongoClient('localhost', 27017)[stratName]
         self.EU = ExchangeUtil()
-        with open('%s/config.yml' % self.resourcePath) as configFile:
-            configParams = yaml.load(configFile)
         self.P = Position(stratName)
+        self.pull = Pull()
         self.capDict = None
 
     def initRun(self):
         with open('%s/capital.yml' % self.resourcePath) as capFile:
             self.capDict = yaml.load(capFile)
 
-    def open(self, assetVals):
+    def _getPrice(self, fills):
+        return round(sum([float(val['price']) * float(val['qty']) for val in fills])/sum([float(val['qty']) for val in fills]), 8)
+
+    def open(self, assetVals, isSandbox=True):
         logging.debug('Starting OpenTrade.open')
         # assetVals = (name, exchange, price)
         capAllocated = self.P.getSize(asset=assetVals[0])
         posSize = capAllocated * (1 - self.EU.fees(exchange=assetVals[1]))
-        openDict = {
-            'assetName': assetVals[0],
-            'openPrice': assetVals[2],
-            'currentPrice': assetVals[2],
-            'periods': 0,
-            'positionSize': posSize,
-            'paperSize': posSize,
-            'TSOpen': round(time.time()),
-            'exchange': assetVals[1]
-        }
+        if isSandbox:
+            openDict = {
+                'assetName': assetVals[0],
+                'openPrice': assetVals[2],
+                'currentPrice': assetVals[2],
+                'periods': 0,
+                'positionSize': posSize,
+                'paperSize': posSize,
+                'TSOpen': round(time.time()),
+                'exchange': assetVals[1]
+            }
+        else:
+            quantity = round(capAllocated / assetVals[2], 8)
+            orderDict = self.pull.makeTrade(exchange=assetVals[1], asset=assetVals[0], quantity=quantity, dir='BUY')
+            buyPrice = self._getPrice(orderDict['fills'])
+            openDict = {
+                'assetName': assetVals[0],
+                'openPrice': buyPrice,
+                'currentPrice': buyPrice,
+                'periods': 0,
+                'positionSize': orderDict['cummulativeQuoteQty'],
+                'posSizeBase': orderDict['executedQty'],
+                'TSOpen': round(time.time()),
+                'exchange': assetVals[1],
+                'clientOrderId': orderDict['clientOrderId']
+            }
         self.db['currentPositions'].insert_one(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
         self.capDict['liquidCurrent'] -= capAllocated
 
     def updateBooks(self):
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
-        print(self.capDict['initialCapital'])
         self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
         with open('%s/capital.yml' % self.resourcePath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)

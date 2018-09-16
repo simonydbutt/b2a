@@ -22,3 +22,8 @@ class Pull:
         logging.debug('Starting Pull.assetPrice')
         logging.debug('Variables. Asset: %s, dir: %s' % (asset, dir))
         return eval(exchange)().getAssetPrice(asset, dir)
+
+    def makeTrade(self, exchange, asset, quantity, dir):
+        logging.debug('Starting Pull.makeTrade')
+        logging.debug('Variables. Asset: %s, dir: %s, quantity: %s, exchange: %s' % \
+                      (asset, dir, quantity, exchange))
