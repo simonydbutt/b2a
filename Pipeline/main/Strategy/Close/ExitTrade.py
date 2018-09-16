@@ -81,6 +81,10 @@ class ExitTrade:
         )
 
     def closeOutBooks(self):
+        """
+        *TODO Base on pull.getAccount and take out to exchange util!
+        :return:
+        """
         logging.debug('Starting ExitTrade.closeOutBooks')
         self.capDict['paperCurrent'] = round(self.capDict['liquidCurrent'] + self.paperValue(), 4)
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent'] / self.capDict['paperCurrent'], 3)

@@ -27,3 +27,8 @@ class Pull:
         logging.debug('Starting Pull.makeTrade')
         logging.debug('Variables. Asset: %s, dir: %s, quantity: %s, exchange: %s' % \
                       (asset, dir, quantity, exchange))
+        return eval(exchange)().makeTrade(asset=asset, quantity=quantity, dir=dir)
+
+    def getAccount(self, exchange):
+        logging.debug('Starting Pull.getAccount()')
+        return eval(exchange).getAccount()

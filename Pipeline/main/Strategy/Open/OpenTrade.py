@@ -62,6 +62,10 @@ class OpenTrade:
         self.capDict['liquidCurrent'] -= capAllocated
 
     def updateBooks(self):
+        """
+        *TODO Base on pull.getAccount and take out to exchange util!
+        :return:
+        """
         self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
         self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
         with open('%s/capital.yml' % self.resourcePath, 'w') as capFile:
