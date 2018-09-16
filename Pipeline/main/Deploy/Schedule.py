@@ -1,7 +1,6 @@
 from Pipeline.main.Utils.RunPipelineTests import RunPipelineTests
 from apscheduler.schedulers.blocking import BlockingScheduler
 from Pipeline.main.Utils.EmailUtil import EmailUtil
-from Pipeline.main.Utils.AddLogger import AddLogger
 from Pipeline.main.Strategy.Open.Enter import Enter
 from Pipeline.main.Strategy.Close.Exit import Exit
 import numpy as np
@@ -10,11 +9,6 @@ import yaml
 
 
 class Schedule:
-
-    """
-        *TODO: create way to run more than one strat at a time
-        **TODO: create schedule function from gran to schedule
-    """
 
     def __init__(self, strat, periodDict):
         with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, strat)) as configFile:
