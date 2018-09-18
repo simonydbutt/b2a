@@ -27,3 +27,33 @@ class Pull:
         logging.debug('Starting Pull.makeTrade')
         logging.debug('Variables. Asset: %s, dir: %s, quantity: %s, exchange: %s' % \
                       (asset, dir, quantity, exchange))
+        return eval(exchange)().makeTrade(asset=asset, quantity=quantity, dir=dir)
+
+    def getAccount(self, exchange):
+        """
+            In format: { coin1: val1, coin2: val2 }
+        """
+        logging.debug('Starting Pull.getAccount()')
+        accountList = eval(exchange)().getAccount()
+        return {val[0]: val[1] for val in accountList}
+
+    def getTrades(self, exchange, asset, limit, maxTime=None):
+        """
+            In format:
+                pandas df
+                    Price  |  Qty  |  Timestamp  |  Buy/Sell
+        """
+        logging.debug('Starting Pull.getTrades')
+        return eval(exchange)().getTrades(asset=asset, limit=limit, maxTime=maxTime)
+
+    def getOrderBook(self, exchange, asset, limit):
+        """
+            In format:
+                {
+                    'bids': [[bid1, qty1], [bid2, qty2]]
+                    'asks': [[ask1, qty1], [ask2, qty2]]
+                }
+            limit can be: 5, 10, 20, 50, 100, 500, 1000
+        """
+        logging.debug('Starting Pull.getOrderBook')
+        return eval(exchange)().getOrderBook(asset=asset, limit=limit)

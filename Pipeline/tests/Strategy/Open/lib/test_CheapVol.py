@@ -22,11 +22,11 @@ def test_CheapVol():
     P = Pull()
     CV = CheapVol(stratName='testCheapVol', isTest=True)
     # Will enter position
-    assert CV.run(asset='LTCBTC', exchange='Binance', testData=enterData, Pull=P)
+    assert CV.run(asset='LTCBTC', exchange='Binance', testData=enterData)
     # Volume too small to enter
-    assert not CV.run(asset='LTCBTC', exchange='Binance', testData=volSmallData, Pull=P)
+    assert not CV.run(asset='LTCBTC', exchange='Binance', testData=volSmallData)
     # Price too large to enter
-    assert not CV.run(asset='LTCBTC', exchange='Binance', testData=closeLargeData, Pull=P)
+    assert not CV.run(asset='LTCBTC', exchange='Binance', testData=closeLargeData)
     CCD.clean()
 
 

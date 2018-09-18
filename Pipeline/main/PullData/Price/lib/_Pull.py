@@ -1,9 +1,12 @@
 from Pipeline.main.Utils.EmailUtil import EmailUtil
+import pandas as pd
+import Settings
+import hashlib
 import logging
 import requests
+import hmac
 import json
 import time
-import pandas as pd
 
 
 class _Pull:
@@ -19,6 +22,8 @@ class _Pull:
         self.baseURL = ''
 
     def _pullData(self, endPoint, params=None, isTest=False, testReq='', testReq2=''):
+        logging.debug('Starting _Pull._pullData')
+        logging.debug('Endpoint: %s, params: %s' % (endPoint, params))
         req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
         logging.debug('req status code: %s' % req.status_code)
         if req.status_code == 200:
@@ -45,14 +50,25 @@ class _Pull:
             else:
                 return 4
 
+    def _pullEncrypt(self, endPoint, paramString, isGet=True):
+        logging.debug('Starting _Pull._pullEncrypt')
+        sig = hmac.new(msg=paramString.encode('utf-8'), key=Settings.TRADE['sec'].encode('utf-8'),
+                       digestmod=hashlib.sha256).hexdigest()
+        url = '%s/%s?%s' % (self.baseURL, endPoint, paramString)
+        headers = {'X-MBX-APIKEY': Settings.TRADE['apiKey']}
+        params = {'signature': sig}
+        req = requests.get(url=url, headers=headers, params=params) if isGet else \
+            requests.post(url=url, headers=headers, params=params)
+        return json.loads(req.content.decode('utf-8'))
+
     def getBTCAssets(self, justQuote=False):
-        logging.debug('Starting getBTCAssets')
+        logging.debug('Starting _Pull.getBTCAssets')
         return []
 
     def getCandles(self, asset, limit, interval, columns, lastReal):
-        logging.debug('Starting getCandles')
+        logging.debug('Starting _Pull.getCandles')
         return pd.DataFrame([], columns=columns)
 
     def getAssetPrice(self, sym, dir):
-        logging.debug('Starting getAssetPrice')
+        logging.debug('Starting _Pull.getAssetPrice')
         return -1

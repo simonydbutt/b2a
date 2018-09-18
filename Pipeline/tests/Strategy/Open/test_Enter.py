@@ -35,7 +35,7 @@ def test_indivEntry():
     E = Enter(stratName='testEnterStrat', isTest=True)
     P = Pull()
     CV = CheapVol(stratName='testEnterStrat', isTest=True)
-    assert E.runIndiv(asset='LTCBTC', Pull=P, testData=enterData) == CV.run('LTCBTC', exchange='Binance', Pull=P, testData=enterData)
+    assert E.runIndiv(asset='LTCBTC', testData=enterData) == CV.run('LTCBTC', exchange='Binance', testData=enterData)
     CCD.clean()
 
 
