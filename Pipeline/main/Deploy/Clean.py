@@ -18,7 +18,6 @@ class Clean:
         logging.debug('Starting Clean.cleanStrat')
         self.client.drop_database(self.stratName)
         shutil.rmtree(self.path)
-
         logging.debug('Ending Clean.CleanStrat')
 
     def resetStrat(self):

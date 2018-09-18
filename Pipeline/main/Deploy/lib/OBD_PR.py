@@ -20,7 +20,7 @@ stratParams = {
         'bookDepth': 50,
         'numTrades': 1000,
         'diffVals': [5, 10, 20],
-        'enterPercent': 1.05
+        'enterPercent': 1.03
     },
     'exitParams': {
         'name': 'ProfitRun',

@@ -1,9 +1,13 @@
 from Pipeline.main.Monitor.MarketDetails import MarketDetails
 from Pipeline.main.Monitor.StatsUpdate import StatsUpdate
-from email.message import EmailMessage
+from Pipeline.main.Utils.Visualise import Visualise
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
+from email.mime.text import MIMEText
 from datetime import datetime
 import smtplib
 import Settings
+import os
 
 
 class EmailUtil:
@@ -12,18 +16,20 @@ class EmailUtil:
         self.strat = strat
         self.isTick = isTick
 
-    def _sendEmail(self, subject, content):
+    def _sendEmail(self, subject, content, imgPath=None):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(
             user=Settings.EMAIL['USER'],
             password=Settings.EMAIL['PASSWORD']
         )
-        msg = EmailMessage()
+        msg = MIMEMultipart()
         msg['From'] = Settings.EMAIL['USER']
         msg['To'] = Settings.EMAIL['SEND_USER']
         msg['Subject'] = subject
-        msg.set_content(content)
+        msg.attach(MIMEText(content))
+        if imgPath:
+            msg.attach(MIMEImage(open(imgPath, 'rb').read(), name=os.path.basename(imgPath)))
         server.send_message(msg=msg, from_addr=Settings.EMAIL['USER'], to_addrs=Settings.EMAIL['SEND_USER'])
 
     def errorExit(self, file, funct, message):
@@ -45,6 +51,7 @@ class EmailUtil:
               (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'],
                stats['paperPnL'], 100*stats['percentAllocated'], stats['numberOpen'],
                stats['numberTransactions'], stats['paperAvgPnL'])
+        Visualise().plotTrades(stratName=self.strat)
         if len(stats['openList']) != 0:
             msg += 'Open Positions: %s' % '  '.join(stats['openList'])
         if self.isTick:
@@ -54,4 +61,9 @@ class EmailUtil:
             for i in tickDict.keys():
                 msg += '- %s Coins\n1h:  %s\n24h:  %s\n1w:  %s\n' % \
                        (i, tickDict[i]['short'], tickDict[i]['mid'], tickDict[i]['long'])
-        self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'), content=msg)
+        imgPath = '%s/Pipeline/resources/%s/pnLGraph.png' % (Settings.BASE_PATH, self.strat)
+        self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+                        content=msg, imgPath=imgPath if os.path.exists(imgPath) else None)
+
+
+EmailUtil(strat='OBD_PR').statsMessage()

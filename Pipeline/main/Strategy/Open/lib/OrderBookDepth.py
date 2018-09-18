@@ -59,7 +59,7 @@ class OrderBookDepth:
             price_ = round(float(np.mean(priceList)), 8)
             pDiff = round(price_/orderBook['bids'][0][1], 8)
             if pDiff > 1:
-                print('Asset: %s, pDiff: %s' % (asset, pDiff))
+                logging.debug('Asset: %s, pDiff: %s' % (asset, pDiff))
             if pDiff > self.enterParams['enterPercent']:
                 return True
             else:
