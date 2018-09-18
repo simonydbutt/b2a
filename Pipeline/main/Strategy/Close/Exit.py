@@ -37,7 +37,7 @@ class Exit:
             isExit, currentPrice = self.exitStrat.run(positionData=positionDict, testData=None, Pull=self.pull)
             if isExit:
                 logging.info('Exiting positon: %s' % positionDict['assetName'])
-                self.exitStrat.exit(positionDict=positionDict, currentPrice=currentPrice)
+                self.exitTrade.exit(positionDict=positionDict, currentPrice=currentPrice)
             else:
                 self.updatePosition.update(positionDict=positionDict, currentPrice=currentPrice)
         logging.info('Ending Exit Run' if len(currentPositions) != 0 else 'No assets to analyse')

@@ -2,6 +2,7 @@ from Pipeline.main.Strategy.Open.OpenTrade import OpenTrade
 from Pipeline.tests.CreateCleanDir import CreateCleanDir
 from pymongo import MongoClient
 import Settings
+import logging
 import yaml
 
 
@@ -65,6 +66,7 @@ def test_updateBooks():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     test_getPrice()
     test_updateBooks()
     test_open()

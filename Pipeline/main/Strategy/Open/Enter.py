@@ -23,9 +23,9 @@ class Enter:
         self.pull = Pull()
         self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
 
-    def runIndiv(self, asset, Pull, testData):
+    def runIndiv(self, asset, testData):
         # for testing
-        return self.enterStrat.run(asset, Pull=Pull, exchange='Binance', testData=testData)
+        return self.enterStrat.run(asset, exchange='Binance', testData=testData)
 
     def run(self):
         logging.info('Starting Enter.run: %s' % datetime.now())
@@ -35,7 +35,7 @@ class Enter:
         self.OT.initRun()
         for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
             logging.debug('Starting asset: %s' % asset)
-            if self.enterStrat.run(asset, exchange=exchange, Pull=self.pull, testData=None):
+            if self.enterStrat.run(asset, exchange=exchange, testData=None):
                 logging.info('Entering trade: %s' % asset)
                 openPrice = self.pull.assetPrice(exchange=exchange, asset=asset, dir='buy')
                 if openPrice != -1:

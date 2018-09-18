@@ -1,5 +1,6 @@
 from Pipeline.main.PositionSize.Position import Position
 from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
+from Pipeline.main.Utils.AccountUtil import AccountUtil
 from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
 import logging
@@ -10,8 +11,9 @@ import time
 
 class OpenTrade:
 
-    def __init__(self, stratName):
+    def __init__(self, stratName, isSandBox=True):
         logging.debug('Initialising OpenTrade()')
+        self.isSandBox = isSandBox
         self.resourcePath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         self.db = MongoClient('localhost', 27017)[stratName]
         self.EU = ExchangeUtil()
@@ -26,12 +28,12 @@ class OpenTrade:
     def _getPrice(self, fills):
         return round(sum([float(val['price']) * float(val['qty']) for val in fills])/sum([float(val['qty']) for val in fills]), 8)
 
-    def open(self, assetVals, isSandbox=True):
+    def open(self, assetVals):
         logging.debug('Starting OpenTrade.open')
         # assetVals = (name, exchange, price)
         capAllocated = self.P.getSize(asset=assetVals[0])
         posSize = capAllocated * (1 - self.EU.fees(exchange=assetVals[1]))
-        if isSandbox:
+        if self.isSandBox:
             openDict = {
                 'assetName': assetVals[0],
                 'openPrice': assetVals[2],
@@ -62,11 +64,11 @@ class OpenTrade:
         self.capDict['liquidCurrent'] -= capAllocated
 
     def updateBooks(self):
-        """
-        *TODO Base on pull.getAccount and take out to exchange util!
-        :return:
-        """
-        self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
-        self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
+        if self.isSandBox:
+            self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
+            self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
+        else:
+            # **TODO hard coding 'Binance' as whole capDict system will need to change to capListDict when adding multiple
+            self.capDict = AccountUtil(exchange='Binance').getValue(initCapital=self.capDict['initialCapital'])
         with open('%s/capital.yml' % self.resourcePath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)

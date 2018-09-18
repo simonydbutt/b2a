@@ -1,3 +1,4 @@
+from Pipeline.main.PullData.Price.Pull import Pull
 import numpy as np
 import pandas as pd
 import Settings
@@ -9,7 +10,7 @@ class CheapVol:
 
     """
         Profits from buying shitcoins in accumulation phase.
-        Enters when price is still cheap§ and volume spikes
+        Enters when price is still cheap and volume spikes
 
         Config Requirements:
             - periodsMA
@@ -20,16 +21,17 @@ class CheapVol:
     """
 
     def __init__(self, stratName, isTest=False):
+        logging.debug('Initialising CheapVol()')
         pd.options.mode.chained_assignment = None
         self.isTest = isTest
         with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, stratName)) as configFile:
             self.enterParams = yaml.load(configFile)['enter']
 
-    def run(self, asset, exchange, Pull, testData=None):
+    def run(self, asset, exchange, testData=None):
         logging.debug('Starting CheapVol.run')
         maxPeriods = max(self.enterParams['periodsVolLong'], self.enterParams['periodsMA'])
         logging.debug('max periods: %s' % maxPeriods)
-        df = Pull.candles(asset=asset, interval=self.enterParams['granularity'], limit=maxPeriods,
+        df = Pull().candles(asset=asset, interval=self.enterParams['granularity'], limit=maxPeriods,
                           columns=['close', 'takerQuoteVol'], lastReal=True, exchange=exchange) if not self.isTest else testData
 
         if len(df) == maxPeriods:
