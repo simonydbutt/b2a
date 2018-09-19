@@ -57,7 +57,10 @@ class BinanceDS:
                 time.sleep(30)
                 tmpData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s' %
                                    (asset, binSize, int(tmpTime)))
-            tmpTime = tmpData[-1][6]
+            try:
+                tmpTime = tmpData[-1][6]
+            except IndexError:
+                break
             data += [self.list2Dict(val) for val in tmpData]
             time.sleep(2)
         lastData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s&endTime=%s' %
@@ -76,7 +79,7 @@ class BinanceDS:
             )
 
     def updateDB(self):
-        for asset in self.getUSDTAssets(): #+ self.getBTCAssets():
+        for asset in self.getBTCAssets(): #+ self.getUSDTAssets():
             print('For asset: %s' % asset)
             for bin in self.bin2TS.keys():
                 col = '%s_%s' % (asset, bin)
@@ -96,3 +99,4 @@ class BinanceDS:
         df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime,
                               endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip', index=False)
+

@@ -10,3 +10,5 @@ ujson
 tinydb
 apscheduler
 bs4
+selenium
+pillow

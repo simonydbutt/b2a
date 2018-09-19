@@ -21,6 +21,6 @@ class Run:
                 schedule=stratParams['schedule']
             )
         elif args.clean:
-            Clean(stratName=stratParams['stratName'])
+            Clean(stratName=stratParams['stratName']).resetStrat()
         if args.run:
             Schedule(strat=stratParams['stratName'], periodDict=stratParams['schedule']).run()

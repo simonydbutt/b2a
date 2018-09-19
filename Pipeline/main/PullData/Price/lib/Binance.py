@@ -87,3 +87,6 @@ class Binance(_Pull):
                 return []
         else:
             return df
+
+    def getTicker(self):
+        return self._pullData(endPoint='/api/v1/ticker/24hr')
