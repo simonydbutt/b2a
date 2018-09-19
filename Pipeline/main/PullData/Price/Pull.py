@@ -57,3 +57,7 @@ class Pull:
         """
         logging.debug('Starting Pull.getOrderBook')
         return eval(exchange)().getOrderBook(asset=asset, limit=limit)
+
+    def getTickerStats(self, exchange):
+        logging.debug('Starting Pull.getTicker')
+        return eval(exchange)().getTicker()

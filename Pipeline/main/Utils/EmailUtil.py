@@ -65,5 +65,3 @@ class EmailUtil:
         self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                         content=msg, imgPath=imgPath if os.path.exists(imgPath) else None)
 
-
-EmailUtil(strat='OBD_PR').statsMessage()

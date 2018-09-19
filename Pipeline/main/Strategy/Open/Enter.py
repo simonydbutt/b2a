@@ -18,7 +18,7 @@ class Enter:
         with open('%s/config.yml' % self.compPath) as stratFile:
             self.config = yaml.load(stratFile)
         self.enterStrat = eval(self.config['enter']['name'])(stratName=stratName, isTest=isTest)
-        self.Select = Select(config=self.config)
+        self.Select = Select(stratName)
         self.OT = OpenTrade(stratName=stratName)
         self.pull = Pull()
         self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']

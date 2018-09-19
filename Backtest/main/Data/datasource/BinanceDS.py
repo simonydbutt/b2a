@@ -60,7 +60,7 @@ class BinanceDS:
             try:
                 tmpTime = tmpData[-1][6]
             except IndexError:
-                print(tmpData[-1])
+                break
             data += [self.list2Dict(val) for val in tmpData]
             time.sleep(2)
         lastData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s&endTime=%s' %
@@ -100,6 +100,3 @@ class BinanceDS:
                               endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip', index=False)
 
-
-
-BinanceDS().updateDB()
