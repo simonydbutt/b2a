@@ -11,5 +11,4 @@ tinydb
 apscheduler
 bs4
 selenium
-phantomjs
 pillow
