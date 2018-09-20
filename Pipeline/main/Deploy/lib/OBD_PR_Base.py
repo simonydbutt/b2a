@@ -3,7 +3,7 @@ import logging
 
 
 stratParams = {
-    'stratName': 'OBD_PR',
+    'stratName': 'OBD_PR_BASE',
     'initialCapital': 1,
     'positionSizeParams': {
         'name': 'Basic',

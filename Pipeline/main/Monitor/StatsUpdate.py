@@ -36,7 +36,8 @@ class StatsUpdate:
     def compStats(self, isTest=None):
         logging.debug('Starting StatsUpdate.compStats')
         statsDict = {}
-        stratList = os.listdir('%s/Pipeline/resources' % Settings.BASE_PATH) if not isTest else isTest
+        stratList = [val for val in os.listdir('%s/Pipeline/resources' % Settings.BASE_PATH) if val != '__init__.py'] \
+            if not isTest else isTest
         for stratName in stratList:
             statsDict[stratName] = self.indivStats(stratName)
         totalStats = {
