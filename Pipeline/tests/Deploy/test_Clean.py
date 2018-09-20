@@ -46,8 +46,8 @@ def test_resetStrat():
     currentCol.insert_one({'a': 1})
     transCol.insert_many([{'a': 1, 'b': 2}])
     Clean(stratName='testClean').resetStrat()
-    assert currentCol.count() == 0
-    assert transCol.count() == 0
+    assert currentCol.count_documents() == 0
+    assert transCol.count_documents() == 0
     with open('%s/capital.yml' % path, 'r+') as capFile:
         cap = yaml.load(capFile)
     assert cap == {'initialCapital': 10, 'liquidCurrent': 10, 'paperCurrent': 10, 'paperPnL': 0, 'percentAllocated': 0}
