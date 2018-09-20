@@ -6,8 +6,6 @@ pytest
 pymongo
 bokeh
 scipy
-ujson
-tinydb
 apscheduler
 bs4
 selenium

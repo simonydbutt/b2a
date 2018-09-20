@@ -17,7 +17,7 @@ class Visualise:
 
         transCol = self.client[stratName]['transactionLogs']
         currCol = self.client[stratName]['currentPositions']
-        if transCol.count() != 0 or currCol.count() != 0:
+        if transCol.count() != 0 or currCol.count != 0:
             p = figure(plot_width=800, plot_height=500)
             p.yaxis.axis_label = 'PnL (%)'
             p.xaxis.axis_label = 'Periods'
@@ -32,6 +32,3 @@ class Visualise:
             export_png(p, filename='%s/Pipeline/resources/%s/pnLGraph.png' % (Settings.BASE_PATH, stratName))
         else:
             logging.info('Not enough trades for visualisation')
-
-
-Visualise().plotTrades(stratName='OBD_PR')
