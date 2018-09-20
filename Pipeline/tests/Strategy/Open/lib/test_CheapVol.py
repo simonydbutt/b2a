@@ -30,6 +30,9 @@ def test_CheapVol():
     CCD.clean()
 
 
+#*TODO
+# def test_depthRatio():
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     test_CheapVol()

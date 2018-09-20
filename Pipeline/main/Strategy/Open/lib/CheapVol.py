@@ -27,13 +27,19 @@ class CheapVol:
         with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, stratName)) as configFile:
             self.enterParams = yaml.load(configFile)['enter']
 
+    def depthRatio(self, asset, exchange, depth):
+        orderBook = Pull().getOrderBook(asset=asset, exchange=exchange, limit=1000)
+        buyPrice = orderBook['asks'][0][1]
+        sellPrice = orderBook['bids'][0][1]
+        return round(sum([val[0] for val in orderBook['asks'][:depth] if (val[1] - buyPrice) / buyPrice]) / sum(
+            [val[0] for val in orderBook['bids'][:depth] if (val[1] - sellPrice) / sellPrice]), 4)
+
     def run(self, asset, exchange, testData=None):
         logging.debug('Starting CheapVol.run')
         maxPeriods = max(self.enterParams['periodsVolLong'], self.enterParams['periodsMA'])
         logging.debug('max periods: %s' % maxPeriods)
-        df = Pull().candles(asset=asset, interval=self.enterParams['granularity'], limit=maxPeriods,
-                          columns=['close', 'takerQuoteVol'], lastReal=True, exchange=exchange) if not self.isTest else testData
-
+        df = Pull().candles(asset=asset, interval=self.enterParams['granularity'], limit=maxPeriods, exchange=exchange,
+                            columns=['close', 'takerQuoteVol'], lastReal=True) if not self.isTest else testData
         if len(df) == maxPeriods:
             row = df.iloc[-1]
             row['volL'] = round(float(np.nanmean(df.iloc[-self.enterParams['periodsVolLong']:]['takerQuoteVol'])), 5)
@@ -42,7 +48,11 @@ class CheapVol:
             row['bolDown'] = np.nanmean(bolData) - self.enterParams['bolStd'] * np.nanstd(bolData)
             logging.debug('volL: %s, volS: %s, price: %s, bolDown: %s' %
                           (row['volL'], row['volS'], row['close'], row['bolDown']))
-            return row['volS'] > self.enterParams['volCoef']*row['volL'] and row['close'] < row['bolDown']
+            if 'bookRatio' in list(self.enterParams):
+                if row['volS'] > self.enterParams['volCoef']*row['volL'] and row['close'] < row['bolDown']:
+                    return self.depthRatio(asset=asset, exchange=exchange, depth=1000) > self.enterParams['bookRatio']
+            else:
+                return row['volS'] > self.enterParams['volCoef']*row['volL'] and row['close'] < row['bolDown']
         else:
             logging.warning('Data is incomplete')
             return False

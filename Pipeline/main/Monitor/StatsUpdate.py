@@ -21,9 +21,9 @@ class StatsUpdate:
             stats = yaml.load(capFile)
         currentCol = self.client[stratName]['currentPositions']
         transCol = self.client[stratName]['transactionLogs']
-        stats['numberOpen'] = currentCol.count_documents()
+        stats['numberOpen'] = currentCol.count()
         stats['openList'] = [val['assetName'] for val in list(currentCol.find())]
-        stats['numberTransactions'] = transCol.count_documents()
+        stats['numberTransactions'] = transCol.count()
         stats['paperAvgPnL'] = round(stats['paperPnL'] / (stats['numberOpen'] + stats['numberTransactions']), 4) if \
             stats['numberOpen'] + stats['numberTransactions'] != 0 else 0
         logging.debug('Ending indivStats')

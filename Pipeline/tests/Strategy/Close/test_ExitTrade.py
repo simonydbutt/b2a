@@ -46,11 +46,11 @@ def after():
 
 def test_exitTrade():
     ET = before()
-    assert transCol.count_documents() == 0
-    assert currentCol.count_documents() == 2
+    assert transCol.count() == 0
+    assert currentCol.count() == 2
     ET.exit(positionDict=posDataMain, currentPrice=9)
-    assert currentCol.count_documents() == 1
-    assert transCol.count_documents() == 1
+    assert currentCol.count() == 1
+    assert transCol.count() == 1
     val = transCol.find_one()
     assert val['closePrice'] == 9
     assert val['percentPnL'] == -0.1

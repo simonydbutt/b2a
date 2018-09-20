@@ -19,7 +19,7 @@ def test_update():
     }
     col.insert_one(positionDict)
     UP.update(positionDict=positionDict, currentPrice=10)
-    assert col.count_documents() == 1
+    assert col.count() == 1
     newVal = col.find_one()
     assert newVal['periods'] == 3
     assert newVal['currentPrice'] == 10
