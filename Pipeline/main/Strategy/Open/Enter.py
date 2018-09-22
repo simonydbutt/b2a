@@ -42,7 +42,7 @@ class Enter:
                     openList.append(asset)
                     self.OT.open(assetVals=(asset, exchange, openPrice))
             logging.debug('Debug so as not to ping rate limiters')
-            time.sleep(1)
+            time.sleep(1.5)
         self.OT.updateBooks()
         logging.info('Ending Enter run')
         logging.info('%s assets analysed' % len(assetList))

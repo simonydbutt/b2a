@@ -18,7 +18,8 @@ class Run:
                 initialCapital=stratParams['initialCapital'], positionSizeParams=stratParams['positionSizeParams'],
                 assetSelectionParams=stratParams['assetSelectionParams'], enterParams=stratParams['enterParams'],
                 exitParams=stratParams['exitParams'],
-                schedule=stratParams['schedule']
+                schedule=stratParams['schedule'],
+                isLive=stratParams['isLive']
             )
         elif args.clean:
             Clean(stratName=stratParams['stratName']).resetStrat()
