@@ -10,10 +10,6 @@ import time
 
 class ExitTrade:
 
-    """
-        *TODO: remove hit/sell price after sure all's good
-    """
-
     def __init__(self, stratName, isLive=False):
         logging.debug('Initialising ExitTrade()')
         self.isLive = isLive
@@ -44,8 +40,6 @@ class ExitTrade:
             exitDict = {
                     'assetName': positionDict['assetName'],
                     'openPrice': round(positionDict['openPrice'], 8),
-                    'hitPrice': round(positionDict['hitPrice'], 8),
-                    'sellPrice': round(positionDict['sellPrice'], 8),
                     'closePrice': round(currentPrice, 8),
                     'percentPnL': round(currentPrice/positionDict['openPrice'] - 1, 6),
                     'TSOpen': positionDict['TSOpen'],

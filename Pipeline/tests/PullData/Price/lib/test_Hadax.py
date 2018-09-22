@@ -2,8 +2,6 @@ from Pipeline.main.PullData.Price.lib.Hadax import Hadax
 import logging
 
 
-# *TODO: create tests test_getAssetPrice and test_getBTCAssets
-
 def test_getCandles():
     PH = Hadax()
     data = PH.getCandles(asset='ETHBTC', limit=5, interval=3600, columns=['TS', 'open', 'close', 'low', 'high'],
