@@ -4,10 +4,11 @@ import logging
 
 stratParams = {
     'stratName': 'CheapVol_ProfitRun',
-    'initialCapital': 1,
+    'isLive': True,
+    'initialCapital': 0.034,
     'positionSizeParams': {
         'name': 'Basic',
-        'percent': 0.05
+        'percent': 0.075
     },
     'assetSelectionParams': {
         'name': 'All',
@@ -38,11 +39,12 @@ stratParams = {
         },  # 1 hour ahead
         'exit': {'minute': '10, 40'},
         'email': {
-            'hour': '5, 13, 20',
+            'hour': '0, 5, 10, 15, 20',
             'minute': '50'
         }
     }
 }
 
 
+logging.basicConfig(level=logging.INFO)
 Run(stratParams=stratParams)

@@ -12,10 +12,6 @@ class MarketDetails:
     def __init__(self):
         self.pull = PullCoinMarketCap()
 
-    def getBTCPrice(self):
-        # *TODO
-        pass
-
     def multiTicks(self, tickSizeList):
         coinPage = self.pull.getPage()
         tickDict = {}

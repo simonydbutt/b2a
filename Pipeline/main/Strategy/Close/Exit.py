@@ -22,7 +22,7 @@ class Exit:
         self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
         self.pull = Pull()
         self.updatePosition = UpdatePosition(stratName)
-        self.exitTrade = ExitTrade(stratName)
+        self.exitTrade = ExitTrade(stratName, isLive=self.config['isLive'])
 
     def runIndiv(self, positionData, testPrice, Pull):
         return self.exitStrat.run(positionData, testPrice=testPrice, Pull=Pull)
