@@ -4,7 +4,7 @@ import logging
 
 class AccountUtil:
 
-    def __init__(self, exchange, isTest):
+    def __init__(self, exchange, isTest=False):
         logging.debug('Initialising AccountUtil()')
         self.exchange = exchange
         self.isTest = isTest

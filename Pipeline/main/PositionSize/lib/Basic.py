@@ -12,4 +12,4 @@ class Basic:
         self.liquidCap = capParams['liquidCurrent']
 
     def get(self, asset=None):
-        return self.capPercent*self.liquidCap
+        return max(self.capPercent*self.liquidCap, 0.001)
