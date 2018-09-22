@@ -16,7 +16,8 @@ class Attr:
         return self.df
 
 
-# df = Load('poloniex').loadOne('BTCETH_1d', '01/01/2016')
-# df = Attr(df).add('IsWhiteBlack', params={'blackList': [0, 1, 2, 4, 5], 'whiteList': [3]})
-# print(df[-5:])
-# CandlestickChart().plotEx(df, 'isWhiteBlack', num=2, volName='quoteVolume')
+
+# df = Load('bitmex').loadOne('ETHUSD_5m', '01/06/2018', limit=10000)
+# df = Attr(df).add('PivotLines', params={})
+# for i in range(5):
+#     print(df.iloc[-i])

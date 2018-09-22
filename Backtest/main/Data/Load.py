@@ -7,7 +7,12 @@ from Backtest.main.Utils.TimeUtil import TimeUtil
 class Load:
 
     def __init__(self, dbName, dbLite=False):
-        self.volField = 'takerBaseAssetVol' if dbName == 'binance' else 'quoteVolume'
+        volDict = {
+            'binance': 'takerBaseAssetVol',
+            'poloniex': 'quoteVolume',
+            'bitmex': 'volume'
+        }
+        self.volField = volDict[dbName]
         self.TU = TimeUtil()
         if not dbLite:
             self.db = MongoClient('localhost', 27017)[dbName]

@@ -67,5 +67,3 @@ class PoloniexDS:
         df = self.pullCandles(asset=asset, binSize=binSize, startTime=startTime, endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv' % (location, asset), compression='gzip')
 
-
-PoloniexDS().updateDB()
