@@ -26,7 +26,8 @@ class OpenTrade:
             self.capDict = yaml.load(capFile)
 
     def _getPrice(self, fills):
-        return round(sum([float(val['price']) * float(val['qty']) for val in fills])/sum([float(val['qty']) for val in fills]), 8)
+        return round(sum([float(val['price']) * float(val['qty']) for val in fills])/\
+                     sum([float(val['qty']) for val in fills]), 8)
 
     def open(self, assetVals):
         logging.debug('Starting OpenTrade.open')
@@ -45,20 +46,26 @@ class OpenTrade:
                 'exchange': assetVals[1]
             }
         else:
-            quantity = round(capAllocated / assetVals[2], 8)
-            orderDict = self.pull.makeTrade(exchange=assetVals[1], asset=assetVals[0], quantity=quantity, dir='BUY')
-            buyPrice = self._getPrice(orderDict['fills'])
-            openDict = {
-                'assetName': assetVals[0],
-                'openPrice': buyPrice,
-                'currentPrice': buyPrice,
-                'periods': 0,
-                'positionSize': orderDict['cummulativeQuoteQty'],
-                'posSizeBase': orderDict['executedQty'],
-                'TSOpen': round(time.time()),
-                'exchange': assetVals[1],
-                'clientOrderId': orderDict['clientOrderId']
-            }
+            try:
+                quantity = round(capAllocated / assetVals[2], 2)
+                orderDict = self.pull.makeTrade(exchange=assetVals[1], asset=assetVals[0], quantity=quantity, dir='BUY')
+                buyPrice = self._getPrice(orderDict['fills'])
+                openDict = {
+                    'assetName': assetVals[0],
+                    'openPrice': buyPrice,
+                    'currentPrice': buyPrice,
+                    'periods': 0,
+                    'positionSize': orderDict['cummulativeQuoteQty'],
+                    'posSizeBase': orderDict['executedQty'],
+                    'TSOpen': round(time.time()),
+                    'exchange': assetVals[1],
+                    'clientOrderId': orderDict['clientOrderId']
+                }
+            except KeyError:
+                print(assetVals)
+                print(orderDict)
+                print(quantity)
+                raise Exception('Failed...')
         self.db['currentPositions'].insert_one(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
         self.capDict['liquidCurrent'] -= capAllocated

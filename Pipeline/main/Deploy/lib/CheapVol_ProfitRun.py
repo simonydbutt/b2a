@@ -46,5 +46,5 @@ stratParams = {
 }
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 Run(stratParams=stratParams)

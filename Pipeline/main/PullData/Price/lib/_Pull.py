@@ -24,7 +24,12 @@ class _Pull:
     def _pullData(self, endPoint, params=None, isTest=False, testReq='', testReq2=''):
         logging.debug('Starting _Pull._pullData')
         logging.debug('Endpoint: %s, params: %s' % (endPoint, params))
-        req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
+        try:
+            req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
+        except OSError:
+            EmailUtil().errorExit(file='_Pull', funct='_pullData', message='OS Error -> network down!')
+            time.sleep(300)
+            req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
         logging.debug('req status code: %s' % req.status_code)
         if req.status_code == 200:
             return json.loads(req.content.decode('utf-8')) if not isTest else 1
