@@ -20,7 +20,7 @@ def before():
           enterParams={'name': 'CheapVol', 'granularity': 43200, 'periodsVolLong': 100, 'periodsVolShort': 5,
                        'periodsMA': 100, 'volCoef': 1.5, 'bolStd': 2},
           exitParams={'name': 'ProfitRun', 'granularity': 7200, 'periodsVolLong': 50, 'periodsVolShort': 5,
-                      'periodsMA': 50, 'volCoef': 1, 'bolStd': 2}, schedule={})
+                      'periodsMA': 50, 'volCoef': 1, 'bolStd': 2}, schedule={}, isLive=False)
 
 
 def after():
