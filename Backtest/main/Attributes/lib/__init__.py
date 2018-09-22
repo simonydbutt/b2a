@@ -15,3 +15,4 @@ from Backtest.main.Attributes.lib.Candlestick.BullSqueeze import BullSqueeze
 from Backtest.main.Attributes.lib.Candlestick.OutsideUp import OutsideUp
 from Backtest.main.Attributes.lib.IsWhiteBlack import IsWhiteBlack
 from Backtest.main.Attributes.lib.TestAttr import TestAttr
+from Backtest.main.Attributes.lib.PivotLines import PivotLines

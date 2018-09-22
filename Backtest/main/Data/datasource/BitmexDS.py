@@ -68,6 +68,7 @@ class BitmexDS:
             print('For instrument: %s' % inst)
             for bin in self.bin2Time.keys():
                 col = '%s_%s' % (inst, bin)
+                print('For col: %s' % col)
                 try:
                     print(self.MU.count(col))
                     startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else \

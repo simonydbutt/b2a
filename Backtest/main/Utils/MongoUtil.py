@@ -30,7 +30,7 @@ class MongoUtil:
                                 raise SystemExit
                     self.db[colName].insert_one(val)
             except TypeError:
-                print('\n\n')
+                print(val)
                 print(list(self.db[colName].find({id: val[id]})))
                 break
 

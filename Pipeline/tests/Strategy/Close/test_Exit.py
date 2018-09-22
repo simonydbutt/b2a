@@ -19,7 +19,8 @@ posDataMain = {'assetName': 'ADABTC', 'openPrice': 0.0000158, 'currentPrice': 0.
 def before():
     CCD.create()
     col.insert_one(posDataMain)
-    params = {'exit': {'bolStd': 2, 'granularity': 7200, 'name': 'ProfitRun', 'maPeriods': 5, 'closePeriods': 5,
+    params = {'isLive': False,
+              'exit': {'bolStd': 2, 'granularity': 7200, 'name': 'ProfitRun', 'maPeriods': 5, 'closePeriods': 5,
                        'stdDict': {'up': 1, 'down': 0.5}, 'exchange': 'Binance'}}
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, resPath), 'w') as configFile:
         yaml.dump(params, configFile)

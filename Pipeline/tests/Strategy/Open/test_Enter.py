@@ -20,6 +20,7 @@ def before():
         'enter': {'bolStd': 2, 'granularity': 43200, 'name': 'CheapVol', 'periodsMA': 5, 'periodsVolLong': 5,
                   'periodsVolShort': 5, 'volCoef': 1.5},
         'stratName': 'testStrat',
+        'isLive': False,
         'logging': {'console': 10, 'file': 20}
     }
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, dbPath), 'w') as configFile:

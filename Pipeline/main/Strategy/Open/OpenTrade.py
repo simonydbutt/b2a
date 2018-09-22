@@ -11,9 +11,9 @@ import time
 
 class OpenTrade:
 
-    def __init__(self, stratName, isSandBox=True):
+    def __init__(self, stratName, isLive=False):
         logging.debug('Initialising OpenTrade()')
-        self.isSandBox = isSandBox
+        self.isLive = isLive
         self.resourcePath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         self.db = MongoClient('localhost', 27017)[stratName]
         self.EU = ExchangeUtil()
@@ -33,7 +33,7 @@ class OpenTrade:
         # assetVals = (name, exchange, price)
         capAllocated = self.P.getSize(asset=assetVals[0])
         posSize = capAllocated * (1 - self.EU.fees(exchange=assetVals[1]))
-        if self.isSandBox:
+        if not self.isLive:
             openDict = {
                 'assetName': assetVals[0],
                 'openPrice': assetVals[2],
@@ -64,7 +64,7 @@ class OpenTrade:
         self.capDict['liquidCurrent'] -= capAllocated
 
     def updateBooks(self):
-        if self.isSandBox:
+        if not self.isLive:
             self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
             self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)
         else:

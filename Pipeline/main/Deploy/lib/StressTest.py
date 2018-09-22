@@ -4,7 +4,7 @@ import logging
 
 stratParams = {
     'stratName': 'stressTest',
-    'db': 'disco',
+    'isLive': False,
     'initialCapital': 1,
     'positionSizeParams': {
         'name': 'Basic',

@@ -3,6 +3,7 @@ from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
 from Pipeline.main.Strategy.Close.ExitTrade import ExitTrade
 from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
+import logging
 import Settings
 import yaml
 import datetime
@@ -22,7 +23,7 @@ class Exit:
         self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
         self.pull = Pull()
         self.updatePosition = UpdatePosition(stratName)
-        self.exitTrade = ExitTrade(stratName)
+        self.exitTrade = ExitTrade(stratName, isLive=self.config['isLive'])
 
     def runIndiv(self, positionData, testPrice, Pull):
         return self.exitStrat.run(positionData, testPrice=testPrice, Pull=Pull)
@@ -44,6 +45,5 @@ class Exit:
         self.exitTrade.closeOutBooks()
 
 
-import logging
 # dirPath = 'Pipeline/DB/disco'
 # Exit(db='disco', stratName='CheapVol_ProfitRun').run()

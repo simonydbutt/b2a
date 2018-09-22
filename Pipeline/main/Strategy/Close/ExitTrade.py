@@ -14,9 +14,9 @@ class ExitTrade:
         *TODO: remove hit/sell price after sure all's good
     """
 
-    def __init__(self, stratName, isSandBox=True):
+    def __init__(self, stratName, isLive=False):
         logging.debug('Initialising ExitTrade()')
-        self.isSandBox = isSandBox
+        self.isLive = isLive
         self.stratName = stratName
         db = MongoClient('localhost', 27017)[stratName]
         self.transCol = db['transactionLogs']
@@ -39,7 +39,7 @@ class ExitTrade:
         exitPositionSize = round((currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - fees), 6)
         logging.debug('Removing val from db.currentPosition & inserting into db.tranactionLog')
         self.currentCol.delete_one({'assetName': positionDict['assetName']})
-        if self.isSandBox:
+        if not self.isLive:
             realPnL = exitPositionSize - positionDict['positionSize']
             exitDict = {
                     'assetName': positionDict['assetName'],
@@ -84,7 +84,7 @@ class ExitTrade:
 
     def closeOutBooks(self):
         logging.debug('Starting ExitTrade.closeOutBooks')
-        if self.isSandBox:
+        if not self.isLive:
             self.capDict['paperCurrent'] = round(self.capDict['liquidCurrent'] + self.paperValue(), 4)
             self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent'] / self.capDict['paperCurrent'], 3)
             self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)

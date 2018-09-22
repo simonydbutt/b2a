@@ -4,6 +4,7 @@ import logging
 
 stratParams = {
     'stratName': 'LooseCVPR',
+    'isLive': False,
     'initialCapital': 1,
     'positionSizeParams': {
         'name': 'Basic',

@@ -32,3 +32,4 @@ class Visualise:
             export_png(p, filename='%s/Pipeline/resources/%s/pnLGraph.png' % (Settings.BASE_PATH, stratName))
         else:
             logging.info('Not enough trades for visualisation')
+
