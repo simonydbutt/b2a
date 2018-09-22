@@ -3,6 +3,7 @@ from Pipeline.main.Strategy.Close.UpdatePosition import UpdatePosition
 from Pipeline.main.Strategy.Close.ExitTrade import ExitTrade
 from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
+import logging
 import Settings
 import yaml
 import datetime
@@ -44,6 +45,5 @@ class Exit:
         self.exitTrade.closeOutBooks()
 
 
-import logging
 # dirPath = 'Pipeline/DB/disco'
 # Exit(db='disco', stratName='CheapVol_ProfitRun').run()
