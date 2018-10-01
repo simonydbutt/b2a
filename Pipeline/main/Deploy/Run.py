@@ -2,6 +2,7 @@ from Pipeline.main.Deploy.Build import Build
 from Pipeline.main.Deploy.Clean import Clean
 from Pipeline.main.Deploy.Schedule import Schedule
 from argparse import ArgumentParser
+import urllib3
 
 
 class Run:
@@ -12,6 +13,7 @@ class Run:
         parser.add_argument('--build', action='store_true', default=False)
         parser.add_argument('--run', action='store_true', default=False)
         args = parser.parse_args()
+        urllib3.disable_warnings()
         if args.build:
             Build(
                 stratName=stratParams['stratName'],

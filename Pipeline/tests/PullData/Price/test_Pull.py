@@ -4,7 +4,7 @@ from Pipeline.main.PullData.Price.lib.Hadax import Hadax
 import logging
 
 
-# *TODO hadax seems to be playing w. their api atm, will turn on when they stop...
+# #*TODO hadax seems to be playing w. their api atm, will turn on when they stop...
 # def test_BTCAssets():
 #     PH = Hadax()
 #     P = Pull()
@@ -23,5 +23,5 @@ def test_candles():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    #test_BTCAssets()
+    # test_BTCAssets()
     test_candles()

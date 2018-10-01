@@ -11,7 +11,7 @@ class UpdatePosition:
     def update(self, positionDict, currentPrice):
         logging.debug('Starting UpdatePosition.update')
         positionDict['periods'] += 1
-        positionDict['paperSize'] = round((currentPrice/positionDict['openPrice']) * positionDict['positionSize'],8)
+        positionDict['paperSize'] = round(float(positionDict['positionSize'])*float(currentPrice)/float(positionDict['openPrice']), 8)
         positionDict['currentPrice'] = currentPrice
         positionDict.pop('_id', None)
         logging.debug('New vals: periods: %s, paperSize: %s, currentPrice: %s' %
