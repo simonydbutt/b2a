@@ -10,10 +10,6 @@ import time
 
 class ExitTrade:
 
-    """
-        *TODO: remove hit/sell price after sure all's good
-    """
-
     def __init__(self, stratName, isLive=False):
         logging.debug('Initialising ExitTrade()')
         self.isLive = isLive
@@ -36,16 +32,14 @@ class ExitTrade:
     def exit(self, positionDict, currentPrice):
         logging.debug('Starting ExitTrade.exit')
         fees = ExchangeUtil().fees(exchange=positionDict['exchange'])
-        exitPositionSize = round((currentPrice/positionDict['openPrice'])*positionDict['positionSize']*(1 - fees), 6)
+        exitPositionSize = round((currentPrice/float(positionDict['openPrice']))*float(positionDict['positionSize'])*(1 - fees), 6)
         logging.debug('Removing val from db.currentPosition & inserting into db.tranactionLog')
         self.currentCol.delete_one({'assetName': positionDict['assetName']})
         if not self.isLive:
             realPnL = exitPositionSize - positionDict['positionSize']
             exitDict = {
                     'assetName': positionDict['assetName'],
-                    'openPrice': round(positionDict['openPrice'], 8),
-                    'hitPrice': round(positionDict['hitPrice'], 8),
-                    'sellPrice': round(positionDict['sellPrice'], 8),
+                    'openPrice': round(float(positionDict['openPrice']), 8),
                     'closePrice': round(currentPrice, 8),
                     'percentPnL': round(currentPrice/positionDict['openPrice'] - 1, 6),
                     'TSOpen': positionDict['TSOpen'],
