@@ -70,6 +70,34 @@ class OpenTrade:
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
         self.capDict['liquidCurrent'] -= capAllocated
 
+    def openArb(self, assetList):
+        openList = [
+            {
+                'assetName': assetList[0][0],
+                'openPrice': assetList[0][1],
+                'periods': 0,
+                'positionSize': 0.02,
+                'paperSize': 0.02,
+                'TSOpen': round(time.time()),
+                'exchange': 'Bitmex',
+                'dir': 'buy',
+                'leverage': 20
+            },
+            {
+                'assetName': assetList[1][0],
+                'openPrice': assetList[1][1],
+                'periods': 0,
+                'positionSize': 0.02,
+                'paperSize': 0.02,
+                'TSOpen': round(time.time()),
+                'exchange': 'Bitmex',
+                'dir': 'sell',
+                'leverage': 20
+            }
+        ]
+        self.db['currentPositions'].insert_many(openList)
+        self.capDict['liquidCurrent'] -= 0.04
+
     def updateBooks(self):
         if not self.isLive:
             self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)

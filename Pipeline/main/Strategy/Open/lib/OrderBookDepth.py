@@ -3,7 +3,6 @@ import numpy as np
 import Settings
 import logging
 import yaml
-import time
 
 
 class OrderBookDepth:

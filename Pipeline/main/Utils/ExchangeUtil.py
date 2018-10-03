@@ -22,6 +22,9 @@ class ExchangeUtil:
                 },
                 'columns': ['TS', 'open', 'close', 'low', 'high', 'amount', 'vol', 'count'],
                 'fees': 0.002
+            },
+            'Bitmex': {
+                'fees': 0.0005
             }
         }
 

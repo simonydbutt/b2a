@@ -29,7 +29,7 @@ class Build:
     """
 
     def __init__(self, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
-                 exitParams, schedule, isLive):
+                 exitParams, schedule, isLive, statArb=False):
         logging.debug('Initialising Build(): %s' % stratName)
         self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         logging.debug('compPath: %s' % self.compPath)
@@ -39,21 +39,23 @@ class Build:
                 logging.warning('Rewriting strategy')
                 self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                                 positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                                initialCapital=initialCapital, schedule=schedule, isLive=isLive)
+                                initialCapital=initialCapital, schedule=schedule, isLive=isLive, statArb=statArb)
             else:
                 logging.warning('No action to be taken')
         else:
             self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
                             positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                            initialCapital=initialCapital, schedule=schedule, isLive=isLive)
+                            initialCapital=initialCapital, schedule=schedule, isLive=isLive, statArb=statArb)
 
     def buildStrat(self, stratName, assetSelectionParams, positionSizeParams,
-                   enterParams, exitParams, initialCapital, schedule, isLive):
+                   enterParams, exitParams, initialCapital, schedule, isLive, statArb):
         configDict = {
             'stratName': stratName, 'assetSelection': assetSelectionParams,
             'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
             'schedule': schedule, 'isLive': isLive
         }
+        if statArb:
+            configDict['statArb'] = statArb
         for path in ('%s/Pipeline/resources' % Settings.BASE_PATH, self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
         with open('%s/config.yml' % self.compPath, 'w') as configFile:

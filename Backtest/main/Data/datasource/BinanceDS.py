@@ -62,7 +62,7 @@ class BinanceDS:
             except IndexError:
                 break
             data += [self.list2Dict(val) for val in tmpData]
-            time.sleep(2)
+            time.sleep(1)
         lastData = self.pullData('/api/v1/klines?symbol=%s&interval=%s&limit=500&startTime=%s&endTime=%s' %
                             (asset, binSize, int(tmpTime), int(endTime)))
         data += [self.list2Dict(val) for val in lastData]
@@ -79,9 +79,9 @@ class BinanceDS:
             )
 
     def updateDB(self):
-        for asset in self.getBTCAssets(): #+ self.getUSDTAssets():
+        for asset in ['ETHUSDT']: # self.getBTCAssets() + self.getUSDTAssets():
             print('For asset: %s' % asset)
-            for bin in self.bin2TS.keys():
+            for bin in ['5m']:
                 col = '%s_%s' % (asset, bin)
                 startTime = self.MU.lastVal(col) if self.MU.count(col) != 0 else self.getFirstTrade(asset, bin)
                 if int(time.time() - self.bin2TS['1d']) - startTime > 1000:
@@ -100,3 +100,6 @@ class BinanceDS:
                               endTime=endTime, isDemo=True)
         df.to_csv('%s%s.csv.gz' % (location, asset), compression='gzip', index=False)
 
+
+
+# BinanceDS().updateDB()

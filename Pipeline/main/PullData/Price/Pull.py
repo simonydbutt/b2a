@@ -5,7 +5,7 @@ import logging
 class Pull:
 
     def __init__(self):
-        logging.debug('Initialising Pull(')
+        logging.debug('Initialising Pull()')
 
     def BTCAssets(self, exchange, justQuote=False):
         logging.debug('Starting Pull.BTCAssets')
@@ -61,3 +61,7 @@ class Pull:
     def getTickerStats(self, exchange):
         logging.debug('Starting Pull.getTicker')
         return eval(exchange)().getTicker()
+
+    def getPriceList(self, coinList=None):
+        logging.debug('Starting Pull.getPriceList')
+        return Nomics().priceList(coinList=coinList)
