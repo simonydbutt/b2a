@@ -102,4 +102,4 @@ class BinanceDS:
 
 
 
-BinanceDS().updateDB()
+# BinanceDS().updateDB()
