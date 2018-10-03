@@ -20,7 +20,6 @@ class TestEntry:
         self.verbose = verbose
         self.period = str(periodList[0])
 
-
     def getVal(self, df, TS):
         val = df.loc[df['TS'] == int(TS)]['close'].values
         return val[0] if len(val) == 1 else np.NaN
@@ -36,30 +35,35 @@ class TestEntry:
         resultsDict['Total']['dfSize'] = 0
         for asset in self.assetList:
             df = self.dfDict[asset]
-
-            gran = int(df['TS'].iloc[1] - df['TS'].iloc[0])
-            enterList = self.enterAtDict[asset]
-            n = 0
-            for position in enterList:
-                if position + max(self.periodList)*gran <= df['TS'].iloc[-1]:
-                    val = self.getVal(df, position)
-                    for period in self.periodList:
-                        resultsDict[asset][str(period)][0].append(
-                            round(100*(self.getVal(df, position + gran*period)/val - 1), 6)
-                        )
-                        resultsDict[asset][str(period)][1].append(
-                            round(100*(self.getDD(df, position, position+gran*period)/val - 1), 6)
-                        )
-                        resultsDict['Total'][str(period)][0].append(
-                            round(100 * (self.getVal(df, position + gran * period) / val - 1), 6)
-                        )
-                        resultsDict['Total'][str(period)][1].append(
-                            round(100 * (self.getDD(df, position, position + gran * period) / val - 1), 6)
-                        )
-            resultsDict[asset]['gran'] = gran
-            resultsDict[asset]['dfSize'] = len(df)
-            resultsDict['Total']['dfSize'] += len(df)
-        resultsDict['Total']['gran'] = gran
+            if len(df) > 100:
+                gran = int(df['TS'].iloc[1] - df['TS'].iloc[0])
+                enterList = self.enterAtDict[asset]
+                n = 0
+                for dir in ['buy', 'sell']:
+                    for position in enterList[dir]:
+                        if position + max(self.periodList)*gran <= df['TS'].iloc[-1]:
+                            val = self.getVal(df, position)
+                            for period in self.periodList:
+                                resultsDict[asset][str(period)][0].append(
+                                    round(100*(self.getVal(df, position + gran*period)/val - 1), 6) if dir == 'buy'
+                                    else round(100*(val/self.getVal(df, position + gran*period) - 1), 6)
+                                )
+                                resultsDict[asset][str(period)][1].append(
+                                    round(100*(self.getDD(df, position, position+gran*period)/val - 1), 6) if dir == 'buy'
+                                    else round(100*(val/self.getDD(df, position, position+gran*period) - 1), 6)
+                                )
+                                resultsDict['Total'][str(period)][0].append(
+                                    round(100 * (self.getVal(df, position + gran * period) / val - 1), 6) if dir == 'buy'
+                                    else round(100 * (val/self.getVal(df, position + gran * period) - 1), 6)
+                                )
+                                resultsDict['Total'][str(period)][1].append(
+                                    round(100 * (self.getDD(df, position, position + gran * period) / val - 1), 6) if dir == 'buy'
+                                    else round(100 * (val/self.getDD(df, position, position + gran * period) - 1), 6)
+                                )
+                resultsDict[asset]['gran'] = gran
+                resultsDict[asset]['dfSize'] = len(df)
+                resultsDict['Total']['dfSize'] += len(df)
+                resultsDict['Total']['gran'] = gran
         self.printStats(resultsDict)
 
     def printStats(self, resultsDict):
@@ -100,16 +104,9 @@ class TestEntry:
             print('_________________________________')
 
 
-A = AssetBrackets(exchangeName='binance').getBrackets(base='BTC')
+A = AssetBrackets(exchangeName='bitmex').getBrackets(base='BTC')
 print(A['all'])
 
-E = Enter('binance', A['all'], '6h', stratDict={
-    'IsFeasible': {
-        'periodsVolLong': 50,
-        'periodsVolShort': 5,
-        'numPeriodsMA': 50,
-        'volCoef': 1.3,
-        'numStd': 1.6
-    }
-})
+E = Enter('bitmex', A['all'], '5m', stratDict={
+    'stratName': 'Pivots'})
 TestEntry(E, periodList=(10, 20, 30), verbose=False).run()

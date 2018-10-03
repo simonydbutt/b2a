@@ -7,7 +7,7 @@ from Backtest.main.Entrance.lib import *
 class Enter:
 
     """
-
+        Breaking change, fixed isFeasible and pivots, rest down...
     """
 
     def __init__(self, db, assetList, granularity, stratDict, startTime=1483228800, endTime=1527811200):
@@ -18,22 +18,17 @@ class Enter:
                        for asset in assetList}
 
     def run(self):
-        enterAtDict = {asset: [] for asset in self.assetList}
+        enterAtDict = {asset: {'buy': [], 'sell': []} for asset in self.assetList}
         for asset in self.dfDict.keys():
-            enterTmp = []
-            for strat in self.stratDict.keys():
-                enterTmp.append(eval(strat)(df=self.dfDict[asset], params=self.stratDict[strat]).run())
-            enterAtList = set(enterTmp[0])
-            if len(enterTmp) > 1:
-                for i in enterTmp[1:]:
-                    enterAtList.intersection_update(set(i))
-            enterAtDict[asset] = list(enterAtList)
+            positionDict = eval(self.stratDict['stratName'])(df=self.dfDict[asset], params=self.stratDict).run()
+            enterAtDict[asset]['buy'] = list(positionDict['buy'])
+            enterAtDict[asset]['sell'] = list(positionDict['sell'])
         return enterAtDict
 
-#
+
 # T = TimeUtil()
-# E = Enter(db='binance', assetList=['XMRBTC', 'LTCBTC', 'ETHBTC', 'XRPBTC', 'NULSBTC'], granularity='6h',
-#           stratDict={'BullHammer': {}})
+# E = Enter(db='bitmex', assetList=['XBTUSD'], granularity='5m',
+#           stratDict={'stratName': 'Pivots'})
 # enterDict = E.run()
 # print(enterDict)
 # for enterAt in enterDict['ETHBTC']:

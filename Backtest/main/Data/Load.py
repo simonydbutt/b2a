@@ -54,8 +54,12 @@ class Load:
                     '_id': 0
                 }
             ).sort('TS', ASCENDING).limit(limit))
-        key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
-        df = pd.DataFrame(data, columns=key)
+        try:
+            key = list(self.db[col].find_one({}, {'_id': 0}).keys()) if not paramList else paramList
+            df = pd.DataFrame(data, columns=key)
+        except AttributeError:
+            print(self.db[col].count())
+            df = pd.DataFrame([], columns=['open', 'close', 'high', 'low', self.volField])
         return self.makeNumeric(df, fieldList=['open', 'close', 'high', 'low', self.volField])
 
     def makeNumeric(self, df, fieldList):

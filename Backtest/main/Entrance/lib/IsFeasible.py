@@ -50,9 +50,15 @@ class IsFeasible:
         if len(self.df) > self.volMALongPeriods:
             gran = self.df['TS'].iloc[1] - self.df['TS'].iloc[0]
             self.df['isReversal'] = self.df.apply(self.conditions, axis=1)
-            return [val + self.delay*gran for val in list(self.df[self.df['isReversal']]['TS'].values)]
+            return {
+                'buy': [val + self.delay*gran for val in list(self.df[self.df['isReversal']]['TS'].values)],
+                'sell': []
+            }
         else:
-            return []
+            return {
+                'buy': [],
+                'sell': []
+            }
 
     def conditions(self, row):
         if self.volDir == 'low':

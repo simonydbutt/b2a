@@ -30,6 +30,9 @@ class Enter:
         return self.enterStrat.run(asset, exchange='Binance', testData=testData)
 
     def run(self):
+        self.runStatArb() if 'statArb' in self.config else self.runNorm()
+
+    def runNorm(self):
         try:
             logging.info('Starting Enter.run: %s' % datetime.now())
             openList = []
@@ -51,7 +54,24 @@ class Enter:
             logging.info('%s assets analysed' % len(assetList))
             logging.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
         except Exception as e:
-            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.run()', message=e)
+            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
             raise Exception
 
-# Enter(db='disco', stratName='CheapVol_ProfitRun').run()
+    def runStatArb(self):
+        try:
+            self.OT.initRun()
+            logging.info('Starting Enter.runStatArb: %s' % datetime.now())
+            res = self.enterStrat.run()
+            if res == 1:
+                logging.info('Short ETH, Long BTC')
+                ethPrice = self.pull.assetPrice(exchange='Binance', asset='ETHUSDT', dir='buy')
+                btcPrice = self.pull.assetPrice(exchange='Binance', asset='BTCUSDT', dir='sell')
+                self.OT.openArb(assetList=[('ETH', ethPrice), ('BTC', btcPrice)])
+            elif res == -1:
+                logging.info('Long ETH, Short BTC')
+
+            else:
+                logging.info('No action taken')
+        except Exception as e:
+            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runStatArb()', message=e)
+            raise e

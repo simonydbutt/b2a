@@ -21,7 +21,7 @@ class Run:
                 assetSelectionParams=stratParams['assetSelectionParams'], enterParams=stratParams['enterParams'],
                 exitParams=stratParams['exitParams'],
                 schedule=stratParams['schedule'],
-                isLive=stratParams['isLive']
+                isLive=stratParams['isLive'], statArb=stratParams['statArb'] if 'statArb' in stratParams.keys() else False
             )
         elif args.clean:
             Clean(stratName=stratParams['stratName']).resetStrat()

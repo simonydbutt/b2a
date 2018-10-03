@@ -22,13 +22,14 @@ class MongoUtil:
                     for param in parameters.keys():
                         if param == 'TS' and self.dbName == 'binance' or self.dbName == 'bitmex':
                             val['TS'] = int(self.TU.getTS(val[parameters['TS'][0]], timeFormat=parameters['TS'][1]))
+                            self.db[colName].insert_one(val)
                         else:
                             try:
                                 val[param] = val[parameters[param]]
+                                self.db[colName].insert_one(val)
                             except TypeError:
                                 print(val)
                                 raise SystemExit
-                    self.db[colName].insert_one(val)
             except TypeError:
                 print(val)
                 print(list(self.db[colName].find({id: val[id]})))

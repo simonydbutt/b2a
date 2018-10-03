@@ -32,11 +32,14 @@ class ExitTrade:
     def exit(self, positionDict, currentPrice):
         logging.debug('Starting ExitTrade.exit')
         fees = ExchangeUtil().fees(exchange=positionDict['exchange'])
-        exitPositionSize = round((currentPrice/float(positionDict['openPrice']))*float(positionDict['positionSize'])*(1 - fees), 6)
+        dir = positionDict['dir'] if 'dir' in positionDict.keys() else 'buy'
+        leverage = positionDict['leverage'] if 'leverage' in positionDict.keys() else 1
+        exitPositionSize = round((currentPrice/float(positionDict['openPrice']))*float(positionDict['positionSize'])*(1 - fees), 6) if \
+            dir == 'buy' else round((float(positionDict['openPrice']/currentPrice))*float(positionDict['positionSize'])*(1 - fees), 6)
         logging.debug('Removing val from db.currentPosition & inserting into db.tranactionLog')
         self.currentCol.delete_one({'assetName': positionDict['assetName']})
         if not self.isLive:
-            realPnL = exitPositionSize - positionDict['positionSize']
+            realPnL = (exitPositionSize - positionDict['positionSize']) * leverage
             exitDict = {
                     'assetName': positionDict['assetName'],
                     'openPrice': round(float(positionDict['openPrice']), 8),
