@@ -32,9 +32,6 @@ class Exit:
         return self.exitStrat.run(positionData, testPrice=testPrice, Pull=Pull)
 
     def run(self):
-        self.runArb() if 'statArb' in self.config else self.runNorm()
-
-    def runNorm(self):
         try:
             logging.info('Starting Exit Run: %s' % datetime.datetime.now())
             currentPositions = list(self.col.find())
@@ -53,19 +50,3 @@ class Exit:
         except Exception as e:
             EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Exit.run()', message=e)
             raise Exception
-
-    def runArb(self):
-        if self.col.count() != 0:
-            btcPrice = self.pull.assetPrice(exchange='Binance', asset='BTCUSDT')
-            btcDict = self.col.find_one({'assetName': 'BTCUSDT'})
-            ethPrice = self.pull.assetPrice(exchange='Binance', asset='ETHUSDT')
-            ethDict = self.col.find_one({'assetName': 'ETHUSDT'})
-            if btcDict['periods'] == self.config['exit']['maxPeriods']:
-                self.exitTrade.exit(positionDict=btcDict, currentPrice=btcPrice)
-                self.exitTrade.exit(positionDict=ethPrice, currentPrice=ethPrice)
-            else:
-                self.updatePosition.update(positionDict=btcDict, currentPrice=btcPrice, dir=btcDict['dir'])
-                self.updatePosition.update(positionDict=ethDict, currentPrice=ethPrice, dir=ethDict['dir'])
-
-# dirPath = 'Pipeline/DB/disco'
-# Exit(db='disco', stratName='CheapVol_ProfitRun').run()

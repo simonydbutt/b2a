@@ -13,6 +13,10 @@ from datetime import datetime
 
 class Enter:
 
+    """
+        *TODO Nomics to avoid rate limits
+    """
+
     def __init__(self, stratName, isTest=False):
         logging.debug('Initialising Enter()')
         self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
@@ -30,9 +34,6 @@ class Enter:
         return self.enterStrat.run(asset, exchange='Binance', testData=testData)
 
     def run(self):
-        self.runStatArb() if 'statArb' in self.config else self.runNorm()
-
-    def runNorm(self):
         try:
             logging.info('Starting Enter.run: %s' % datetime.now())
             openList = []
@@ -56,22 +57,3 @@ class Enter:
         except Exception as e:
             EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
             raise Exception
-
-    def runStatArb(self):
-        try:
-            self.OT.initRun()
-            logging.info('Starting Enter.runStatArb: %s' % datetime.now())
-            res = self.enterStrat.run()
-            if res == 1:
-                logging.info('Short ETH, Long BTC')
-                ethPrice = self.pull.assetPrice(exchange='Binance', asset='ETHUSDT', dir='buy')
-                btcPrice = self.pull.assetPrice(exchange='Binance', asset='BTCUSDT', dir='sell')
-                self.OT.openArb(assetList=[('ETH', ethPrice), ('BTC', btcPrice)])
-            elif res == -1:
-                logging.info('Long ETH, Short BTC')
-
-            else:
-                logging.info('No action taken')
-        except Exception as e:
-            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runStatArb()', message=e)
-            raise e

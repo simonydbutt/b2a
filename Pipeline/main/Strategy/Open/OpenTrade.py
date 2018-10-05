@@ -1,6 +1,7 @@
 from Pipeline.main.PositionSize.Position import Position
 from Pipeline.main.Utils.ExchangeUtil import ExchangeUtil
 from Pipeline.main.Utils.AccountUtil import AccountUtil
+from Pipeline.main.Utils.EmailUtil import EmailUtil
 from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
 import logging
@@ -12,6 +13,7 @@ import time
 class OpenTrade:
 
     def __init__(self, stratName, isLive=False):
+        self.stratName = stratName
         logging.debug('Initialising OpenTrade()')
         self.isLive = isLive
         self.resourcePath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
@@ -61,42 +63,12 @@ class OpenTrade:
                     'exchange': assetVals[1],
                     'clientOrderId': orderDict['clientOrderId']
                 }
-            except KeyError:
-                print(assetVals)
-                print(orderDict)
-                print(quantity)
+            except KeyError as e:
+                EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
                 raise Exception('Failed...')
         self.db['currentPositions'].insert_one(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
         self.capDict['liquidCurrent'] -= capAllocated
-
-    def openArb(self, assetList):
-        openList = [
-            {
-                'assetName': assetList[0][0],
-                'openPrice': assetList[0][1],
-                'periods': 0,
-                'positionSize': 0.02,
-                'paperSize': 0.02,
-                'TSOpen': round(time.time()),
-                'exchange': 'Bitmex',
-                'dir': 'buy',
-                'leverage': 20
-            },
-            {
-                'assetName': assetList[1][0],
-                'openPrice': assetList[1][1],
-                'periods': 0,
-                'positionSize': 0.02,
-                'paperSize': 0.02,
-                'TSOpen': round(time.time()),
-                'exchange': 'Bitmex',
-                'dir': 'sell',
-                'leverage': 20
-            }
-        ]
-        self.db['currentPositions'].insert_many(openList)
-        self.capDict['liquidCurrent'] -= 0.04
 
     def updateBooks(self):
         if not self.isLive:
