@@ -18,3 +18,4 @@ Pipeline/tests/testsDB/CodeLogs/*
 .DS_Store
 */db/*
 Pipeline/resources/*
+*.png
