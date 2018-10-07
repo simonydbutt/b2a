@@ -71,6 +71,7 @@ class OpenTrade:
         self.capDict['liquidCurrent'] -= capAllocated
 
     def updateBooks(self):
+        logging.debug('Starting OpenTrade.updateBooks()')
         if not self.isLive:
             self.capDict['percentAllocated'] = round(1 - self.capDict['liquidCurrent']/self.capDict['paperCurrent'], 3)
             self.capDict['paperPnL'] = round(self.capDict['paperCurrent'] / self.capDict['initialCapital'], 3)

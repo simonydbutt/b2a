@@ -28,8 +28,8 @@ class Binance(_Pull):
             columns=self.EU.candlestickColumns(exchange='Binance')
         )
         df = df.iloc[:-1] if lastReal else df.iloc[1:]
-        df[['open', 'close', 'high', 'low', 'takerQuoteVol']] = \
-            df[['open', 'close', 'high', 'low', 'takerQuoteVol']].apply(pd.to_numeric)
+        df[['open', 'close', 'high', 'low', 'volume']] = \
+            df[['open', 'close', 'high', 'low', 'volume']].apply(pd.to_numeric)
         df['TS'] = df['milliTSClose'] / 1000
         return df[columns]
 

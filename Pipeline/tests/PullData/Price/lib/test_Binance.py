@@ -15,9 +15,9 @@ def test_connection():
 def test_getCandles():
     PB = Binance()
     data = PB.getCandles(asset='ETHBTC', limit=5, interval=86400,
-                         columns=['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'], lastReal=True)
+                         columns=['TS', 'open', 'high', 'low', 'close', 'volume'], lastReal=True)
     assert len(data) == 5
-    assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'takerQuoteVol']
+    assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'volume']
 
 
 if __name__ == '__main__':

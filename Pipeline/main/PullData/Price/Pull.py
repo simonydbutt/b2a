@@ -4,15 +4,22 @@ import logging
 
 class Pull:
 
+    """
+        *TODO lots of functions, see if any are unnecessary
+    """
+
     def __init__(self):
         logging.debug('Initialising Pull()')
 
-    def BTCAssets(self, exchange, justQuote=False):
+    def BTCAssets(self, exchange, justQuote=False, exchange_=None):
         logging.debug('Starting Pull.BTCAssets')
         logging.debug('Variable: justQuote: %s' % justQuote)
-        return eval(exchange)().getBTCAssets(justQuote=justQuote)
+        if exchange == 'Nomics':
+            return eval(exchange)().getBTCAssets(justQuote=justQuote, exchange=exchange_)
+        else:
+            return eval(exchange)().getBTCAssets(justQuote=justQuote)
 
-    def candles(self, exchange, asset, limit, interval, columns=('TS', 'open', 'high', 'low', 'close', 'takerQuoteVol'), lastReal=True):
+    def candles(self, exchange, asset, limit, interval, columns=['TS', 'open', 'high', 'low', 'close', 'volume'], lastReal=True):
         logging.debug('Starting Pull.candles')
         logging.debug('Variables. Asset: %s, limit: %s, interval: %s, columns: %s, lastReal: %s' %
                       (asset, limit, interval, columns, lastReal))
@@ -65,3 +72,7 @@ class Pull:
     def getPriceList(self, coinList=None):
         logging.debug('Starting Pull.getPriceList')
         return Nomics().priceList(coinList=coinList)
+
+    def getPriceAction(self, exchange, startDate, baseAsset='BTC'):
+        logging.debug('Starting Pull.getPriceAction')
+        return Nomics().getIntervalPriceAction(exchange, startDate, baseAsset)
