@@ -34,3 +34,18 @@ class Nomics(_Pull):
                 'candles',
                 params={'currency': asset, 'interval': interval, 'key': Settings.NOMICS['apiKey']}
         ))
+
+    def getBTCAssets(self, exchange, justQuote=False):
+        return [val['base'] for val in
+                self._pullData('exchange-markets/prices', params={'currency': 'BTC', 'exchange': exchange.lower(),
+                                                                  'key': Settings.NOMICS['apiKey']})
+                if val['quote'] == 'BTC']
+
+    def getIntervalPriceAction(self, exchange, startDate, baseAsset):
+        return {
+            val['base']: {'price': val['close_quote'], 'vol': val['volume_base']}
+            for val in self._pullData('exchange-markets/interval',
+                                      params={'currency': baseAsset, 'exchange': exchange.lower(), 'start': startDate,
+                                              'key': Settings.NOMICS['apiKey']})
+            if val['quote'] == baseAsset
+        }

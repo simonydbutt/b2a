@@ -17,14 +17,14 @@ class Enter:
         *TODO Nomics to avoid rate limits
     """
 
-    def __init__(self, stratName, isTest=False):
+    def __init__(self, stratName):
         logging.debug('Initialising Enter()')
         self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
         self.stratName = stratName
         with open('%s/config.yml' % self.compPath) as stratFile:
             self.config = yaml.load(stratFile)
-        self.enterStrat = eval(self.config['enter']['name'])(stratName=stratName, isTest=isTest)
-        self.Select = Select(stratName)
+        self.assetList = Select(stratName).assets()
+        self.enterStrat = eval(self.config['enter']['name'])(stratName=stratName, assetList=self.assetList)
         self.OT = OpenTrade(stratName=stratName, isLive=self.config['isLive'])
         self.pull = Pull()
         self.col = MongoClient('localhost', 27017)[stratName]['currentPositions']
@@ -38,22 +38,32 @@ class Enter:
             logging.info('Starting Enter.run: %s' % datetime.now())
             openList = []
             currentPositions = [val['assetName'] for val in list(self.col.find({}, {'assetName': 1}))]
-            assetList = self.Select.assets()
             self.OT.initRun()
-            for asset, exchange in [val for val in assetList if val[0] not in currentPositions]:
+            self.enterStrat.before()
+            for asset, exchange in [val for val in self.assetList if val[0] not in currentPositions]:
                 logging.debug('Starting asset: %s' % asset)
-                if self.enterStrat.run(asset, exchange=exchange, testData=None):
+                if self.enterStrat.run(asset):
                     logging.info('Entering trade: %s' % asset)
-                    openPrice = self.pull.assetPrice(exchange=exchange, asset=asset, dir='buy')
+                    openPrice = self.pull.assetPrice(exchange=exchange, asset='%sBTC' % asset, dir='buy')
                     if openPrice != -1:
                         openList.append(asset)
                         self.OT.open(assetVals=(asset, exchange, openPrice))
-                logging.debug('Debug so as not to ping rate limiters')
-                time.sleep(1.5)
             self.OT.updateBooks()
             logging.info('Ending Enter run')
-            logging.info('%s assets analysed' % len(assetList))
+            logging.info('%s assets analysed' % len(self.assetList))
             logging.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
         except Exception as e:
             EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
             raise Exception
+
+
+# logging.basicConfig(level=logging.DEBUG)
+# startTime = time.time()
+# E = Enter(stratName='CheapVol_ProfitRun')
+# logging.info('\nInit comp, taking: %s seconds\n\n' % round(time.time() - startTime))
+# startTime = time.time()
+# E.run()
+# logging.info('\nRun 1 comp, taking: %s seconds\n\n' % round(time.time() - startTime))
+# startTime = time.time()
+# E.run()
+# logging.info('Run 2 comp, taking: %s seconds' % round(time.time() - startTime))
