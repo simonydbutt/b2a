@@ -74,5 +74,11 @@ class Pull:
         return Nomics().priceList(coinList=coinList)
 
     def getPriceAction(self, exchange, startDate, baseAsset='BTC'):
+        """
+            In format:
+                {
+                    'asset': {'price': , 'vol': }
+                }
+        """
         logging.debug('Starting Pull.getPriceAction')
         return Nomics().getIntervalPriceAction(exchange, startDate, baseAsset)

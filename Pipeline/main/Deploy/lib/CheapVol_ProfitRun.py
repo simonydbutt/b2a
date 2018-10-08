@@ -11,7 +11,7 @@ stratParams = {
         'percent': 0.075
     },
     'assetSelectionParams': {
-        'name': 'All',
+        'name': 'AllNomics',
         'exchangeList': ['Binance'],
         'baseAsset': 'BTC'
     },
