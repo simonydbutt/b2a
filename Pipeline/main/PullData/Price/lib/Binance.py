@@ -7,10 +7,11 @@ import time
 
 class Binance(_Pull):
 
-    def __init__(self):
+    def __init__(self, emailOnFailure=True):
         _Pull.__init__(self)
         self.EU = ExchangeUtil()
         self.baseURL = 'https://api.binance.com'
+        self.emailOnFailure = emailOnFailure
 
     def getBTCAssets(self, justQuote=False):
         logging.debug('Starting Binance.getBTCAssets')

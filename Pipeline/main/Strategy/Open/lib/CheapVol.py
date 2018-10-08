@@ -41,7 +41,7 @@ class CheapVol:
         logging.debug('1 second sleep to avoid rate limiters')
         time.sleep(1.5 if not self.isTest else 0)
         try:
-            pullData = Pull().candles(
+            pullData = Pull(emailOnFailure=False if self.isTest else True).candles(
                 asset='%sBTC' % asset,
                 exchange=exchange,
                 limit=max(self.enterParams['periodsMA'], self.enterParams['periodsVolLong']) + 1,

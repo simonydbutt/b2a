@@ -10,10 +10,11 @@ class Nomics(_Pull):
         First impressions, Nomics is impressive
     """
 
-    def __init__(self):
+    def __init__(self, emailOnFailure=True):
         logging.debug('Initialising Nomics()')
         _Pull.__init__(self)
         self.baseURL = 'https://api.nomics.com/v1/'
+        self.emailOnFailure = emailOnFailure
 
     def priceList(self, coinList):
         logging.debug('Starting Nomics.priceList')
