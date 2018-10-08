@@ -65,7 +65,7 @@ class OpenTrade:
                 }
             except KeyError as e:
                 EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
-                raise Exception('Failed...')
+                raise Exception('Failed with error message: %s and assetVals: %s' % (e, assetVals))
         self.db['currentPositions'].insert_one(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
         self.capDict['liquidCurrent'] -= capAllocated

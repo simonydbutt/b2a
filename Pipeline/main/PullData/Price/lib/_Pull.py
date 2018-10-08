@@ -18,8 +18,9 @@ class _Pull:
         **TODO: when adding additional exchanges to same strat, normalise Volume field
     """
 
-    def __init__(self):
+    def __init__(self, emailOnFailure=True):
         self.baseURL = ''
+        self.emailOnFailure = emailOnFailure
 
     def _pullData(self, endPoint, params=None, isTest=False, testReq='', testReq2=''):
         logging.debug('Starting _Pull._pullData')
@@ -27,7 +28,8 @@ class _Pull:
         try:
             req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
         except OSError:
-            EmailUtil().errorExit(file='_Pull', funct='_pullData', message='OS Error -> network down!')
+            EmailUtil().errorExit(file='_Pull', funct='_pullData', message='OS Error -> network down!') if \
+                self.emailOnFailure else None
             time.sleep(300)
             req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
         logging.debug('req status code: %s' % req.status_code)
@@ -41,7 +43,8 @@ class _Pull:
                 errorMsg = 'Rate limit error after timeout'
                 logging.error(errorMsg)
                 if not isTest:
-                    EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg)
+                    EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg) if \
+                        self.emailOnFailure else None
                 else:
                     return 2
             else:
@@ -51,7 +54,8 @@ class _Pull:
             errorMsg = 'pullData requests error with error code %s' % req.status_code
             logging.error(errorMsg)
             if not isTest:
-                EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg)
+                EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg) if \
+                    self.emailOnFailure else None
             else:
                 return 4
 

@@ -34,16 +34,18 @@ class CheapVol:
             self.exchangeList = params['assetSelection']['exchangeList']
         self.db = MongoClient('localhost', 27017)[stratName]
         self.col = self.db['PastPriceAction']
-        self.init()
+        self.initiateCollection() if not self.isTest else None
 
-    def _initSingle(self, asset, exchange):
+    def _initSingle(self, asset, exchange, testData=[]):
         logging.debug('Starting CheapVol._initSingle(asset=%s)' % asset)
+        logging.debug('1 second sleep to avoid rate limiters')
+        time.sleep(1.5 if not self.isTest else 0)
         try:
-            pullData = Pull().candles(
+            pullData = Pull(emailOnFailure=False if self.isTest else True).candles(
                 asset='%sBTC' % asset,
                 exchange=exchange,
                 limit=max(self.enterParams['periodsMA'], self.enterParams['periodsVolLong']) + 1,
-                interval=self.enterParams['granularity'])
+                interval=self.enterParams['granularity']) if len(testData) == 0 else testData
             priceList = list(pullData['close'])[-self.enterParams['periodsMA']:]
             volList = list(pullData['volume'])[-self.enterParams['periodsVolLong']:]
             if len(priceList) == self.enterParams['periodsMA'] and len(volList) == self.enterParams['periodsVolLong']:
@@ -52,22 +54,27 @@ class CheapVol:
                     'price': priceList,
                     'vol': volList
                 })
+                return True
             else:
                 logging.info('Not enough data for asset: %s' % asset)
         except IndexError:
             logging.warning('Failure on asset: %s' % asset)
-        time.sleep(1.5)
+        return False
 
-    def init(self):
+    def initiateCollection(self):
         """
             Creates mongo collection which contains the price action data required for CheapVol
         """
+        failList = []
         logging.debug('Starting CheapVol.init()')
         if 'PastPriceAction' in self.db.collection_names():
             self.db.drop_collection('PastPriceAction')
         for asset, exchange in self.assetList:
-            self._initSingle(asset, exchange)
-        logging.info('Initialised PastPriceAction collection')
+            if not self._initSingle(asset, exchange):
+                failList.append(asset)
+        logging.debug('No failed assets' if len(failList) == 0 else '%s Failed assets: %s' % (len(failList), failList))
+        logging.debug('Finished CheapVol.initiateCollection()')
+        return failList if self.isTest else None
 
     def _getPADict(self, exchange):
         logging.debug('Starting CheapVol._getPADict()')
@@ -75,26 +82,28 @@ class CheapVol:
         dateStart = datetime.fromtimestamp(startTS).strftime('%Y-%m-%dT%H:%M:%S.000Z')
         return Pull().getPriceAction(exchange=exchange, startDate=dateStart, baseAsset='BTC')
 
-    def before(self):
+    def before(self, testData=None):
         """
             Runs before CheapVol on each asset and updates the mongo collection
         """
         logging.debug('Starting CheapVol.before()')
         newPA = {}
-        for exchange in self.exchangeList:
-            newPA.update(self._getPADict(exchange=exchange))
+        # using reversed to keep exchange priority
+        for exchange in reversed(self.exchangeList):
+            newPA.update(self._getPADict(exchange=exchange) if not self.isTest else testData)
         for assetDict in list(self.col.find()):
             assetDict['price'] = assetDict['price'][1:] + [newPA[assetDict['asset']]['price']]
             assetDict['vol'] = assetDict['vol'][1:] + [newPA[assetDict['asset']]['vol']]
             assetDict.pop('_id', None)
             self.col.find_one_and_replace({'asset': assetDict['asset']}, assetDict)
+        logging.debug('Finished CheapVol.before()')
 
     def run(self, asset):
         logging.debug('Starting CheapVol.run(asset=%s)' % asset)
         assetData = self.col.find_one({'asset': asset})
         if assetData:
             volL = np.round(np.nanmean(np.array(assetData['vol']).astype(np.float)), 5)
-            volS = np.round(np.nanmean(np.array(assetData['vol'][-self.enterParams['periodsVolShort']]).astype(np.float)), 5)
+            volS = np.round(np.nanmean(np.array(assetData['vol'][-self.enterParams['periodsVolShort']:]).astype(np.float)), 5)
             priceData = np.array(assetData['price']).astype(np.float)
             bolDown = np.nanmean(priceData) - self.enterParams['bolStd'] * np.nanstd(priceData)
             logging.debug('volL: %s, volS: %s, price: %s, bolDown: %s' % (volL, volS, priceData[-1], bolDown))
