@@ -52,7 +52,8 @@ class CheapVol:
                 self.col.insert_one({
                     'asset': asset,
                     'price': priceList,
-                    'vol': volList
+                    'vol': volList,
+                    'isLive': False
                 })
                 return True
             else:
@@ -88,12 +89,15 @@ class CheapVol:
         """
         logging.debug('Starting CheapVol.before()')
         newPA = {}
+        delistDict = {}
         # using reversed to keep exchange priority
         for exchange in reversed(self.exchangeList):
             newPA.update(self._getPADict(exchange=exchange) if not self.isTest else testData)
+            delistDict.update(Pull().getDepositStatus(exchange=exchange)) if not self.isTest else {}
         for assetDict in list(self.col.find()):
             assetDict['price'] = assetDict['price'][1:] + [newPA[assetDict['asset']]['price']]
             assetDict['vol'] = assetDict['vol'][1:] + [newPA[assetDict['asset']]['vol']]
+            assetDict['isLive'] = delistDict[assetDict['asset']] if not self.isTest else True
             assetDict.pop('_id', None)
             self.col.find_one_and_replace({'asset': assetDict['asset']}, assetDict)
         logging.debug('Finished CheapVol.before()')
@@ -107,6 +111,6 @@ class CheapVol:
             priceData = np.array(assetData['price']).astype(np.float)
             bolDown = np.nanmean(priceData) - self.enterParams['bolStd'] * np.nanstd(priceData)
             logging.debug('volL: %s, volS: %s, price: %s, bolDown: %s' % (volL, volS, priceData[-1], bolDown))
-            return volS > self.enterParams['volCoef'] * volL and priceData[-1] < bolDown
+            return volS > self.enterParams['volCoef'] * volL and priceData[-1] < bolDown and assetData['isLive']
         else:
             return False

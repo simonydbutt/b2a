@@ -83,3 +83,13 @@ class Pull:
         """
         logging.debug('Starting Pull.getPriceAction')
         return Nomics(emailOnFailure=self.emailOnFailure).getIntervalPriceAction(exchange, startDate, baseAsset)
+
+    def getDepositStatus(self, exchange):
+        """
+            In format
+                {
+                    'asset': isDelisted (True/False)
+                }
+        """
+        logging.debug('Starting Pull.getDepositStatus')
+        return eval(exchange)(emailOnFailure=self.emailOnFailure).getDepositStatus()
