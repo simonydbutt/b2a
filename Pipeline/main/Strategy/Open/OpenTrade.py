@@ -4,6 +4,7 @@ from Pipeline.main.Utils.AccountUtil import AccountUtil
 from Pipeline.main.Utils.EmailUtil import EmailUtil
 from Pipeline.main.PullData.Price.Pull import Pull
 from pymongo import MongoClient
+import numpy as np
 import logging
 import Settings
 import yaml
@@ -50,7 +51,7 @@ class OpenTrade:
         else:
             try:
                 quantity = round(capAllocated / assetVals[2], 2)
-                orderDict = self.pull.makeTrade(exchange=assetVals[1], asset=assetVals[0], quantity=quantity, dir='BUY')
+                orderDict = self.pull.makeTrade(exchange=assetVals[1], asset=assetVals[0], quantity=np.floor(quantity), dir='BUY')
                 buyPrice = self._getPrice(orderDict['fills'])
                 openDict = {
                     'assetName': assetVals[0],
@@ -65,6 +66,7 @@ class OpenTrade:
                 }
             except KeyError as e:
                 EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
+                logging.error('orderDict: %s' % orderDict)
                 raise Exception('Failed with error message: %s and assetVals: %s' % (e, assetVals))
         self.db['currentPositions'].insert_one(openDict)
         self.capDict['paperCurrent'] -= round(capAllocated - openDict['positionSize'], 6)
