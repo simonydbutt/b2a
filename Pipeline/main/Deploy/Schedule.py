@@ -11,11 +11,11 @@ import yaml
 class Schedule:
 
     def __init__(self, strat, periodDict):
+        RunPipelineTests()
         with open('%s/Pipeline/resources/%s/config.yml' % (Settings.BASE_PATH, strat)) as configFile:
             self.config = yaml.load(configFile)
         self.Enter = Enter(stratName=strat)
         self.Exit = Exit(stratName=strat)
-        self.RunTests = RunPipelineTests
         self.emailNotifications = EmailUtil(strat=strat, isTick=True)
         self.periodDict = self._compDict(periodDict)
 
@@ -30,7 +30,6 @@ class Schedule:
 
     def run(self):
         # Before starting scheduler
-        self.RunTests()
         self.Enter.run()
         self.emailNotifications.statsMessage()
         # Schedule
