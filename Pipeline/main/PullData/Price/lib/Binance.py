@@ -66,6 +66,12 @@ class Binance(_Pull):
         accountVals = self._pullEncrypt(endPoint='api/v3/account', paramString='timestamp=%s' % t)
         return [[val['asset'], float(val['free'])] for val in accountVals['balances'] if float(val['free']) != 0]
 
+    def getDepositStatus(self):
+        logging.debug('Starting Binance.getDepositStatus')
+        t = round(time.time() * 1000)
+        depositVals = self._pullEncrypt(endPoint='wapi/v3/assetDetail.html', paramString=f'timestamp={t}')['assetDetail']
+        return {val: depositVals[val]['depositStatus'] for val in depositVals.keys()}
+
     def getOrderBook(self, asset, limit):
         logging.debug('Starting Binance.getOrderBook')
         orderBook = self._orderBook(asset=asset, limit=limit)

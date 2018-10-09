@@ -23,7 +23,8 @@ params = {
 initData = {
     'asset': 'LTC',
     'price': [10, 10, 10, 10, 10],
-    'vol': [10, 10, 10, 10, 10]
+    'vol': [10, 10, 10, 10, 10],
+    'isLive': False
 }
 initSingleData = pd.DataFrame([[10, 10], [10, 10], [10, 10], [10, 10], [10, 10]], columns=['close', 'volume'])
 
@@ -32,6 +33,7 @@ def before():
     CCD.create()
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, resPath), 'w') as configFile:
         yaml.dump(params, configFile)
+    client.drop_database('testCheapVol')
 
 
 def after():
@@ -76,9 +78,9 @@ def test_before():
 def test_run():
     before()
     CV = CheapVol(stratName='testCheapVol', assetList=['LTC', 'XMR'], isTest=True)
-    col.insert_many([{'asset': 'enter', 'price': [10, 10, 10, 10, 0.4], 'vol': [10, 10, 10, 10, 20]},
-                     {'asset': 'volTooSmall', 'price': [10, 10, 10, 10, 10], 'vol': [20, 30, 10, 10, 20]},
-                     {'asset': 'priceTooLarge', 'price': [10, 10, 10, 10, 20], 'vol': [10, 10, 10, 10, 10]}])
+    col.insert_many([{'asset': 'enter', 'price': [10, 10, 10, 10, 0.4], 'vol': [10, 10, 10, 10, 20], 'isLive': True},
+                     {'asset': 'volTooSmall', 'price': [10, 10, 10, 10, 10], 'vol': [20, 30, 10, 10, 20], 'isLive': True},
+                     {'asset': 'priceTooLarge', 'price': [10, 10, 10, 10, 20], 'vol': [10, 10, 10, 10, 10], 'isLive': True}])
     # Will enter position
     assert CV.run(asset='enter')
     # Volume too small to enter
