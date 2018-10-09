@@ -80,10 +80,3 @@ class OpenTrade:
             self.capDict = AccountUtil(exchange='Binance').getValue(initCapital=self.capDict['initialCapital'])
         with open('%s/capital.yml' % self.resourcePath, 'w') as capFile:
             yaml.dump(self.capDict, capFile)
-
-
-
-logging.basicConfig(level=logging.INFO)
-OT = OpenTrade(stratName='CheapVol_ProfitRun', isLive=True)
-OT.initRun()
-OT.open(('TRIGBTC', 'Binance', 2.73e-05))
