@@ -57,8 +57,8 @@ class OpenTrade:
                     'openPrice': buyPrice,
                     'currentPrice': buyPrice,
                     'periods': 0,
-                    'positionSize': orderDict['cummulativeQuoteQty'],
-                    'posSizeBase': orderDict['executedQty'],
+                    'positionSize': float(orderDict['cummulativeQuoteQty']),
+                    'posSizeBase': float(orderDict['executedQty']),
                     'TSOpen': round(time.time()),
                     'exchange': assetVals[1],
                     'clientOrderId': orderDict['clientOrderId']
