@@ -46,7 +46,7 @@ class Enter:
                         not self.isTest else 1
                     if openPrice != -1:
                         openList.append(asset)
-                        self.OT.open(assetVals=(asset, exchange, openPrice)) if not self.isTest else None
+                        self.OT.open(assetVals=('%sBTC' % asset, exchange, openPrice)) if not self.isTest else None
             self.OT.updateBooks() if not self.isTest else None
             logging.info('Ending Enter run. Took: %s seconds' % round(time.time() - startTime))
             logging.info('%s assets analysed' % len(self.assetList))
