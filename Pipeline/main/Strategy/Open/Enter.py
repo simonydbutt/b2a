@@ -38,7 +38,7 @@ class Enter:
             currentPositions = [val['assetName'] for val in list(self.col.find({}, {'assetName': 1}))]
             self.OT.initRun() if not self.isTest else None
             self.enterStrat.before() if not self.isTest else None
-            for asset, exchange in [val for val in self.assetList if val[0] not in currentPositions]:
+            for asset, exchange in [val for val in self.assetList if '%sBTC' % val[0] not in currentPositions]:
                 logging.debug('Starting asset: %s' % asset)
                 if self.enterStrat.run(asset):
                     logging.info('Entering trade: %s' % asset)
