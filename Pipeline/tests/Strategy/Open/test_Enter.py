@@ -25,7 +25,7 @@ def before():
     CCD.create()
     with open('%s/%s/config.yml' % (Settings.BASE_PATH, resPath), 'w') as configFile:
         yaml.dump(params, configFile)
-    col.insert_one({'assetName': 'XMR'})
+    col.insert_one({'assetName': 'XMRBTC'})
 
 
 def after():
