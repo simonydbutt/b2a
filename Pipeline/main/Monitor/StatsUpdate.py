@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import pandas as pd
 import Settings
 import logging
 import yaml
@@ -51,3 +52,22 @@ class StatsUpdate:
         statsDict['total'] = totalStats
         logging.debug('Ending compStats')
         return statsDict
+
+    def getCurrentStats(self, stratName):
+        logging.debug('Starting StatsUpdate.getCurrentStats')
+        df = pd.DataFrame(
+            list(self.client[stratName].currentPositions.find(
+                {},
+                {
+                    '_id': 0,
+                    'assetName': 1,
+                    'openPrice': 1,
+                    'currentPrice': 1,
+                    'periods': 1
+                }
+            ))
+        )
+        df['daysOpen'] = round(df['periods'] / 48, 2)
+        df.drop('periods', axis=1, inplace=True)
+        df['%'] = 100 * round(df['currentPrice'] / df['openPrice'], 4)
+        return df
