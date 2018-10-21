@@ -16,7 +16,7 @@ class EmailUtil:
         self.strat = strat
         self.isTick = isTick
 
-    def _sendEmail(self, subject, content, imgPath=None):
+    def _sendEmail(self, subject, content, imgPath=None, html=False):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(
@@ -27,7 +27,10 @@ class EmailUtil:
         msg['From'] = Settings.EMAIL['USER']
         msg['To'] = Settings.EMAIL['SEND_USER']
         msg['Subject'] = subject
-        msg.attach(MIMEText(content))
+        msg.attach(
+            MIMEText(content, _subtype='plain') if not html
+            else MIMEText(content, _subtype='html')
+        )
         if imgPath:
             msg.attach(MIMEImage(open(imgPath, 'rb').read(), name=os.path.basename(imgPath)))
         server.send_message(msg=msg, from_addr=Settings.EMAIL['USER'], to_addrs=Settings.EMAIL['SEND_USER'])
@@ -43,17 +46,15 @@ class EmailUtil:
 
     def statsMessage(self):
         stats = StatsUpdate().compStats()[self.strat]
-        msg = '-------------------------  %s -------------------------\n\n' \
-              'Initial Capital: %s\nLiquid Current: %s\n' \
-              'Paper Current: %s\nPaper PnL: %s%%\n' \
-              'Percent Allocated: %s%%\nTrades Open: %s\n' \
-              'Number Transactions: %s\nPaper Avg PnL: %s\n' % \
-              (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'],
-               stats['paperPnL'], 100*stats['percentAllocated'], stats['numberOpen'],
-               stats['numberTransactions'], stats['paperAvgPnL'])
-        Visualise().plotTrades(stratName=self.strat)
-        if len(stats['openList']) != 0:
-            msg += 'Open Positions: %s' % '  '.join(stats['openList'])
+        msg = '<html lang = "en"><body><h2> B2A Performance Stats: %s</h2><br><table><tr><th>Initial Capital </th>' \
+              '<td> %s</td></tr><tr><th>Liquid Current </th><td> %s</td></tr><tr><th>Paper Current </th><td> %s</td>' \
+              '</tr><tr><th>Paper PnL </th><td> %s</td></tr><tr><th>Percent Allocated </th><td> %s</td></tr><tr>' \
+              '<th>Trades Open </th><td> %s</td></tr><tr><th>Number Transactions </th><td> %s</td></tr><tr>' \
+              '<th>Paper Avg PnL </th><td> %s</td></tr></table><br><h3>Current Positions</h3>' \
+              % (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'], stats['paperPnL'],
+                 100*stats['percentAllocated'], stats['numberOpen'], stats['numberTransactions'], stats['paperAvgPnL'])
+        msg += StatsUpdate().getCurrentStats(stratName=self.strat).to_html()
+        msg += '</body></html>'
         if self.isTick:
             msg += '\n\n-------------------------  Market Details  -------------------------\n\n'
             tickDict = MarketDetails().multiTicks((100, 1000))
@@ -61,6 +62,5 @@ class EmailUtil:
             for i in tickDict.keys():
                 msg += '- %s Coins\n1h:  %s\n24h:  %s\n1w:  %s\n' % \
                        (i, tickDict[i]['short'], tickDict[i]['mid'], tickDict[i]['long'])
-        imgPath = '%s/Pipeline/resources/%s/pnLGraph.png' % (Settings.BASE_PATH, self.strat)
         self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-                        content=msg, imgPath=imgPath if os.path.exists(imgPath) else None)
+                        content=msg, html=True)

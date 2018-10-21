@@ -54,7 +54,7 @@ class ExitTrade:
         else:
             orderDict = self.pull.makeTrade(exchange=positionDict['exchange'], asset=positionDict['assetName'],
                                             quantity=positionDict['posSizeBase'], dir='SELL')
-            realPnL = orderDict['cummulativeQuoteQty'] - positionDict['cummulativeQuoteQty']
+            realPnL = orderDict['cummulativeQuoteQty'] - positionDict['positionSize']
             closePrice = self._getPrice(orderDict['fills'])
             exitDict = {
                 'assetName': positionDict['assetName'],

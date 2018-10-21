@@ -13,10 +13,6 @@ from datetime import datetime
 
 class Enter:
 
-    """
-        *TODO Nomics to avoid rate limits
-    """
-
     def __init__(self, stratName, isTest=False, testAssets=None):
         logging.debug('Initialising Enter()')
         self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
@@ -53,7 +49,8 @@ class Enter:
             logging.info('Entering trades: \n %s' % openList if len(openList) != 0 else '0 trades entered')
             return openList if self.isTest else None
         except Exception as e:
-            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.runNorm()', message=e)
+            EmailUtil(strat=self.stratName).errorExit(file=self.stratName, funct='Enter.run()',
+                                                      message=f'Error message: {e}, \n Asset: {asset}')
             raise Exception
 
 
