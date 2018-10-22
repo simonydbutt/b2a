@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import Settings
 import logging
 
+# *TODO speed up!!!
+
 
 def test_MarketTick():
     with open('%s/Pipeline/tests/Monitor/MarketTickData.txt' % Settings.BASE_PATH, 'r') as MTData:

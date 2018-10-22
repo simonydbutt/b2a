@@ -1,10 +1,10 @@
 from Pipeline.main.Monitor.MarketDetails import MarketDetails
 from Pipeline.main.Monitor.StatsUpdate import StatsUpdate
-from Pipeline.main.Utils.Visualise import Visualise
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from datetime import datetime
+import pandas as pd
 import smtplib
 import Settings
 import os
@@ -46,21 +46,29 @@ class EmailUtil:
 
     def statsMessage(self):
         stats = StatsUpdate().compStats()[self.strat]
-        msg = '<html lang = "en"><body><h2> B2A Performance Stats: %s</h2><br><table><tr><th>Initial Capital </th>' \
-              '<td> %s</td></tr><tr><th>Liquid Current </th><td> %s</td></tr><tr><th>Paper Current </th><td> %s</td>' \
-              '</tr><tr><th>Paper PnL </th><td> %s</td></tr><tr><th>Percent Allocated </th><td> %s</td></tr><tr>' \
-              '<th>Trades Open </th><td> %s</td></tr><tr><th>Number Transactions </th><td> %s</td></tr><tr>' \
-              '<th>Paper Avg PnL </th><td> %s</td></tr></table><br><h3>Current Positions</h3>' \
-              % (self.strat, stats['initialCapital'], stats['liquidCurrent'], stats['paperCurrent'], stats['paperPnL'],
-                 100*stats['percentAllocated'], stats['numberOpen'], stats['numberTransactions'], stats['paperAvgPnL'])
-        msg += StatsUpdate().getCurrentStats(stratName=self.strat).to_html()
-        msg += '</body></html>'
+        currentDF = pd.DataFrame([
+            ['Initial Capital', stats['initialCapital']],
+            ['Liquid Current', stats['liquidCurrent']],
+            ['Paper Current', stats['paperCurrent']],
+            ['Paper PnL', stats['paperPnL']],
+            ['Percent Allocated', 100*stats['percentAllocated']],
+            ['Trades Open', stats['numberOpen']],
+            ['Number Transactions', stats['numberTransactions']]
+        ], columns=['Total Stats', self.strat])
+        msg = '<html lang = "en"><body><h2> B2A Performance Stats: %s</h2>' \
+              '<h3>Total Stats</h3>%s<br><h3><h3>Current Positions</h3>%s' \
+              % (self.strat, currentDF.set_index(keys='Total Stats', drop=True).to_html(),
+                 StatsUpdate().getCurrentStats(stratName=self.strat).set_index(keys='assetName', drop=True).to_html())
         if self.isTick:
             msg += '\n\n-------------------------  Market Details  -------------------------\n\n'
             tickDict = MarketDetails().multiTicks((100, 1000))
             msg += 'Tick Data\n'
-            for i in tickDict.keys():
-                msg += '- %s Coins\n1h:  %s\n24h:  %s\n1w:  %s\n' % \
-                       (i, tickDict[i]['short'], tickDict[i]['mid'], tickDict[i]['long'])
+            tickDF = pd.DataFrame([
+                ['1h', tickDict['100']['short'], tickDict['1000']['short']],
+                ['24h', tickDict['100']['mid'], tickDict['1000']['mid']],
+                ['1w', tickDict['100']['long'], tickDict['1000']['long']],
+            ], columns=['Period', '  100  ', '  1000  '])
+            msg += '<h3>Market Tick Data</h3>%s' % tickDF.set_index('Period', drop=True).to_html()
+        msg += '</body></html>'
         self._sendEmail(subject='b2a Performance Stats: %s' % datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                         content=msg, html=True)
