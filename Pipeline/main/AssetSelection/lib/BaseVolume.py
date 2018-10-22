@@ -13,32 +13,34 @@ class BaseVolume:
     """
 
     def __init__(self, config):
-        logging.debug('Initialising BaseVolume()')
-        self.params = config['assetSelection']
-        self.assetCol = MongoClient('localhost', 27017)[config['stratName']]['viableAssets']
+        logging.debug("Initialising BaseVolume()")
+        self.params = config["assetSelection"]
+        self.assetCol = MongoClient("localhost", 27017)[config["stratName"]][
+            "viableAssets"
+        ]
 
     def createAssetList(self):
         tickerData = {
-            val['symbol']: {
-                'vol': float(val['quoteVolume']),
-                'tradeCount': val['count'],
-                'baseVol': float(val['volume'])
-            } for val in Pull().getTickerStats(exchange='Binance') if 'BTC' in val['symbol']
+            val["symbol"]: {
+                "vol": float(val["quoteVolume"]),
+                "tradeCount": val["count"],
+                "baseVol": float(val["volume"]),
+            }
+            for val in Pull().getTickerStats(exchange="Binance")
+            if "BTC" in val["symbol"]
         }
         coinList = []
-        base = tickerData['BTCUSDT']['baseVol']
-        for coin in [c for c in list(tickerData) if c != 'BTCUSDT']:
-            if tickerData[coin]['tradeCount'] > self.params['minTrades'] and \
-                    self.params['minVol']*base < tickerData[coin]['vol'] < self.params['maxVol'] * base:
-                    coinList.append({
-                        'asset': coin,
-                        'exchange': 'Binance'
-                    })
+        base = tickerData["BTCUSDT"]["baseVol"]
+        for coin in [c for c in list(tickerData) if c != "BTCUSDT"]:
+            if (
+                tickerData[coin]["tradeCount"] > self.params["minTrades"]
+                and self.params["minVol"] * base
+                < tickerData[coin]["vol"]
+                < self.params["maxVol"] * base
+            ):
+                coinList.append({"asset": coin, "exchange": "Binance"})
         self.assetCol.insert_many(coinList)
 
     def getAssets(self):
-        logging.debug('Starting BaseVolume.getAssets')
-        return [(val['asset'], val['exchange']) for val in list(self.assetCol.find())]
-
-
-
+        logging.debug("Starting BaseVolume.getAssets")
+        return [(val["asset"], val["exchange"]) for val in list(self.assetCol.find())]

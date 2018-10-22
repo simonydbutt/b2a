@@ -8,8 +8,10 @@ class Basic:
     """
 
     def __init__(self, stratParams, capParams):
-        self.capPercent = stratParams['percent'] if 'percent' in stratParams.keys() else .02
-        self.liquidCap = capParams['liquidCurrent']
+        self.capPercent = (
+            stratParams["percent"] if "percent" in stratParams.keys() else 0.02
+        )
+        self.liquidCap = capParams["liquidCurrent"]
 
     def get(self, asset=None):
-        return max(self.capPercent*self.liquidCap, 0.001)
+        return max(self.capPercent * self.liquidCap, 0.001)

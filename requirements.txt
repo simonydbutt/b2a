@@ -8,5 +8,4 @@ bokeh
 scipy
 apscheduler
 bs4
-selenium
-pillow
+black

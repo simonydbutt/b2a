@@ -15,13 +15,20 @@ import logging
 
 def test_candles():
     BinanceData = Binance().getCandles(
-        asset='LTCBTC', limit=5, interval=300, columns=['TS', 'open'], lastReal=True)
+        asset="LTCBTC", limit=5, interval=300, columns=["TS", "open"], lastReal=True
+    )
     PullData = Pull().candles(
-        exchange='Binance', asset='LTCBTC', limit=5, interval=300, columns=['TS', 'open'], lastReal=True)
+        exchange="Binance",
+        asset="LTCBTC",
+        limit=5,
+        interval=300,
+        columns=["TS", "open"],
+        lastReal=True,
+    )
     assert PullData.equals(BinanceData) and len(PullData) != 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     # test_BTCAssets()
     test_candles()

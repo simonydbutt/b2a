@@ -1,5 +1,4 @@
 class TestingStrat:
-
     def __init__(self, stratName, assetList, isTest=False):
         pass
 
@@ -7,4 +6,4 @@ class TestingStrat:
         pass
 
     def run(self, asset):
-        return asset != 'LTC'
+        return asset != "LTC"

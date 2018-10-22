@@ -6,8 +6,8 @@ import requests
 
 
 def test_connection():
-    assert requests.get('https://coinmarketcap.com/all/views/all').status_code == 200
+    assert requests.get("https://coinmarketcap.com/all/views/all").status_code == 200
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_connection()

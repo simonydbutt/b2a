@@ -1,6 +1,3 @@
 from distutils.core import setup
 
-setup(
-    name='b2a',
-    version='0.1',
-)
+setup(name="b2a", version="0.1")
