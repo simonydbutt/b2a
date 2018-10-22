@@ -4,7 +4,6 @@ from Backtest.main.Data.Load import Load
 
 
 class Attr:
-
     def __init__(self, df):
         self.df = df
 
@@ -14,7 +13,6 @@ class Attr:
         for attrVal in attrList:
             self.df[attrVal[0]] = attrVal[1]
         return self.df
-
 
 
 # df = Load('bitmex').loadOne('ETHUSD_5m', '01/06/2018', limit=10000)

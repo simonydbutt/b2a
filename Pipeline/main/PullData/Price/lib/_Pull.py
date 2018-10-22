@@ -19,65 +19,86 @@ class _Pull:
     """
 
     def __init__(self, emailOnFailure=True):
-        self.baseURL = ''
+        self.baseURL = ""
         self.emailOnFailure = emailOnFailure
 
-    def _pullData(self, endPoint, params=None, isTest=False, testReq='', testReq2=''):
-        logging.debug('Starting _Pull._pullData')
-        logging.debug('Endpoint: %s, params: %s' % (endPoint, params))
+    def _pullData(self, endPoint, params=None, isTest=False, testReq="", testReq2=""):
+        logging.debug("Starting _Pull._pullData")
+        logging.debug("Endpoint: %s, params: %s" % (endPoint, params))
         try:
-            req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
+            req = (
+                requests.get(self.baseURL + endPoint, params=params)
+                if not isTest
+                else testReq
+            )
         except OSError:
-            EmailUtil().errorExit(file='_Pull', funct='_pullData', message='OS Error -> network down!') if \
-                self.emailOnFailure else None
+            EmailUtil().errorExit(
+                file="_Pull", funct="_pullData", message="OS Error -> network down!"
+            ) if self.emailOnFailure else None
             time.sleep(300)
-            req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq
-        logging.debug('req status code: %s' % req.status_code)
+            req = (
+                requests.get(self.baseURL + endPoint, params=params)
+                if not isTest
+                else testReq
+            )
+        logging.debug("req status code: %s" % req.status_code)
         if req.status_code == 200:
-            return json.loads(req.content.decode('utf-8')) if not isTest else 1
+            return json.loads(req.content.decode("utf-8")) if not isTest else 1
         elif req.status_code == 429:
-            logging.warning('Rate limit hit, 30 second sleep')
+            logging.warning("Rate limit hit, 30 second sleep")
             time.sleep(30 if not isTest else 0.001)
-            req = requests.get(self.baseURL + endPoint, params=params) if not isTest else testReq2
+            req = (
+                requests.get(self.baseURL + endPoint, params=params)
+                if not isTest
+                else testReq2
+            )
             if req.status_code == 429:
-                errorMsg = 'Rate limit error after timeout'
+                errorMsg = "Rate limit error after timeout"
                 logging.error(errorMsg)
                 if not isTest:
-                    EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg) if \
-                        self.emailOnFailure else None
+                    EmailUtil().errorExit(
+                        file="_Pull", funct="_pullData", message=errorMsg
+                    ) if self.emailOnFailure else None
                 else:
                     return 2
             else:
-                logging.info('Rate limit back to normal')
-                return json.loads(req.content.decode('utf-8')) if not isTest else 3
+                logging.info("Rate limit back to normal")
+                return json.loads(req.content.decode("utf-8")) if not isTest else 3
         else:
-            errorMsg = 'pullData requests error with error code %s' % req.status_code
+            errorMsg = "pullData requests error with error code %s" % req.status_code
             logging.error(errorMsg)
             if not isTest:
-                EmailUtil().errorExit(file='_Pull', funct='_pullData', message=errorMsg) if \
-                    self.emailOnFailure else None
+                EmailUtil().errorExit(
+                    file="_Pull", funct="_pullData", message=errorMsg
+                ) if self.emailOnFailure else None
             else:
                 return 4
 
     def _pullEncrypt(self, endPoint, paramString, isGet=True):
-        logging.debug('Starting _Pull._pullEncrypt')
-        sig = hmac.new(msg=paramString.encode('utf-8'), key=Settings.TRADE['sec'].encode('utf-8'),
-                       digestmod=hashlib.sha256).hexdigest()
-        url = '%s/%s?%s' % (self.baseURL, endPoint, paramString)
-        headers = {'X-MBX-APIKEY': Settings.TRADE['apiKey']}
-        params = {'signature': sig}
-        req = requests.get(url=url, headers=headers, params=params) if isGet else \
-            requests.post(url=url, headers=headers, params=params)
-        return json.loads(req.content.decode('utf-8'))
+        logging.debug("Starting _Pull._pullEncrypt")
+        sig = hmac.new(
+            msg=paramString.encode("utf-8"),
+            key=Settings.TRADE["sec"].encode("utf-8"),
+            digestmod=hashlib.sha256,
+        ).hexdigest()
+        url = "%s/%s?%s" % (self.baseURL, endPoint, paramString)
+        headers = {"X-MBX-APIKEY": Settings.TRADE["apiKey"]}
+        params = {"signature": sig}
+        req = (
+            requests.get(url=url, headers=headers, params=params)
+            if isGet
+            else requests.post(url=url, headers=headers, params=params)
+        )
+        return json.loads(req.content.decode("utf-8"))
 
     def getBTCAssets(self, justQuote=False):
-        logging.debug('Starting _Pull.getBTCAssets')
+        logging.debug("Starting _Pull.getBTCAssets")
         return []
 
     def getCandles(self, asset, limit, interval, columns, lastReal):
-        logging.debug('Starting _Pull.getCandles')
+        logging.debug("Starting _Pull.getCandles")
         return pd.DataFrame([], columns=columns)
 
     def getAssetPrice(self, sym, dir):
-        logging.debug('Starting _Pull.getAssetPrice')
+        logging.debug("Starting _Pull.getAssetPrice")
         return -1

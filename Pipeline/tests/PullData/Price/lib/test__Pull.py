@@ -17,12 +17,25 @@ class TestReqOtherFailure:
 
 def test__pullData():
     P = _Pull()
-    assert P._pullData(endPoint='', isTest=True, testReq=TestReqSuccess) == 1
-    assert P._pullData(endPoint='', isTest=True, testReq=TestReqRateLimit, testReq2=TestReqRateLimit) == 2
-    assert P._pullData(endPoint='', isTest=True, testReq=TestReqRateLimit, testReq2=TestReqSuccess) == 3
-    assert P._pullData(endPoint='', isTest=True, testReq=TestReqOtherFailure) == 4
+    assert P._pullData(endPoint="", isTest=True, testReq=TestReqSuccess) == 1
+    assert (
+        P._pullData(
+            endPoint="",
+            isTest=True,
+            testReq=TestReqRateLimit,
+            testReq2=TestReqRateLimit,
+        )
+        == 2
+    )
+    assert (
+        P._pullData(
+            endPoint="", isTest=True, testReq=TestReqRateLimit, testReq2=TestReqSuccess
+        )
+        == 3
+    )
+    assert P._pullData(endPoint="", isTest=True, testReq=TestReqOtherFailure) == 4
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     test__pullData()

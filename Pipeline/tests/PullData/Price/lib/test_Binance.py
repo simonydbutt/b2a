@@ -9,18 +9,23 @@ import logging
 
 def test_connection():
     PB = Binance()
-    assert PB._pullData('/api/v1/ping') == {}
+    assert PB._pullData("/api/v1/ping") == {}
 
 
 def test_getCandles():
     PB = Binance()
-    data = PB.getCandles(asset='ETHBTC', limit=5, interval=86400,
-                         columns=['TS', 'open', 'high', 'low', 'close', 'volume'], lastReal=True)
+    data = PB.getCandles(
+        asset="ETHBTC",
+        limit=5,
+        interval=86400,
+        columns=["TS", "open", "high", "low", "close", "volume"],
+        lastReal=True,
+    )
     assert len(data) == 5
-    assert list(data) == ['TS', 'open', 'high', 'low', 'close', 'volume']
+    assert list(data) == ["TS", "open", "high", "low", "close", "volume"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     test_connection()
     test_getCandles()

@@ -18,8 +18,11 @@ class Exit:
     def run(self):
         positionDict = {asset: [] for asset in self.assetList}
         for asset in self.assetList:
-            positionDict[asset] = eval(self.exitStrat[0])(df=self.dfDict[asset], params=self.exitStrat[1],
-                                                          enterList=self.enterList[asset]).run()
+            positionDict[asset] = eval(self.exitStrat[0])(
+                df=self.dfDict[asset],
+                params=self.exitStrat[1],
+                enterList=self.enterList[asset],
+            ).run()
         return positionDict
 
 

@@ -28,42 +28,87 @@ class Build:
         * Indiv requirements are noted at top of class
     """
 
-    def __init__(self, stratName, initialCapital, positionSizeParams, enterParams, assetSelectionParams,
-                 exitParams, schedule, isLive, statArb=False):
-        logging.debug('Initialising Build(): %s' % stratName)
-        self.compPath = '%s/Pipeline/resources/%s' % (Settings.BASE_PATH, stratName)
-        logging.debug('compPath: %s' % self.compPath)
+    def __init__(
+        self,
+        stratName,
+        initialCapital,
+        positionSizeParams,
+        enterParams,
+        assetSelectionParams,
+        exitParams,
+        schedule,
+        isLive,
+        statArb=False,
+    ):
+        logging.debug("Initialising Build(): %s" % stratName)
+        self.compPath = "%s/Pipeline/resources/%s" % (Settings.BASE_PATH, stratName)
+        logging.debug("compPath: %s" % self.compPath)
         if os.path.exists(self.compPath):
-            print('Strat already exists. Print Y to overwrite')
-            if input() == 'Y':
-                logging.warning('Rewriting strategy')
-                self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
-                                positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                                initialCapital=initialCapital, schedule=schedule, isLive=isLive, statArb=statArb)
+            print("Strat already exists. Print Y to overwrite")
+            if input() == "Y":
+                logging.warning("Rewriting strategy")
+                self.buildStrat(
+                    stratName=stratName,
+                    assetSelectionParams=assetSelectionParams,
+                    positionSizeParams=positionSizeParams,
+                    enterParams=enterParams,
+                    exitParams=exitParams,
+                    initialCapital=initialCapital,
+                    schedule=schedule,
+                    isLive=isLive,
+                    statArb=statArb,
+                )
             else:
-                logging.warning('No action to be taken')
+                logging.warning("No action to be taken")
         else:
-            self.buildStrat(stratName=stratName, assetSelectionParams=assetSelectionParams,
-                            positionSizeParams=positionSizeParams, enterParams=enterParams, exitParams=exitParams,
-                            initialCapital=initialCapital, schedule=schedule, isLive=isLive, statArb=statArb)
+            self.buildStrat(
+                stratName=stratName,
+                assetSelectionParams=assetSelectionParams,
+                positionSizeParams=positionSizeParams,
+                enterParams=enterParams,
+                exitParams=exitParams,
+                initialCapital=initialCapital,
+                schedule=schedule,
+                isLive=isLive,
+                statArb=statArb,
+            )
 
-    def buildStrat(self, stratName, assetSelectionParams, positionSizeParams,
-                   enterParams, exitParams, initialCapital, schedule, isLive, statArb):
+    def buildStrat(
+        self,
+        stratName,
+        assetSelectionParams,
+        positionSizeParams,
+        enterParams,
+        exitParams,
+        initialCapital,
+        schedule,
+        isLive,
+        statArb,
+    ):
         configDict = {
-            'stratName': stratName, 'assetSelection': assetSelectionParams,
-            'positionSize': positionSizeParams, 'enter': enterParams, 'exit': exitParams,
-            'schedule': schedule, 'isLive': isLive
+            "stratName": stratName,
+            "assetSelection": assetSelectionParams,
+            "positionSize": positionSizeParams,
+            "enter": enterParams,
+            "exit": exitParams,
+            "schedule": schedule,
+            "isLive": isLive,
         }
         if statArb:
-            configDict['statArb'] = statArb
-        for path in ('%s/Pipeline/resources' % Settings.BASE_PATH, self.compPath):
+            configDict["statArb"] = statArb
+        for path in ("%s/Pipeline/resources" % Settings.BASE_PATH, self.compPath):
             os.mkdir(path) if not os.path.isdir(path) else None
-        with open('%s/config.yml' % self.compPath, 'w') as configFile:
+        with open("%s/config.yml" % self.compPath, "w") as configFile:
             yaml.dump(configDict, configFile)
-        with open('%s/capital.yml' % self.compPath, 'w') as capFile:
-            yaml.dump({
-                    'initialCapital': initialCapital, 'liquidCurrent': initialCapital,
-                    'paperCurrent': initialCapital, 'paperPnL': 0,
-                    'percentAllocated': 0
-                }, capFile)
-        logging.info('Build Complete')
+        with open("%s/capital.yml" % self.compPath, "w") as capFile:
+            yaml.dump(
+                {
+                    "initialCapital": initialCapital,
+                    "liquidCurrent": initialCapital,
+                    "paperCurrent": initialCapital,
+                    "paperPnL": 0,
+                    "percentAllocated": 0,
+                },
+                capFile,
+            )
+        logging.info("Build Complete")

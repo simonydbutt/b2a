@@ -11,7 +11,7 @@ class MongoUtil:
 
     def __init__(self, dbName):
         self.dbName = dbName
-        self.client = MongoClient('localhost', 27017)
+        self.client = MongoClient("localhost", 27017)
         self.db = self.client[self.dbName]
         self.TU = TimeUtil()
 
@@ -20,8 +20,17 @@ class MongoUtil:
             try:
                 if len(list(self.db[colName].find({id: val[id]}))) == 0:
                     for param in parameters.keys():
-                        if param == 'TS' and self.dbName == 'binance' or self.dbName == 'bitmex':
-                            val['TS'] = int(self.TU.getTS(val[parameters['TS'][0]], timeFormat=parameters['TS'][1]))
+                        if (
+                            param == "TS"
+                            and self.dbName == "binance"
+                            or self.dbName == "bitmex"
+                        ):
+                            val["TS"] = int(
+                                self.TU.getTS(
+                                    val[parameters["TS"][0]],
+                                    timeFormat=parameters["TS"][1],
+                                )
+                            )
                             self.db[colName].insert_one(val)
                         else:
                             try:
@@ -36,10 +45,15 @@ class MongoUtil:
                 break
 
     def lastVal(self, colName):
-        return list(self.db[colName].find({}, {'_id': 0, 'TS': 1}).sort('TS', DESCENDING).limit(1))[0]['TS']
+        return list(
+            self.db[colName]
+            .find({}, {"_id": 0, "TS": 1})
+            .sort("TS", DESCENDING)
+            .limit(1)
+        )[0]["TS"]
 
     def count(self, colName):
         return self.db[colName].count()
 
     def index(self, colName):
-        self.db[colName].ensure_index('TS', ASCENDING)
+        self.db[colName].ensure_index("TS", ASCENDING)

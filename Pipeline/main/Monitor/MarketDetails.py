@@ -23,15 +23,20 @@ class MarketDetails:
         n = 0
         tickList = []
         coinPage = self.pull.getPage() if not page else page
-        for coinDiv in coinPage.find('tbody').find_all('tr')[:noCoins]:
+        for coinDiv in coinPage.find("tbody").find_all("tr")[:noCoins]:
             try:
-                percentSect = coinDiv.find_all('td', class_='percent-change')
+                percentSect = coinDiv.find_all("td", class_="percent-change")
                 if len(percentSect) == 3:
-                    tickList.append([1 if float(val['data-sort']) > 0 else -1 for val in percentSect])
+                    tickList.append(
+                        [
+                            1 if float(val["data-sort"]) > 0 else -1
+                            for val in percentSect
+                        ]
+                    )
                 else:
                     n += 1
             except ValueError:
                 n += 1
         ticks = [sum(tL) for tL in np.transpose(tickList)]
-        #print(tickList)
-        return {'short': ticks[0], 'mid': ticks[1], 'long': ticks[2]}
+        # print(tickList)
+        return {"short": ticks[0], "mid": ticks[1], "long": ticks[2]}

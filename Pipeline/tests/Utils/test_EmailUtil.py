@@ -6,11 +6,11 @@ import time
 
 def test_connection():
     T = Telnet()
-    T.open('smtp.gmail.com', port=587)
+    T.open("smtp.gmail.com", port=587)
     time.sleep(0.5)
-    assert T.read_eager().decode().split(' ')[0] == '220'
+    assert T.read_eager().decode().split(" ")[0] == "220"
     T.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_connection()
