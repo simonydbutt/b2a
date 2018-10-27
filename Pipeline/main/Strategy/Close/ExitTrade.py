@@ -79,7 +79,7 @@ class ExitTrade:
                 quantity=positionDict["posSizeBase"],
                 dir="SELL",
             )
-            realPnL = orderDict["cummulativeQuoteQty"] - positionDict["positionSize"]
+            realPnL = float(orderDict["cummulativeQuoteQty"]) - float(positionDict["positionSize"])
             closePrice = self._getPrice(orderDict["fills"])
             exitDict = {
                 "assetName": positionDict["assetName"],

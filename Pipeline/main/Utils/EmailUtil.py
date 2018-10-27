@@ -73,9 +73,7 @@ class EmailUtil:
             )
         )
         if self.isTick:
-            msg += "\n\n-------------------------  Market Details  -------------------------\n\n"
             tickDict = MarketDetails().multiTicks((100, 1000))
-            msg += "Tick Data\n"
             tickDF = pd.DataFrame(
                 [
                     ["1h", tickDict["100"]["short"], tickDict["1000"]["short"]],
