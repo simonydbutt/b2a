@@ -88,7 +88,12 @@ class StatsUpdate:
                 )
             )
         )
-        df["daysOpen"] = round(df["periods"] / 48, 2)
-        df.drop("periods", axis=1, inplace=True)
-        df["%"] = 100 * round(df["currentPrice"] / df["openPrice"], 4)
-        return df
+        if len(df) != 0:
+            df["daysOpen"] = round(df["periods"] / 48, 2)
+            df.drop("periods", axis=1, inplace=True)
+            df["%"] = 100 * round(df["currentPrice"] / df["openPrice"], 4)
+            return df
+        else:
+            return pd.DataFrame(
+                [], columns=["assetName", "currentPrice", "openPrice", "daysOpen", "%"]
+            )
