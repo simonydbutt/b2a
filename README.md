@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/simonydbutt/b2a.svg?branch=master)](https://travis-ci.org/simonydbutt/b2a)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 
 # b2a
 
